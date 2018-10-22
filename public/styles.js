@@ -539,7 +539,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/margherita/Desktop/progettoASW/asw-app/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! C:\Users\ManuBottax\Desktop\progettoASW\project-app\angular-src\src\styles.css */"./src/styles.css");
 
 
 /***/ })

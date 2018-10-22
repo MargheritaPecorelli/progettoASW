@@ -65,7 +65,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 var AppComponent = /** @class */ (function () {
     function AppComponent() {
-        this.title = 'asw-app';
+        this.title = 'angular-src';
     }
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -186,7 +186,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/margherita/Desktop/progettoASW/asw-app/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! C:\Users\ManuBottax\Desktop\progettoASW\project-app\angular-src\src\main.ts */"./src/main.ts");
 
 
 /***/ })

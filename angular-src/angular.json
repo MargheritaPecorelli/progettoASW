@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "asw-app": {
+    "angular-src": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/asw-app",
+            "outputPath": "../public",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "asw-app:build"
+            "browserTarget": "angular-src:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "asw-app:build:production"
+              "browserTarget": "angular-src:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "asw-app:build"
+            "browserTarget": "angular-src:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "asw-app-e2e": {
+    "angular-src-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,11 +103,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "asw-app:serve"
+            "devServerTarget": "angular-src:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "asw-app:serve:production"
+              "devServerTarget": "angular-src:serve:production"
             }
           }
         },
@@ -123,5 +123,5 @@
       }
     }
   },
-  "defaultProject": "asw-app"
+  "defaultProject": "angular-src"
 }

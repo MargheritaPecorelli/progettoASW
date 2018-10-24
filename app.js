@@ -29,6 +29,8 @@ app.use(cookieParser());
 
 // We are telling express server public folder is the place to look for the static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/libs', express.static(__dirname + '/libs'));
+
 
 app.use(cors());
 

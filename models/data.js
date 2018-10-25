@@ -1,13 +1,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var dataSchema = new Schema({
+var valueSchema = new Schema({
         idSensor: {
             type: String,
             required: true
         },
         value: {
             type: Number,
+            required: true
+        },
+        measurementType: {
+            type: String,
             required: true
         },
         timestamp: {
@@ -20,6 +24,6 @@ var dataSchema = new Schema({
         collection: 'data'
     });
 
-var data = mongoose.model('data', dataSchema);
+var value = mongoose.model('data', valueSchema);
 
-module.exports = data;
+module.exports = value;

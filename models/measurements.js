@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var measurementSchema = new Schema({
-        "type": {
+    measurementType: {
             type: String,
             required: true
         },

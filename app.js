@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var mongoose = require('mongoose');
 var logger = require('morgan');
+var bodyparser = require('body-parser');
 
 require('./models/db');
 
@@ -19,6 +20,8 @@ var port = 3000;
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
+
+app.use(bodyparser.json());
 
 app.use(logger('dev'));
 

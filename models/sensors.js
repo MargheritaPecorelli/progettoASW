@@ -1,24 +1,24 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var positionSchema = new Schema({
-    latitude: {
-        type: Number,
-        required: true
-    },
-    longitude: {
-        type: Number,
-        required: true
-    },
-    elevation: {
-        type: Number,
-        required: true
-    },
-    idLocation: {
-        type: String,
-        required: true
-    }
-});
+// var positionSchema = new Schema({
+//     latitude: {
+//         type: String,
+//         required: true
+//     },
+//     longitude: {
+//         type: String,
+//         required: true
+//     },
+//     elevation: {
+//         type: String,
+//         required: true
+//     },
+//     idLocation: {
+//         type: String,
+//         required: true
+//     }
+// });
 
 var measurementsSchema = new Schema({
     "type": {
@@ -45,10 +45,27 @@ var sensorSchema = new Schema({
             items:{
                 type: measurementsSchema
             }
-        },
-        position:{
-            type: positionSchema,
-            required: true
+         },
+        position: {
+            type: Object,
+            properties: {
+                latitude: {
+                    type: Number,
+                    required: true
+                },
+                longitude: {
+                    type: Number,
+                    required: true
+                },
+                elevation: {
+                    type: Number,
+                    required: true
+                },
+                idLocation: {
+                    type: String,
+                    required: true
+                }
+            }
         }
     },
     {
@@ -56,6 +73,8 @@ var sensorSchema = new Schema({
         collection: 'sensors'
     });
 
+//var posSchema = mongoose.model('posSchema', positionSchema);
 var sensor = mongoose.model('sensors', sensorSchema);
 
+//module.exports = posSchema;
 module.exports = sensor;

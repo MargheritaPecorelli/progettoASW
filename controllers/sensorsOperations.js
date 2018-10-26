@@ -7,22 +7,26 @@ var connection = require('../database');
 module.exports.addNewSensor = function(req, res, next){
     var idSensor = req.param('idSensor');
     var name = req.param('name');
-    var measurements = req.param('measurements');
-    var position = req.param('position');
+    var measurements = req.param('measurements'); //{type: temperature, u.o.m.: celsius}; {type: pressure, u.o.m.: Pa}
+    var position = req.param('position'); //{"latitude": 3, "longitude": 4, "elevetion": 5, "idLocation": "prova"}
 
-    var measurementsArray = measurements.split(" ");
+    var positionJSON = JSON.parse(position);
+    // console.log(positionJSON);
+    // console.log(positionJSON.latitude);
+
+    var measurementsArray = measurements.split(";");
     
     var sensor = {
         "idSensor": idSensor,
         "name" : name,
         "measurements": measurementsArray,
-        "position": position
+        "position": positionJSON
     };
 
     /** Add the new sensor to sensors' collection and create a new collection related to this specific sensor */
     sensors.create(sensor, function(err, response){
         if(err){
-            return res.send(400);
+            return res.sendStatus(400);
         } else {
             /** create a new collection related to this specific sensor */
             connection.createCollection(idSensor+"."+name);
@@ -94,16 +98,7 @@ module.exports.addNewMeasurement = function(req, res, next){
     });
 };
 
-
-
-
-
-
-
-
-
-
-module.exports.prova = function(req, res, next){
-    console.log("prova riuscita");
-    res.send(200);
-};
+// module.exports.prova = function(req, res, next){
+//     console.log("prova riuscita");
+//     res.send(200);
+// };

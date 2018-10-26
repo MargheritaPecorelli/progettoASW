@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { User } from '../user.model';
 
 @Component({
   selector: 'app-menu-bar',
@@ -7,21 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuBarComponent implements OnInit {
 
-  loggedUSer : boolean;
+  @Input() user: User;
+  
+  @Output() onUserLogin: EventEmitter<Boolean>;
 
-  constructor() { 
-    this.loggedUSer = false;
+  constructor() {
+     this.onUserLogin = new EventEmitter();
+  }
+   
+  userLogout(): void {
+    this.onUserLogin.emit(false);
+  }
+
+  userLogin(): void {
+    this.onUserLogin.emit(true);
   }
 
   ngOnInit() {
-  }
-
-  isUserLogged() : boolean {
-    return this.loggedUSer;
-  }
-
-  setUserLogged(logged: boolean) : void {
-    this.loggedUSer = logged;
   }
 
 }

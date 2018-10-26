@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { User } from './user.model';
+import { Component, OnInit } from '@angular/core';
+import { User } from './models/user.model';
+import { ChartData } from './models/chartdata.model';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,16 @@ import { User } from './user.model';
 
 export class AppComponent {
 
+  //title = 'angular-src';
+
   user : User; 
-  title = 'angular-src';
+  sampleChartList : ChartData[];
 
   constructor() {
     this.user = new User();
+    this.sampleChartList = [ new ChartData ("test 1"), 
+                             new ChartData ("test 2"), 
+                             new ChartData ("test 3") ];
   }
 
   setLogin(login: boolean) : void {
@@ -24,5 +30,8 @@ export class AppComponent {
       console.log("User has logged out");
   }
 
+  getChartList() : ChartData[] {
+    return this.sampleChartList;
+  }
 
 }

@@ -1,5 +1,12 @@
 <div id="wrapper" class="container-fluid">
 
+
+
     <app-menu-bar [user]="user" (onUserLogin)="setLogin($event)"></app-menu-bar>
+
+    <app-graph-list [chartList]="getChartList()" ></app-graph-list>
+    
+    
+
 
 </div>

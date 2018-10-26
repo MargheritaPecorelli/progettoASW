@@ -48,17 +48,28 @@ router.put('/sensor/position', sensorsOperations.changePosition);
 
 /** USERS */
 
+/** GET request to get all users */
+router.get('/users', usersOperations.getAllUsers);
+
+
+/** USER */
+
 /** POST request to add a new user */
-router.post('/users', usersOperations.addNewUser);
+router.post('/user', usersOperations.addNewUser);
 
 /** GET request to get a specific user */
-router.get('/users', usersOperations.getUser);
+router.get('/user', usersOperations.getUser);
 
 /** DELETE request to delete a specific user */
-router.delete('/users', usersOperations.deleteUser);
+router.delete('/user', usersOperations.deleteUser);
 
 
 /** LOCATIONS */
+
+/** GET request to get all locations */
+router.get('/locations', locationsOperations.getAllLocations);
+
+/** LOCATION */
 
 /** POST request to add a new location */
 router.post('/location', locationsOperations.addNewLocation);
@@ -79,30 +90,29 @@ router.post('/sensor/data', dataOperations.addNewValue);
 router.get('/sensor/data', dataOperations.getSensorValues);
 
 /** GET request to get all values of a specific sensor related to a specific measurement in a determined range of time */
-router.get('/sensor/:measurement/data', dataOperations.getValuesOfSensorMeasurement);
+router.get('/sensor/measurement/data', dataOperations.getValuesOfSensorMeasurement);
 
-/** lo vogliamo fare ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????? */
+/** Non la facciamo perché un valore registrato non può più essere cancellato */
 /** DELETE request to delete a specific sensor's value */
 //router.delete('/sensor/data', dataOperations.deleteValue);
 
 
 /** MEASUREMENTS */
 
-/** POST request to add a new measurement */
-router.post('/measurements', measurementOperations.addNewMeasurement);
-
 /** GET request to get all the measurements */
 router.get('/measurements', measurementOperations.getAllMeasurements);
+
+/** MEASUREMENT */
+
+/** POST request to add a new measurement */
+router.post('/measurement', measurementOperations.addNewMeasurement);
 
 /** GET request to get a specific measurement */
 router.get('/measurement', measurementOperations.getSpecificMeasurement);
 
-/** lo vogliamo fare ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????? */
+/** Non la facciamo perché anche se non abbiamo più sensori che misurino tale grandezza fisica, in passato li avevamo e quindi ci sono valori di quel tipo nel DB */
 /** DELETE request to delete a specific measurement */
 //router.delete('/measurements', measurementOperations.deleteMeasurement);
-
-
-
 
 
 module.exports = router;

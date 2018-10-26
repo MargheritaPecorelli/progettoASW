@@ -2,10 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var valueSchema = new Schema({
-        idSensor: {
-            type: String,
-            required: true
-        },
+        // idSensor: {
+        //     type: String,
+        //     required: true
+        // },
         value: {
             type: Number,
             required: true
@@ -21,9 +21,9 @@ var valueSchema = new Schema({
     },
     {
         //versionKey: false,
-        collection: 'data'
+        //collection: 'data'
     });
 
-var value = mongoose.model('data', valueSchema);
+//var value = mongoose.model('data', valueSchema);
 
-module.exports = value;
+module.exports = valueSchema;

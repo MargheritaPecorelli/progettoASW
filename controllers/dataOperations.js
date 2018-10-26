@@ -11,14 +11,15 @@ module.exports.addNewValue = function(req, res, next){
     var timestamp = req.param('timestamp');
 
     var value = {
-        "idSensor": idSensor,
         "value" : value,
         "measurementType" : measurementType,
         "timestamp" : timestamp
     };
 
-    /** Add the new location to locations' collection */
-    data.create(value, function(err, response){
+    var collection = _getCollection(idSensor);
+
+    /** Add the new data to sensor's collection */
+    collection.create(value, function(err, response){
         if(err){
             return res.send(400);
         } else {
@@ -30,16 +31,16 @@ module.exports.addNewValue = function(req, res, next){
 /** Callback to get all values of a specific sensor in a determined range of time */
 module.exports.getSensorValues = function(req, res, next){
     var idSensor = req.param('idSensor');
-    var sensorName = req.param('sensorName');
+    //var sensorName = req.param('sensorName');
     var start = req.param('start');
     var end = req.param('end');
 
-    var collection = _getCollection(idSensor,sensorName);
+    var collection = _getCollection(idSensor);
     
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    collection.find({ "timestamp": { $gte: startDate, $lt: endDate}},{"_id":0, "isSensor":0},function(err, value){
+    collection.find({ "timestamp": { $gte: startDate, $lt: endDate}},{"_id":0, "__v":0},function(err, value){
         if(err){
             res.send(500);
         } else {
@@ -51,17 +52,17 @@ module.exports.getSensorValues = function(req, res, next){
 /** Callback to get all values of a specific sensor related to a specific measurement in a determined range of time */
 module.exports.getValuesOfSensorMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
-    var sensorName = req.param('sensorName');
+    //var sensorName = req.param('sensorName');
     var measurementType = req.param('measurementType');
     var start = req.param('start');
     var end = req.param('end');
 
-    var collection = _getCollection(idSensor,sensorName);
+    var collection = _getCollection(idSensor);
     
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    collection.find( {$and: [{"timestamp": { $gte: startDate, $lt: endDate}}, {"measurementType": measurementType}]}, {"_id":0, "isSensor":0, "measurementType":0}, function(err, value){
+    collection.find( {$and: [{"timestamp": { $gte: startDate, $lt: endDate}}, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
         if(err){
             res.send(500);
         } else {
@@ -71,8 +72,9 @@ module.exports.getValuesOfSensorMeasurement = function(req, res, next){
 };
 
 /** Finds the right collection from which to take sensor's data */
-function _getCollection(idSensor,sensorName){
+function _getCollection(idSensor){
     var mongoose = require('mongoose');
-    var nameCollection= ""+idSensor+"."+sensorName;
-    return mongoose.model(idSensor, data, nameCollection);   
+    var nameCollection= ""+idSensor+"";
+    var Schema = require('../models/data');
+    return mongoose.model(idSensor, Schema, nameCollection);   
 };

@@ -23,16 +23,25 @@ module.exports.addNewSensor = function(req, res, next){
         "position": positionJSON
     };
 
-    /** Add the new sensor to sensors' collection and create a new collection related to this specific sensor */
-    sensors.create(sensor, function(err, response){
+    sensors.findOne({"idSensor":idSensor}, function(err, response){
         if(err){
-            return res.sendStatus(400);
+            return res.send(500);
+        } else if(response == null) {
+            /** Add the new sensor to sensors' collection and create a new collection related to this specific sensor */
+            sensors.create(sensor, function(err, response){
+                if(err){
+                    return res.sendStatus(400);
+                } else {
+                    /** create a new collection related to this specific sensor */
+                    connection.createCollection(idSensor);
+                    res.send(200);
+                }
+            });
         } else {
-            /** create a new collection related to this specific sensor */
-            connection.createCollection(idSensor+"."+name);
-            res.send(200);
+            console.log("this idSensor is been already used!");
+            res.send(400);
         }
-   });
+    });
 };
 
 /** Callback to get all sensors' name */

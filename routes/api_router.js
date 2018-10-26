@@ -22,8 +22,6 @@ require('../database');
 //router.delete('/sensors/:sensor_id', sensorDataController.testDELETEapi);
 //router.get('/sensors/:sensor_id/data/', sensorDataController.testGETapi);
 
-//router.get('/prova', sensorsOperations.prova);
-
 
 /** SENSORS */
 
@@ -33,16 +31,19 @@ router.post('/sensors', sensorsOperations.addNewSensor);
 /** GET request to get all sensors' name */
 router.get('/sensors', sensorsOperations.getAllSensors);
 
-/** GET request to get a specific sensor */
-router.get('/sensor', sensorsOperations.getSpecificSensor);
-
 /** DELETE request to delete a specific sensor from the collection */
 router.delete('/sensors', sensorsOperations.deleteSensor);
 
 /** PUT request to add a new measurement to a specific sensor */
 router.put('/sensors', sensorsOperations.addNewMeasurement);
 
-/** come faccio ad aggiornare la position del sensore?????????????????????????????????????????????????????????????????????????????? devo ancora cercarlo */
+/** SENSOR */
+
+/** GET request to get a specific sensor */
+router.get('/sensor', sensorsOperations.getSpecificSensor);
+
+/** PUT request to change a specific sensor'position */
+router.put('/sensor/position', sensorsOperations.changePosition);
 
 
 /** USERS */

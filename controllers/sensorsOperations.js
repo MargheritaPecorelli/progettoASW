@@ -37,7 +37,7 @@ module.exports.addNewSensor = function(req, res, next){
 
 /** Callback to get all sensors' name */
 module.exports.getAllSensors = function(req, res, next){
-    sensors.find({}, {'_id':0, 'name':1}, function(err, value){
+    sensors.find({}, {'_id':0, '__v': 0}, function(err, value){
         if(err){
             res.send(500);
         } else {
@@ -50,7 +50,7 @@ module.exports.getAllSensors = function(req, res, next){
 module.exports.getSpecificSensor = function(req, res, next){
     var idSensor = req.param('idSensor');
 
-    sensors.findOne({"idSensor": idSensor}, {"_id":0}, function(err, sensor) {
+    sensors.findOne({"idSensor": idSensor}, {"_id":0, '__v': 0}, function(err, sensor) {
         if(sensor == null) {
             res.send(404);
         } else if (err) {
@@ -80,15 +80,15 @@ module.exports.deleteSensor = function(req, res, next){
 /** Callback to add a new measurement to a specific sensor */
 module.exports.addNewMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
-    var measurement = req.param('measurement');
+    var measurement = req.param('measurements');
     
-    sensors.findOne({"idSensor":idSensor,"measurement": measurement}, function(err, response){
+    sensors.findOne({"idSensor":idSensor,"measurements": measurement}, function(err, response){
         if(response == null) {
-            console.log("measurement added");
-            sensors.update({"idSensor": idSensor},{ $push: { "measurement": [measurement] }},function(err, sensor){
+            sensors.update({"idSensor": idSensor},{ $push: { "measurements": [measurement] }},function(err, sensor){
                 if(err){
                     res.send(500);
                 }
+                console.log("measurement added");
                 res.send(200);
             });
         } else {
@@ -98,7 +98,27 @@ module.exports.addNewMeasurement = function(req, res, next){
     });
 };
 
-// module.exports.prova = function(req, res, next){
-//     console.log("prova riuscita");
-//     res.send(200);
-// };
+/** Callback to change a specific sensor'position */
+module.exports.changePosition = function(req, res, next){
+    var idSensor = req.param('idSensor');
+    var position = req.param('position'); //{"latitude": 3, "longitude": 4, "elevetion": 5, "idLocation": "prova"}
+    
+    var positionJSON = JSON.parse(position);
+
+    sensors.findOne({"idSensor":idSensor}, function(err, response){
+        if(err){
+            return res.send(500);
+        } else if(response == null) {
+            console.log("this sensor doesn't exist");
+            res.send(404);
+        } else {
+            sensors.update({"idSensor": idSensor},{ $set: { "position": positionJSON }},function(err, sensor){
+                if(err){
+                    return res.send(500);
+                }
+                console.log("position changed");
+                res.send(200);
+            });
+        }
+    });
+};

@@ -1,0 +1,113 @@
+
+<div class="navbar-header menu-bar row col-xs-12 col-sm-12 col-md-12 col-lg-12 w-100">
+
+   <!--  home page menu smartphone
+   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+  </button> -->
+
+  <!-- float-left -->
+  <a class="image_container" href="/">
+    <img class="img-fluid rounded" alt="logo image" src="../../assets/favicon.ico">
+  </a> 
+ 
+  <a class="navbar-brand" href="/"> MSC - MultiSensor Campus </a>
+
+  <!-- menu element list-->
+  <ul class="nav navbar-top-links navbar-right float-right">
+
+    <!-- Menu element Options-->
+    <li class="dropdown"> 
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-gear fa-fw"></i> 
+        <i class="fa fa-caret-down"></i>
+      </a>
+      
+      <!-- list of options in the options button-->
+      <ul class="dropdown-menu dropdown-options">
+
+        <li>
+          <a href="#">
+            <div>
+                <i class="fa fa-comment fa-fw"></i> New Comment
+                <span class="pull-right text-muted small">4 minutes ago</span>
+              </div>
+          </a>
+        </li>
+            
+        <li class="divider"></li>
+          
+        <li>
+          <a href="#">
+            <div>
+              <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+              <span class="pull-right text-muted small">12 minutes ago</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="divider"></li>
+      </ul>
+    </li>
+
+    <!-- menu element logged user -->
+    <li class="dropdown" *ngIf="isUserLogged()">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <!-- user icon -->
+        <i class="fa fa-user fa-fw"></i> 
+        <i class="fa fa-caret-down"></i>
+      </a>
+
+      <!-- list of options in the user button-->
+      <ul class="dropdown-menu dropdown-user">
+        <li>
+          <a href="#">
+            <i class="fa fa-user fa-fw"></i> User Profile
+          </a>
+        </li>
+
+        <li>
+          <a href="#">
+            <i class="fa fa-gear fa-fw"></i> Profile Settings
+          </a>
+        </li>
+
+        <li class="divider"></li>
+
+
+        <li>
+          <a href="#" (click)='setUserLogged(false)'>
+            <i class="fa fa-sign-out fa-fw"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </li>
+
+
+    <!-- menu element not logged user -->
+    <li class="dropdown" *ngIf="! isUserLogged()">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <!-- user icon -->
+          <i class="fa fa-user fa-fw"></i> 
+          <i class="fa fa-caret-down"></i>
+        </a>
+  
+        <!-- list of options in the user button-->
+      <ul class="dropdown-menu dropdown-user">
+  
+          <li>
+            <a href="#" (click)='setUserLogged(true)'>
+              <i class="fa fa-sign-in fa-fw"></i> Login
+            </a>
+          </li>
+      </ul>
+
+
+
+  
+    </li>
+  </ul>
+</div>

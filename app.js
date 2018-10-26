@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var logger = require('morgan');
 var bodyparser = require('body-parser');
 
-require('./models/db');
+//require('./models/db');
 
 var indexRouter = require('./routes/index');
 var apiRouter =   require('./routes/api_router');

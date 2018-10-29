@@ -1,17 +1,40 @@
 <div class="row">
   
-  <app-graph-holder></app-graph-holder> 
+  <app-graph-holder class="col-md-4 col-lg-4"></app-graph-holder> 
 
-  <div class="chart-info">
-
-    <div class="header">
-      <h2>{{ chart.name }}</h2> 
-    </div>
-
-    <div class="description">
-      <div class="range"> Range : {{ chart.range }} </div>
-      <div class="aggregation"> Aggregation : {{ chart.aggregation }}</div>
-      <div class="range"> Used sensors : {{ chart.usedSensors }}</div>
-    </div>
+  <div class="chart-info col-md-4 col-lg-4 ">
+    
+    <table class="table table-sm table-hover">
+      <thead>
+        <tr>
+          <th scope="col" colspan="2" class="header"> <h3> {{ chart.name }} </h3> </th>
+        </tr>
+      </thead> 
+      <tbody>
+        <tr>
+          <th scope="row"> Range : </th>
+          <td>{{ chart.range }}</td>
+        </tr>
+        
+        <tr>
+          <th scope="row"> Aggregation : </th>
+          <td>{{ chart.aggregation }}</td>
+        </tr>
+        
+        <tr>
+          <th scope="row">Used sensors :</th>
+          <td colspan="2">{{ chart.usedSensors }}</td>
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>
 
 </div>
+
+<!--
+<div class="row col-md-4 col-lg-4"> 
+    Used sensors : <span class="value pull-right" > {{ chart.usedSensors }}</span>
+  </div>
+
+  -->

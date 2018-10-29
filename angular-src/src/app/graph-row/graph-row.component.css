@@ -1,3 +1,12 @@
 app-graph-holder {
     float: left;
+    margin: 5px;
+}
+
+.header {
+    text-align: center;
+}
+
+.value {
+    font-weight: bold;
 }

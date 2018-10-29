@@ -1,2 +1,4 @@
 
-<img src="../../assets/images/chartExample1.png" alt="Chart Example" class="img-fluid">
+<div *ngIf="chart">
+    <canvas id="canvas"> {{ chart }} </canvas>
+</div>

@@ -7,6 +7,7 @@ import { GraphListComponent } from './graph-list/graph-list.component';
 import { GraphRowComponent } from './graph-row/graph-row.component';
 import { GraphHolderComponent } from './graph-holder/graph-holder.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

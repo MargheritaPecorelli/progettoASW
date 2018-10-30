@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ViewChildren } from '@angular/core';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -10,20 +10,21 @@ import { Chart } from 'chart.js';
 export class GraphHolderComponent implements OnInit {
 
   month = ['t1', 't2', 't3', 't4'];
-  price = [12,23,8,4];
+  @Input() data: Number[];
   chart = [];
 
-  constructor() { }
+  constructor(private elementRef : ElementRef) { }
 
   ngOnInit() {
+    let htmlRef = this.elementRef.nativeElement.querySelector('canvas');
 
-    this.chart = new Chart('canvas', {
+    this.chart = new Chart(htmlRef, {
       type: 'line',
       data: {
         labels: this.month,
         datasets: [
           {
-            data: this.price,
+            data: this.data,
             borderColor: '#3cba9f',
             fill: false
           }
@@ -43,6 +44,8 @@ export class GraphHolderComponent implements OnInit {
         }
       }
     });
+    
   }
+
 
 }

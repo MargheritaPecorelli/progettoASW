@@ -14,7 +14,6 @@ export class GraphRowComponent implements OnInit {
     
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }

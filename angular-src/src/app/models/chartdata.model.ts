@@ -3,15 +3,15 @@ export class ChartData {
     name : string;
     range: string;
     aggregation: string;
-    usedSensors: [string];
-    data : [Number];
+    usedSensors: string[];
+    data : Number[];
 
     constructor(name: string) { 
         this.name = name;
         this.range = "25/10/2018 12:00 - Now";
         this.aggregation = "1 Hour Average";
         this.usedSensors = ["all"];
-        this.data = [42];
+        this.data = [42, 23, 234 , 53 , 64];
     }
 
     addData(data: Number): void {

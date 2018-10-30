@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ViewChildren } from '@angular/core';
 import { Chart } from 'chart.js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-graph-holder',
@@ -13,7 +14,12 @@ export class GraphHolderComponent implements OnInit {
   @Input() data: Number[];
   chart = [];
 
-  constructor(private elementRef : ElementRef) { }
+  constructor(private elementRef : ElementRef, private router: Router) { }
+
+  onClick() {
+    console.log("Ho cliccato !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    this.router.navigate(['charts']);
+  }
 
   ngOnInit() {
     let htmlRef = this.elementRef.nativeElement.querySelector('canvas');

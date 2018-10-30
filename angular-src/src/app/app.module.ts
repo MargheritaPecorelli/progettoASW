@@ -11,14 +11,15 @@ import { GraphHolderComponent } from './graph-holder/graph-holder.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { ChartDetailsComponent } from './chart-details/chart-details.component';
 
 const route : Routes = [
   { path: '', component: HomepageComponent },
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: 'about', component: AboutComponent },
+  { path: 'charts', component: ChartDetailsComponent },
   { path: '**', component: PageNotFoundComponent}
 ]
-
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ const route : Routes = [
     GraphHolderComponent,
     PageNotFoundComponent,
     AboutComponent,
-    HomepageComponent
+    HomepageComponent,
+    ChartDetailsComponent
   ],
 
   imports: [

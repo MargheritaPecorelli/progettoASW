@@ -1,13 +1,13 @@
 <div class="row">
   
-  <app-graph-holder [data]="chart.data" class="col-md-4 col-lg-4"></app-graph-holder> 
+  <app-graph-holder [data]="chart.data" [xValue]="chart.getXValue()" class="col-md-4 col-lg-4"></app-graph-holder> 
 
   <div class="chart-info col-md-4 col-lg-4 ">
     
     <table class="table table-sm table-hover">
       <thead>
         <tr>
-          <th scope="col" colspan="2" class="header"> <h3> {{ chart.name }} </h3> </th>
+          <th scope="col" colspan="2" class="header"> <h3>- {{ chart.name }} -</h3> </th>
         </tr>
       </thead> 
       <tbody>
@@ -17,8 +17,13 @@
         </tr>
         
         <tr>
-          <th scope="row"> Aggregation : </th>
-          <td>{{ chart.aggregation }}</td>
+          <th scope="row"> Aggregation Range: </th>
+          <td>{{ chart.aggregationRange }}</td>
+        </tr>
+
+        <tr>
+          <th scope="row"> Aggregation Type: </th>
+          <td>{{ chart.aggregationType }}</td>
         </tr>
         
         <tr>
@@ -31,10 +36,3 @@
   </div>
 
 </div>
-
-<!--
-<div class="row col-md-4 col-lg-4"> 
-    Used sensors : <span class="value pull-right" > {{ chart.usedSensors }}</span>
-  </div>
-
-  -->

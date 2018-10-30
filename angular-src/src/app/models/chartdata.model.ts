@@ -1,18 +1,14 @@
-export class ChartData {
-    
-    name : string;
-    range: string;
-    aggregation: string;
-    usedSensors: string[];
-    data : Number[];
+import { Sensor } from "./sensor.model";
 
-    constructor(name: string) { 
-        this.name = name;
-        this.range = "25/10/2018 12:00 - Now";
-        this.aggregation = "1 Hour Average";
-        this.usedSensors = ["all"];
-        this.data = [42, 23, 234 , 53 , 64];
-    }
+export class ChartData {
+
+    constructor(
+        public name: string,
+        public range: string, 
+        public aggregationRange: string, 
+        public aggregationType: string,
+        public usedSensors: string[],
+        public data: Number[] ) { }
 
     addData(data: Number): void {
         this.data.push(data);
@@ -21,6 +17,15 @@ export class ChartData {
     addUsedSensor(sensor: string) {
         this.usedSensors.push(sensor);
     }
+
+    getXValue(): string[] {
+        var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
+        return list;
+        //TODO: recuperare dati dal db in base alla misurazione (name) e al range specificato e ai sensori 
+        // TODO: restituita in base all'aggregazione specificata ( con un switch )
+    }
+
+
 
 
 }

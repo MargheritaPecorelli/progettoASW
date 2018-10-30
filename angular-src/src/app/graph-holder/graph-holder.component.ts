@@ -9,7 +9,7 @@ import { Chart } from 'chart.js';
 
 export class GraphHolderComponent implements OnInit {
 
-  month = ['t1', 't2', 't3', 't4'];
+  @Input() xValue: string [];
   @Input() data: Number[];
   chart = [];
 
@@ -21,7 +21,7 @@ export class GraphHolderComponent implements OnInit {
     this.chart = new Chart(htmlRef, {
       type: 'line',
       data: {
-        labels: this.month,
+        labels: this.xValue,
         datasets: [
           {
             data: this.data,

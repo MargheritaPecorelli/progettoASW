@@ -1,3 +1,9 @@
-<p>
-  chart-details works!
-</p>
+<div>
+  <h2 *ngIf="type == 'm'">
+    Displaying Measurement Chart : {{id}} 
+  </h2>
+
+  <h2 *ngIf="type == 's'">
+      Displaying Sensor Chart  for sensor #{{id}}  
+    </h2>
+</div>

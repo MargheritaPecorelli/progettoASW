@@ -12,12 +12,13 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChartDetailsComponent } from './chart-details/chart-details.component';
+import { SideMenuComponent } from './side-menu/side-menu.component';
 
 const route : Routes = [
   { path: '', component: HomepageComponent },
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: 'about', component: AboutComponent },
-  { path: 'charts', component: ChartDetailsComponent },
+  { path: 'charts/:type/:id', component: ChartDetailsComponent },
   { path: '**', component: PageNotFoundComponent}
 ]
 
@@ -31,7 +32,8 @@ const route : Routes = [
     PageNotFoundComponent,
     AboutComponent,
     HomepageComponent,
-    ChartDetailsComponent
+    ChartDetailsComponent,
+    SideMenuComponent
   ],
 
   imports: [

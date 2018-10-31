@@ -1,3 +1,5 @@
-#myfirstchart {
-    height: 250px;
+
+canvas {
+    width: 100%;
+    height: auto;
 }

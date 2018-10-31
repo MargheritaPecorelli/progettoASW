@@ -10,9 +10,7 @@ export class GraphRowComponent implements OnInit {
 
   @Input() chart: ChartData;
 
-  constructor() { 
-    
-  }
+  constructor() { }
 
   ngOnInit() {}
 

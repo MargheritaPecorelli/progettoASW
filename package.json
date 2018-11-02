@@ -4,6 +4,7 @@
   "description": "MEAN Application for the project of ASW ",
   "main": "app.js",
   "scripts": {
+    "heroku-prebuild": "cd angular-src ; npm install; cd .. ",
     "start": "node app"
   },
   "engines": {
@@ -24,9 +25,6 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "readline": "^1.3.0"
-  },
-  "scripts": {
-    "heroku-prebuild": "cd angular-src ; npm install; cd .. "
   },
   "author": "Manuel Bottazzi, Stefano Bernagozzi, Margherita Pecorelli",
   "license": "ISC"

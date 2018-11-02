@@ -7,12 +7,13 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var logger = require('morgan');
 var bodyparser = require('body-parser');
-
-//require('./models/db');
+var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var apiRouter =   require('./routes/api_router');
 
+require('./database');
+require('./configs/passport');
 
 var app = express();
 var port = 3000;
@@ -37,6 +38,7 @@ app.use('/libs', express.static(__dirname + '/libs'));
 
 app.use(cors());
 
+app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 
@@ -58,7 +60,8 @@ app.use(function(err, req, res, next) {
 });
 
 //Listen to port 3000
-app.listen(port, () => {
+
+app.listen(process.env.PORT || port, () => {
     console.log(`Starting the server at port ${port}`);
 })
 

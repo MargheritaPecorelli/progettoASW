@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from './models/user.model';
+import { DataRetrieverService } from './services/data-retriever.service';
+import { element } from '@angular/core/src/render3/instructions';
 
 
 @Component({
@@ -10,14 +12,16 @@ import { User } from './models/user.model';
 
 export class AppComponent implements OnInit{
 
-  //title = 'angular-src';
-
-  user : User; 
+  user : User;
+  sensors: string[];
+  measurements: string[]; 
   
 
-  constructor() {
+  constructor(private dbRetrieverService: DataRetrieverService) {
     this.user = new User();
-   
+    this.sensors = [];
+    this.measurements = [];
+    console.log("APP CONSTRUCTOR INVOKED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   setLogin(login: boolean) : void {
@@ -29,6 +33,28 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
+    this.dbRetrieverService.getMeasurements().subscribe(measureList => {
+
+      console.log("Available measurement: ", measureList);
+      var jsonList = JSON.parse(JSON.stringify(measureList));
+
+      jsonList.forEach(measure => {
+        this.measurements.push(measure.measurementType);
+        //console.log("Measurement : ", measure.measurementType);
+      });
+    
+    });
+
+    this.dbRetrieverService.getSensors().subscribe(sensorList => {
+      console.log("Available sensor: ", sensorList);
+      
+      var jsonList = JSON.parse(JSON.stringify(sensorList));
+
+      jsonList.forEach(sensor => {
+        this.sensors.push((sensor.idSensor + " | " + sensor.name));
+        //console.log("Sensor : ", (sensor.idSensor + "-" + sensor.name));
+      });
+    });
   }
 
 }

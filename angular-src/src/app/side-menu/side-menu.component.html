@@ -21,18 +21,9 @@
             Measurement <span class="fa arrow" style="float:right;"> </span>
             </a>
             <ul class="nav nav-second-level">
-              <li>
-                  <a routerLink="/charts/m/temp1">Temperature</a>
-                </li>
-                <li>
-                    <a routerLink="/charts/m/press1">Pressure</a>
-                </li>
-                <li>
-                    <a routerLink="/charts/m/pm1">PM</a>
-                </li>
-                <li>
-                    <a routerLink="/charts/m/?1">?????</a>
-                </li>
+              <li *ngFor="let measure of measurementList" >
+                  <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
+              </li>
             </ul>
           </li>
 
@@ -41,15 +32,9 @@
               Sensors <span class="fa arrow" style="float:right;"> </span>
               </a>
               <ul class="nav nav-second-level">
-                <li>
-                    <a routerLink="/charts/s/s1">S1 - Library</a>
-                  </li>
-                  <li>
-                      <a routerLink="/charts/s/a1">A5 - Classroom 2.3</a>
-                  </li>
-                  <li>
-                      <a routerLink="/charts/s/b21">B21 - Roof</a>
-                  </li>
+                <li *ngFor="let sensor of sensorsList">
+                    <a routerLink="/charts/s/{{sensor}}"> {{sensor}} </a>
+                </li>
               </ul>
             </li>
 

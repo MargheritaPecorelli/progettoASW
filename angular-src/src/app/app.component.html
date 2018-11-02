@@ -3,7 +3,7 @@
 
     <app-menu-bar [user]="user" (onUserLogin)="setLogin($event)"></app-menu-bar>
     
-    <app-side-menu class="col-lg-2 col-md-2 col-sm-12 hidden-xs"></app-side-menu>
+    <app-side-menu [sensorsList]="sensors" [measurementList]="measurements" class="col-lg-2 col-md-2 col-sm-12 hidden-xs"></app-side-menu>
 
     <div id="wrapper" class="container-fluid">
 

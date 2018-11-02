@@ -13,12 +13,13 @@ import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChartDetailsComponent } from './chart-details/chart-details.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
+import { ChartResolver } from './resolvers/chart.resolver';
 
 const route : Routes = [
   { path: '', component: HomepageComponent },
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: 'about', component: AboutComponent },
-  { path: 'charts/:type/:id', component: ChartDetailsComponent },
+  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { chart: ChartResolver }},
   { path: '**', component: PageNotFoundComponent}
 ]
 
@@ -42,7 +43,9 @@ const route : Routes = [
     RouterModule.forRoot(route),
   ],
 
-  providers: [],
+  providers: [
+    ChartResolver
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

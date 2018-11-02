@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from './models/user.model';
 import { DataRetrieverService } from './services/data-retriever.service';
-import { element } from '@angular/core/src/render3/instructions';
+
 
 
 @Component({
@@ -21,7 +21,6 @@ export class AppComponent implements OnInit{
     this.user = new User();
     this.sensors = [];
     this.measurements = [];
-    console.log("APP CONSTRUCTOR INVOKED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   setLogin(login: boolean) : void {

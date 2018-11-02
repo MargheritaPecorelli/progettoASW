@@ -22,6 +22,8 @@ export class GraphHolderComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("GraphHolder: drawing chart with data -> " , this.data);
+    console.log("GraphHolder: drawing chart with xValue -> " , this.xValue);
     let htmlRef = this.elementRef.nativeElement.querySelector('canvas');
 
     this.chart = new Chart(htmlRef, {

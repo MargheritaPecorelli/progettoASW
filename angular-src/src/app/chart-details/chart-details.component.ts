@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ChartDetailsComponent implements OnInit {
 
+  chart: any;
+
   type: string;
   id: string;
 
@@ -21,6 +23,7 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.chart = this.route.snapshot.data.chart;
   }
 
 }

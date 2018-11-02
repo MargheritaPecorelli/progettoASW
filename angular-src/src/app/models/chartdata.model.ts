@@ -8,22 +8,69 @@ export class ChartData {
         public aggregationRange: string, 
         public aggregationType: string,
         public usedSensors: string[],
-        public data: Number[] ) { }
+        public data: Object ) {
+            console.log("siamo nel costruttore di chartData");
+            console.log(this.name);
+         }
 
-    addData(data: Number): void {
-        this.data.push(data);
-    }
+    // addData(data: Number): void {
+    //     this.data.push(data);
+    // }
 
-    addUsedSensor(sensor: string) {
-        this.usedSensors.push(sensor);
-    }
+    // addUsedSensor(sensor: string) {
+    //     this.usedSensors.push(sensor);
+    // }
 
-    getXValue(): string[] {
-        var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
-        return list;
+    getXValue(): Number[] {
+        // var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
+        // return list;
         //TODO: recuperare dati dal db in base alla misurazione (name) e al range specificato e ai sensori 
         // TODO: restituita in base all'aggregazione specificata ( con un switch )
+        // switch(aggregationRange) {
+        //     case "last week": {
+        //       
+        //       break
+        //     }
+        //     case "last 30 days": {
+        //       
+        //       break
+        //     }
+        //     default: {
+        //       console.log("Invalid choice");  
+        //       break; 
+        //    } 
+        //   }
+        var timeList = [];
+        var dataJson = JSON.parse(JSON.stringify(this.data));
+        Object.keys(dataJson).forEach(element => {
+            var entry = dataJson[element].data;
+            Object.keys(entry).forEach(elem => {
+                timeList.push(entry[elem].timestamp);
+            });
+        });
+        console.log(timeList);
+        return timeList
     }
+    
+    getData(): string[] {
+        // var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
+        // return list;
+        //TODO: recuperare dati dal db in base alla misurazione (name) e al range specificato e ai sensori 
+        // TODO: restituita in base all'aggregazione specificata ( con un switch )
+
+        var dataList = [];
+        var dataJson = JSON.parse(JSON.stringify(this.data));
+        Object.keys(dataJson).forEach(element => {
+            var entry = dataJson[element].data;
+            Object.keys(entry).forEach(elem => {
+                dataList.push(entry[elem].value);
+            });
+        });
+        console.log(dataList);
+        return dataList
+    }
+
+
 
 
 

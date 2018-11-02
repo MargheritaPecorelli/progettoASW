@@ -92,6 +92,9 @@ router.get('/sensor/data', dataOperations.getSensorValues);
 /** GET request to get all values of a specific sensor related to a specific measurement in a determined range of time */
 router.get('/sensor/measurement/data', dataOperations.getValuesOfSensorMeasurement);
 
+/** GET request to get all sensors' values of a specific measurement in a determined range of time */
+router.get('/sensors/measurement/data', dataOperations.getAllValuesOfMeasurement);
+
 /** Non la facciamo perché un valore registrato non può più essere cancellato */
 /** DELETE request to delete a specific sensor's value */
 //router.delete('/sensor/data', dataOperations.deleteValue);

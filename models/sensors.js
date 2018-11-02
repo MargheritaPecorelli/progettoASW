@@ -21,7 +21,7 @@ var Schema = mongoose.Schema;
 // });
 
 var measurementsSchema = new Schema({
-    "type": {
+    measurementType: {
         type: String,
         required: true
     },
@@ -45,7 +45,7 @@ var sensorSchema = new Schema({
             items:{
                 type: measurementsSchema
             }
-         },
+        },
         position: {
             type: Object,
             properties: {

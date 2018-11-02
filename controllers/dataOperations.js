@@ -1,6 +1,7 @@
 /** Model scheme of collections */
 var data = require('../models/data');
 var connection = require('../database');
+var sensors = require('../models/sensors');
 
 
 /** Callback to add a new sensor's value */
@@ -62,13 +63,70 @@ module.exports.getValuesOfSensorMeasurement = function(req, res, next){
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    collection.find( {$and: [{"timestamp": { $gte: startDate, $lt: endDate}}, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
+    collection.find({
+        $and: [{"timestamp": { $gte: startDate, $lt: endDate}
+    }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
         if(err){
             res.send(500);
         } else {
             res.json(value);
         }
     });
+};
+
+/** Callback to get all sensors' values of a specific measurement in a determined range of time */
+module.exports.getAllValuesOfMeasurement = function(req, res, next){
+    var measurementType = req.param('measurementType');
+    var start = req.param('start');
+    var end = req.param('end');
+
+    var endDate = new Date(end);
+    var startDate = new Date(start);
+
+    var sensorsList = [];
+
+    sensors.find({
+        measurements: {
+            $elemMatch: {
+                "measurementType": measurementType
+           }
+        }
+    }, {"_id":0, '__v': 0, 'name':0, 'measurements': 0, 'position': 0}, function(err, sensorsL) {
+        if(sensorsL == null) {
+            res.send(404);
+        } else if (err) {
+            res.send(400);
+        } else {
+            sensorsList = sensorsL;
+
+            var dataList = [];
+            sensorsList.forEach(elem => {
+                var idSens = elem.idSensor;
+                var collection = _getCollection(idSens);
+        
+                collection.find({
+                    $and: [{
+                        "timestamp": { $gte: startDate, $lt: endDate}
+                    }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
+                        if(err){
+                            return res.sendStatus(500);
+                        } else {
+                            var val = JSON.stringify(value);
+                            var str2 = '{\"id\": \"' + idSens + '\", \"data\": ' + val + '}';
+                            dataList.push(JSON.parse(str2));
+                            if(dataList.length == sensorsList.length) {
+                                // console.log(dataList);
+                                // console.log(dataList[0].id);
+                                // console.log(dataList[0].data[0].timestamp);
+                                res.status(200);
+                                res.json(dataList);
+                            }
+                        }
+                });
+            });
+        }
+    });
+ 
 };
 
 /** Finds the right collection from which to take sensor's data */

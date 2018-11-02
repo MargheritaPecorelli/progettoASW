@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var valueSchema = new Schema({
-        // idSensor: {
-        //     type: String,
-        //     required: true
-        // },
         value: {
             type: Number,
             required: true

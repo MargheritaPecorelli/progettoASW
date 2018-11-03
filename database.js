@@ -15,4 +15,6 @@ con.once('open', function (){
    console.log('connessione riuscita!');
 });
 
+require('./models/users');
+
 module.exports = con;

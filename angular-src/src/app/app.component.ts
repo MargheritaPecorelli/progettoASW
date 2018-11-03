@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from './models/user.model';
 import { DataRetrieverService } from './services/data-retriever.service';
+import { AuthenticationService } from './services/authentication/authentication.service';
+
 
 
 
@@ -17,7 +19,7 @@ export class AppComponent implements OnInit{
   measurements: string[]; 
   
 
-  constructor(private dbRetrieverService: DataRetrieverService) {
+  constructor(private dbRetrieverService: DataRetrieverService, public authService: AuthenticationService) {
     this.user = new User();
     this.sensors = [];
     this.measurements = [];

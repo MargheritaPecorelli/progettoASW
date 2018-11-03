@@ -7,13 +7,13 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var logger = require('morgan');
 var bodyparser = require('body-parser');
-//var passport = require('passport');
+var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var apiRouter =   require('./routes/api_router');
 
 require('./database');
-//require('./configs/passport');
+require('./configs/passport');
 
 var app = express();
 var port = 3000;
@@ -38,7 +38,7 @@ app.use('/libs', express.static(__dirname + '/libs'));
 
 app.use(cors());
 
-//app.use(passport.initialize());
+app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 

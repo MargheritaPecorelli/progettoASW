@@ -11,8 +11,10 @@ var locationsOperations = require ('../controllers/locationsOperations');
 var dataOperations = require ('../controllers/dataOperations');
 var measurementOperations = require ('../controllers/measurementOperations');
 
+var authenticationOperations = require('../controllers/authenticationController');
+
 /** Connect Mongo DB */
-require('../database');
+//require('../database');
 
 
 //router.get('/sensors/', sensorDataController.testGETapi);
@@ -44,6 +46,13 @@ router.get('/sensor', sensorsOperations.getSpecificSensor);
 
 /** PUT request to change a specific sensor'position */
 router.put('/sensor/position', sensorsOperations.changePosition);
+
+/** AUTHENTICATION */
+router.post('/auth/login', authenticationOperations.login);
+
+router.post('/auth/register', authenticationOperations.register);
+
+router.get('/auth/profile/:mail', authenticationOperations.getUser);
 
 
 /** USERS */

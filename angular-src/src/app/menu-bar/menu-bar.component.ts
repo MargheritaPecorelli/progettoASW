@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
+import { AuthenticationService } from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-menu-bar',
@@ -12,7 +13,7 @@ export class MenuBarComponent implements OnInit {
   
   @Output() onUserLogin: EventEmitter<Boolean>;
 
-  constructor() {
+  constructor(public authService: AuthenticationService) {
      this.onUserLogin = new EventEmitter();
   }
    

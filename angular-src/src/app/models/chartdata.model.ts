@@ -9,8 +9,9 @@ export class ChartData {
         public aggregationType: string,
         public usedSensors: string[],
         public data: Object ) {
-            console.log("siamo nel costruttore di chartData");
-            console.log(this.name);
+            console.log("ChartData created : ");
+            console.log("name : " , this.name);
+            console.log("data : " , data);
          }
 
     // addData(data: Number): void {

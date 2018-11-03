@@ -4,7 +4,7 @@
   "description": "MEAN Application for the project of ASW ",
   "main": "app.js",
   "scripts": {
-    "heroku-prebuild": "cd angular-src ; npm install; ng build; cd .. ",
+    "heroku-postbuild": "cd angular-src && npm install",
     "start": "node app"
   },
   "engines": {

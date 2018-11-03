@@ -32,7 +32,7 @@ const route : Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomepageComponent  },
   { path: 'about', component: AboutComponent },
-  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { chart: ChartResolver }},
+  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver }},
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },

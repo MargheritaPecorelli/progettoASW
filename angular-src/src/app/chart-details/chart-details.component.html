@@ -4,10 +4,13 @@
     <h2>
     Displaying Measurement Chart : {{id}} 
     </h2>
-    <app-graph-holder [data]="chart.getData()" [xValue]="chart.getXValue()" class="col-12"></app-graph-holder> 
+    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-12"></app-graph-holder> 
   </div>
 
-  <h2 *ngIf="type == 's'">
-      Displaying Sensor Chart  for sensor #{{id}}  
-  </h2>
+  <div *ngIf="type == 's'">
+    <h2>
+        Displaying Sensor Chart for sensor #{{id}}  
+    </h2>
+    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-12"></app-graph-holder>
+  </div>
 </div>

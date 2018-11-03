@@ -4,44 +4,20 @@ var connection = require('../database');
 var measurementsTypes = require('../models/measurements');
 var location = require('../models/location');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /** Callback to add a new sensor and create a new collection related to this specific sensor */
 module.exports.addNewSensor = function(req, res, next){
     var idSensor = req.param('idSensor');
     var name = req.param('name');
     var measurements = req.param('measurements'); //{"measurementType": "temperature", "uom": "C"}; {"measurementType": "pressure", "uom": "Pa"}
-    var position = req.param('position'); //{"latitude": 3, "longitude": 4, "elevetion": 5, "idLocation": "prova"}
+    var position = req.param('position'); //{"latitude": 3, "longitude": 4, "elevetion": 5, "idLocation": "L1"}
 
     var positionJSON = JSON.parse(position);
 
     var measurementsArray = measurements.split(";");
     var measArr = [];
 
-    /** Checks if this location is already present in the DB */
+    /** Checks if this location is present in the DB */
     var loc = positionJSON.idLocation;
-    // console.log(loc);
     location.findOne({"idLocation": loc}, function(err, response){
         if(err){
             console.log("position Error");
@@ -53,14 +29,14 @@ module.exports.addNewSensor = function(req, res, next){
                 var el = JSON.parse(measurementsArray[j]);     
                 measArr.push(el);
             }
-            /** Checks is this typeS of measurementS are already present in the DB */
-            _checkMeasurements(measArr, 0, res, idSensor, name, positionJSON);
+            /** Checks if this types of measurements are present in the DB */
+            _checkMeasurementsAndCreateSensor(measArr, 0, res, idSensor, name, positionJSON);
         }
     });
 };
 
-/** Checks is this typeS of measurementS are already present in the DB */
-function _checkMeasurements(measArr, i, res, idSensor, name, positionJSON){
+/** Checks if this types of measurements are present in the DB and, if every things is all right, create the new sensor */
+function _checkMeasurementsAndCreateSensor(measArr, i, res, idSensor, name, positionJSON){
     if(i == measArr.length){
         return _createSensorAndItsCollection(idSensor, name, measArr, positionJSON, res)
     }
@@ -71,7 +47,7 @@ function _checkMeasurements(measArr, i, res, idSensor, name, positionJSON){
         } else if(response == null) {
             return res.send(400, "this type of measurement is not present. Please, add it to the DB before continuing!");
         } else {
-            _checkMeasurements(measArr, i+1, res, idSensor, name, positionJSON);
+            _checkMeasurementsAndCreateSensor(measArr, i+1, res, idSensor, name, positionJSON);
         }
     });
 };
@@ -134,7 +110,7 @@ module.exports.getSpecificSensor = function(req, res, next){
 };
 
 /** Callback to delete a specific sensor from the collection */
-module.exports.deleteSensor = function(req, res, next){
+module.exports.deleteSpecificSensor = function(req, res, next){
     var idSensor = req.param('idSensor');
     
     sensors.findOneAndRemove({"idSensor": idSensor}, function(err, sensor) {
@@ -151,22 +127,55 @@ module.exports.deleteSensor = function(req, res, next){
 /** Callback to add a new measurement to a specific sensor */
 module.exports.addNewMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
-    var measurement = req.param('measurements');
+    var measurement = req.param('measurement');
+
+    var measurementJSON = JSON.parse(measurement);
     
-    sensors.findOne({"idSensor":idSensor,"measurements": measurement}, function(err, response){
+    /** Checks if this type of measurement is present in the DB */
+    _checkMeasurements(measurementJSON, res, idSensor);
+};
+
+/** Checks if this type of measurement is present in the DB */
+function _checkMeasurements(measurementJSON, res, idSensor){
+    // if(i == measArr.length){
+    //     return _addMeasurements(idSensor, name, measArr, positionJSON, res)
+    // }
+    measurementsTypes.findOne({"measurementType": measurementJSON.measurementType}, function(err, response){
+        if(err){
+            console.log("measurements Error");
+            return res.send(500);
+        } else if(response == null) {
+            return res.send(400, "this type of measurement is not present. Please, add it to the DB before continuing!");
+        } else {
+            return _addMeasurements(idSensor, measurementJSON, res);
+        }
+    });
+};
+
+/** Adds the measurements to the specific sensor */
+function _addMeasurements(idSensor, measurementJSON, res){
+    sensors.findOne({"idSensor":idSensor}, function(err, response){
         if(response == null) {
-            sensors.update({"idSensor": idSensor},{ $push: { "measurements": [measurement] }},function(err, sensor){
+            return res.send(404, "sensor not found!");
+        } else {
+            for(var i = 0; i < response.measurements.length; i++) {
+                if(measurementJSON.measurementType == response.measurements[i].measurementType) {
+                    return res.send(200, "measurement already present in this sensor");
+                }
+            }
+            sensors.update({"idSensor": idSensor},{ $push: { "measurements": [measurementJSON] }}, function(err, resp){
                 if(err){
                     res.send(500);
                 }
-                console.log("measurement added");
-                res.send(200);
+                res.send(200, "measurement added");
             });
-        } else {
-            console.log("already present");
-            res.send(200);
         }
     });
+};
+
+/** Returns the minimum value between first and second */
+function _getMin(first, second){
+    return first <= second ? first : second;
 };
 
 /** Callback to change a specific sensor'position */

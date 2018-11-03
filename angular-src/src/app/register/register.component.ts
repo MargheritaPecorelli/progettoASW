@@ -18,7 +18,8 @@ export class RegisterComponent {
   register() {
     this.auth.postRegister(this.credentials).subscribe(() => {
       console.log("User registered with mail : ", this.credentials.email)
-      this.router.navigateByUrl('/profile/' + this.credentials.email);
+      //this.router.navigateByUrl('/profile/' + this.credentials.email);
+      this.router.navigateByUrl('/admin');
     }, (err) => {
       console.error(err);
     });

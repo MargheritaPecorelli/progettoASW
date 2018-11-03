@@ -15,22 +15,28 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { ChartDetailsComponent } from './chart-details/chart-details.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { ChartResolver } from './resolvers/chart.resolver';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
+
 import { AuthGuard } from './guards/auth.guard';
-import { AdminMainComponent } from './admin-main/admin-main.component';
 import { AuthenticationService } from './services/authentication/authentication.service';
+
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 
+import { AdminComponent } from './admin/admin.component';
+import { AdminModule } from './admin/admin.module';
+import { adminRoute } from './admin/admin.module';
+
+
 const route : Routes = [
-  { path: '', component: HomepageComponent },
-  { path: 'home', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full'},
+  { path: 'home', component: HomepageComponent  },
   { path: 'about', component: AboutComponent },
   { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { chart: ChartResolver }},
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'reserved', component: AdminMainComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminComponent, children: adminRoute, canActivate: [AuthGuard] },
   { path: '**', component: PageNotFoundComponent}
 ]
 
@@ -48,14 +54,14 @@ const route : Routes = [
     SideMenuComponent,
     RegisterComponent,
     LoginComponent,
-    AdminMainComponent,
     ProfileComponent 
   ],
 
   imports: [
     BrowserModule,
-    HttpClientModule,
     RouterModule.forRoot(route),
+    AdminModule,
+    HttpClientModule,
     FormsModule
   ],
 
@@ -64,6 +70,7 @@ const route : Routes = [
     AuthGuard,
     AuthenticationService
   ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

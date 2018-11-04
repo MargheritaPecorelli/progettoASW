@@ -1,15 +1,25 @@
 <form (submit)="register()">
+
     <div class="form-group">
-      <label for="name">Full name</label>
+      <label for="name">Name</label>
       <input type="text" class="form-control" name="name" placeholder="Enter your name" [(ngModel)]="credentials.name">
     </div>
+
+    <div class="form-group">
+      <label for="surname">Surname</label>
+      <input type="text" class="form-control" name="surname" placeholder="Enter your surname" [(ngModel)]="credentials.surname">
+    </div>
+
     <div class="form-group">
       <label for="email">Email address</label>
       <input type="email" class="form-control" name="email" placeholder="Enter email" [(ngModel)]="credentials.email">
     </div>
+
     <div class="form-group">
       <label for="password">Password</label>
       <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password">
     </div>
+
     <button type="submit" class="btn btn-default">Register!</button>
+
   </form>

@@ -3,7 +3,8 @@ import { AuthenticationService, UserDetails, TokenPayload } from '../services/au
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  templateUrl: './profile.component.html'
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent {
   details: UserDetails;

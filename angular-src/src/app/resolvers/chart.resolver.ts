@@ -26,7 +26,7 @@ export class ChartResolver implements Resolve<ChartData> {
 
       console.log("Retrieving data for chart " + id + " of type " + type);
 
-      return this.dbRetrieverService.getSensorDataWithRange(defaultData.measurement, defaultData.range);
+      return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(defaultData.measurement, defaultData.range);
 
     }
 

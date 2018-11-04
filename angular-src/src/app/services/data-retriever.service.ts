@@ -7,8 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 export class DataRetrieverService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
 
   /** SENSORS */
@@ -162,8 +161,6 @@ export class DataRetrieverService {
   }
   
 
-  /** SENSORS' DATA */
-
   getValuesOfSpecificMeasurementThroughStartAndEnd(measurementType: string, start: Date, end: Date) {
     // examples:
     // var endDate = new Date(); -> mi dice che è nel futuro: è un'ora avanti (oppure p dataOperations ad essere un'ora indietro)
@@ -205,8 +202,6 @@ export class DataRetrieverService {
     return this.http.get(`http://localhost:3000/api/measurements`);
   }
 
-
-  /** MEASUREMENT */
 
   postNewMeasurement(type: string, meseaurmentUom: string) {
     var result = this.http.post(`http://localhost:3000/api/measurement`, 

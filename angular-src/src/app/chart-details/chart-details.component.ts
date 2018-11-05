@@ -9,15 +9,22 @@ import { ChartData } from '../models/chartdata.model';
 })
 export class ChartDetailsComponent implements OnInit {
 
-  data: Object;
+  availableChartType: string[] = ['type1','type2','type3','type4'];
+  availableAggregationRange: string[] = ['1 Hour','1 Day','1 Week','1 Month'];
+  availableAggregationType: string[] = ['Average','Min','Max','Peak'];
+  selectedSensors: string = 'Floor 1';
 
-  chartData: ChartData;
 
-  //chartData: number[] = [12,23,34,45,56,67,78,89];
-  //xValue: string[] = ['1','2','3','4','5','6','7','8'];
+  ///////////////////
 
   type: string;
   id: string;
+
+  realtime: boolean = false;
+
+  data: Object;
+
+  chartData: ChartData;
 
   constructor(private route: ActivatedRoute) { 
 
@@ -50,6 +57,31 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  toggleRealtime(event: any){
+
+    this.realtime = ! this.realtime;
+
+    console.log("Real time update enabled: " , this.realtime);
+  }
+
+  onChangeChartType(chartType: string){
+
+    console.log("Chart type selected: " , chartType);
+
+  }
+
+  onChangeAggregationValue(aggregation: string) {
+
+    console.log("Aggregation type selected: " , aggregation);
+
+  }
+
+  onChangeRangeValue(range: string) {
+
+    console.log("Aggregation range selected: " , range);
+
   }
 
 }

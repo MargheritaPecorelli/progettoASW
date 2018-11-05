@@ -1,16 +1,90 @@
-<div>
+<div class="row">
+
+  <div class="chart-menu col fill">
+    <h2 class="text-center"> {{id}} </h2>
+
+    <div class="row">
+
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+
+        <h5 class="text-center"> Range </h5>
+
+        <div class="form-group row">
+          <label for="range-from" class="col-sm-2 col-form-label">From: </label>
+          <div class="col-sm-10">
+            <input id="range-from" type="text" class="form-control" placeholder="start from">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="range-to" class="col-sm-2 col-form-label">To: </label>
+          <div class="col-sm-10">
+            <input id="range-to" type="text" class="form-control" placeholder="stop to">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <h5 class="text-center"> Aggregation </h5>
+
+        <div class="form-group">
+          <select class="form-control" id="aggregation-range-list" (change)="onChangeRangeValue($event.target.value)">
+              <option *ngFor="let range of availableAggregationRange" value='{{range}}' > {{ range }} </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <select class="form-control" id="aggregation-type-list" (change)="onChangeAggregationValue($event.target.value)">
+              <option *ngFor="let type of availableAggregationType" > {{ type }} </option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <h5 class="text-center"> Used Sensors </h5>
+
+        <div class="form-group">
+          <p class="text-center"> {{selectedSensors}} </p>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" > Select Sensors </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="realtime-checkbox" value="realtime" [ngModel]="realtime" (ngModelChange)="toggleRealtime($event)">
+          <label class="form-check-label" for="realtime-checkbox">  Real Time Update </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="chart-type-list">Chart Type:</label>
+      <select class="form-control" id="chart-type-list" (change)="onChangeChartType($event.target.value)">
+        <option *ngFor="let type of availableChartType" > {{ type }} </option>
+      </select>
+    </div>
+
+  </div>
+
+  
   
   <div *ngIf="type == 'm'">
     <h2>
     Displaying Measurement Chart : {{id}} 
     </h2>
-    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-12"></app-graph-holder> 
+    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder> 
   </div>
 
   <div *ngIf="type == 's'">
     <h2>
         Displaying Sensor Chart for sensor #{{id}}  
     </h2>
-    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-12"></app-graph-holder>
+    <app-graph-holder [data]="chartData.getData()" [xValue]="chartData.getXValue()" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder>
   </div>
-</div>
+</div> 

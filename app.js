@@ -39,8 +39,9 @@ app.use('/libs', express.static(__dirname + '/libs'));
 app.use(cors());
 
 app.use(passport.initialize());
-app.use('/', indexRouter);
+
 app.use('/api', apiRouter);
+app.use('*', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

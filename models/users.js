@@ -4,6 +4,8 @@ var jwt = require('jsonwebtoken');
 
 var Schema = mongoose.Schema;
 
+//TODO: hash e sale required;
+
 var userSchema = new Schema({
         email: {
             type: String,

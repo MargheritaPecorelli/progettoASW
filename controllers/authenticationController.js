@@ -9,10 +9,10 @@ module.exports.register = function(req, res) {
 
     user.email = req.body.email;
     user.name = req.body.name;
-    user.surname = "Test";
+    user.surname = req.body.surname;
     user.admin = false;
 
-    console.log("Try to register User: ", user.name);
+    console.log("Try to register User: ", user.name , " ", user.surname);
     console.log("Try to register with mail: ", user.email);
     console.log("Try to register with password: ", req.body.password);
 

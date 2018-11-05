@@ -17,33 +17,58 @@ module.exports.addNewValue = function(req, res, next){
         "timestamp" : timestamp
     };
 
-    var collection = _getCollection(idSensor);
+    _checkMeasurementAndAddValue(res, idSensor, measurementType, value);
+};
 
+/** Checks if this type of measurement is one of those of the sensor */
+function _checkMeasurementAndAddValue(res, idSensor, measurementType, value) {
+    sensors.findOne({"idSensor": idSensor},  function(err, response) {
+        for(var i = 0; i < response.measurements.length; i++){
+            if(measurementType == response.measurements[i].measurementType) {
+                return _addValue(res, idSensor, value);
+            }
+        }
+        return res.send(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
+    });
+};
+
+/** Checks if this type of measurement is present in the DB */
+function _addValue(res, idSensor, value){
+    var collection = _getCollection(idSensor);
+    
     /** Add the new data to sensor's collection */
     collection.create(value, function(err, response){
         if(err){
-            return res.send(400);
+            return res.send(500);
         } else {
-            res.send(200);
+            res.send(200, "Value added!");
         }
-   });
+    });
 };
 
 /** Callback to get all values of a specific sensor in a determined range of time */
 module.exports.getSensorValues = function(req, res, next){
     var idSensor = req.param('idSensor');
-    //var sensorName = req.param('sensorName');
     var start = req.param('start');
     var end = req.param('end');
 
-    var collection = _getCollection(idSensor);
-    
+    var now = new Date();
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    collection.find({ "timestamp": { $gte: startDate, $lt: endDate}},{"_id":0, "__v":0},function(err, value){
+    if(endDate > now) {
+        return res.send(500, "The \"end\" date is in the future, please choose a valid date");
+    } else if(endDate <= startDate){
+        return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
+    }
+
+    var collection = _getCollection(idSensor);
+    
+    collection.find({ "timestamp": { $gte: start, $lt: end}},{"_id":0, "__v":0},function(err, value){
         if(err){
             res.send(500);
+        } else if(value.length == 0) {
+            res.send(404, "In this specific range of time, there are no values that match to this sensor");
         } else {
             res.json(value);
         }
@@ -51,23 +76,49 @@ module.exports.getSensorValues = function(req, res, next){
 };
 
 /** Callback to get all values of a specific sensor related to a specific measurement in a determined range of time */
-module.exports.getValuesOfSensorMeasurement = function(req, res, next){
+module.exports.getSomeValuesOfSpecificSensorMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
-    //var sensorName = req.param('sensorName');
     var measurementType = req.param('measurementType');
     var start = req.param('start');
     var end = req.param('end');
-
-    var collection = _getCollection(idSensor);
     
+    var now = new Date();
     var endDate = new Date(end);
     var startDate = new Date(start);
 
+    if(endDate > now) {
+        return res.send(500, "The \"end\" date is in the future, please choose a valid date");
+    } else if(endDate <= startDate){
+        return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
+    }
+
+    _checkMeasurementAndFindValues(res, idSensor, start, end, measurementType)  
+};
+
+/** Checks if this type of measurement is one of those of the sensor */
+function _checkMeasurementAndFindValues(res, idSensor, start, end, measurementType) {
+    console.log('iddddddddddddddddddddddddddddddddddddddddd ' + idSensor);
+    sensors.findOne({"idSensor": idSensor},  function(err, response) {
+        console.log('responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + response);
+        for(var i = 0; i < response.measurements.length; i++){
+            if(measurementType == response.measurements[i].measurementType) {
+                return _findValues(res, idSensor, start, end, measurementType);
+            }
+        }
+        return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");
+    });
+};
+
+/** Finds values of this specific sensor in that timestamp */
+function _findValues(res, idSensor, start, end, measurementType) {
+    var collection = _getCollection(idSensor);
     collection.find({
-        $and: [{"timestamp": { $gte: startDate, $lt: endDate}
+        $and: [{"timestamp": { $gte: start, $lt: end}
     }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
         if(err){
             res.send(500);
+        } else if(value.length == 0) {
+            res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
             res.json(value);
         }
@@ -75,15 +126,20 @@ module.exports.getValuesOfSensorMeasurement = function(req, res, next){
 };
 
 /** Callback to get all sensors' values of a specific measurement in a determined range of time */
-module.exports.getAllValuesOfMeasurement = function(req, res, next){
+module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
     var measurementType = req.param('measurementType');
     var start = req.param('start');
     var end = req.param('end');
 
+    var now = new Date();
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    var sensorsList = [];
+    if(endDate > now) {
+        return res.send(500, "The \"end\" date is in the future, please choose a valid date");
+    } else if(endDate <= startDate){
+        return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
+    }
 
     sensors.find({
         measurements: {
@@ -91,33 +147,27 @@ module.exports.getAllValuesOfMeasurement = function(req, res, next){
                 "measurementType": measurementType
            }
         }
-    }, {"_id":0, '__v': 0, 'name':0, 'measurements': 0, 'position': 0}, function(err, sensorsL) {
-        if(sensorsL == null) {
-            res.send(404);
+    }, {"_id":0, '__v': 0, 'name':0, 'measurements': 0, 'position': 0}, function(err, sensorsList) {
+        if(sensorsList.length == 0) {
+            res.send(404, "No values found. Please check if the measurement and the range of time are correct!");
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
-            sensorsList = sensorsL;
-
             var dataList = [];
             sensorsList.forEach(elem => {
-                var idSens = elem.idSensor;
-                var collection = _getCollection(idSens);
+                var collection = _getCollection(elem.idSensor);
         
                 collection.find({
                     $and: [{
                         "timestamp": { $gte: startDate, $lt: endDate}
                     }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
                         if(err){
-                            return res.sendStatus(500);
+                            return res.send(500);
                         } else {
                             var val = JSON.stringify(value);
-                            var str2 = '{\"id\": \"' + idSens + '\", \"data\": ' + val + '}';
+                            var str2 = '{\"id\": \"' + elem.idSensor + '\", \"data\": ' + val + '}';
                             dataList.push(JSON.parse(str2));
                             if(dataList.length == sensorsList.length) {
-                                // console.log(dataList);
-                                // console.log(dataList[0].id);
-                                // console.log(dataList[0].data[0].timestamp);
                                 res.status(200);
                                 res.json(dataList);
                             }

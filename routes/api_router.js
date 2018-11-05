@@ -25,34 +25,35 @@ var authenticationOperations = require('../controllers/authenticationController'
 //router.get('/sensors/:sensor_id/data/', sensorDataController.testGETapi);
 
 
-/** SENSORS */
-
-/** POST request to add a new sensor and create a related collection to save all sensor's values */
-router.post('/sensors', sensorsOperations.addNewSensor);
-
-/** GET request to get all sensors' name */
-router.get('/sensors', sensorsOperations.getAllSensors);
-
-/** DELETE request to delete a specific sensor from the collection */
-router.delete('/sensors', sensorsOperations.deleteSensor);
-
-/** PUT request to add a new measurement to a specific sensor */
-router.put('/sensors', sensorsOperations.addNewMeasurement);
-
-/** SENSOR */
-
-/** GET request to get a specific sensor */
-router.get('/sensor', sensorsOperations.getSpecificSensor);
-
-/** PUT request to change a specific sensor'position */
-router.put('/sensor/position', sensorsOperations.changePosition);
-
 /** AUTHENTICATION */
 router.post('/auth/login', authenticationOperations.login);
 
 router.post('/auth/register', authenticationOperations.register);
 
 router.get('/auth/profile/:mail', authenticationOperations.getUser);
+
+
+/** SENSORS */
+
+/** GET request to get all sensors' name */
+router.get('/sensors', sensorsOperations.getAllSensors);
+
+/** SENSOR */
+
+/** POST request to add a new sensor and create a related collection to save all sensor's values */
+router.post('/sensor', sensorsOperations.addNewSensor);
+
+/** GET request to get a specific sensor */
+router.get('/sensor', sensorsOperations.getSpecificSensor);
+
+/** DELETE request to delete a specific sensor from the collection */
+router.delete('/sensor', sensorsOperations.deleteSpecificSensor);
+
+/** PUT request to change a specific sensor's position */
+router.put('/sensor/position', sensorsOperations.changePosition);
+
+/** PUT request to add a new measurement to a specific sensor */
+router.put('/sensor/measurement', sensorsOperations.addNewMeasurement);
 
 
 /** USERS */
@@ -78,6 +79,7 @@ router.delete('/user', usersOperations.deleteUser);
 /** GET request to get all locations */
 router.get('/locations', locationsOperations.getAllLocations);
 
+
 /** LOCATION */
 
 /** POST request to add a new location */
@@ -90,7 +92,7 @@ router.get('/location', locationsOperations.getLocation);
 router.delete('/location', locationsOperations.deleteLocation);
 
 
-/** SENSORS' DATA */
+/** SENSOR'S DATA */
 
 /** POST request to add a new sensor's value */
 router.post('/sensor/data', dataOperations.addNewValue);
@@ -99,10 +101,13 @@ router.post('/sensor/data', dataOperations.addNewValue);
 router.get('/sensor/data', dataOperations.getSensorValues);
 
 /** GET request to get all values of a specific sensor related to a specific measurement in a determined range of time */
-router.get('/sensor/measurement/data', dataOperations.getValuesOfSensorMeasurement);
+router.get('/sensor/measurement/data', dataOperations.getSomeValuesOfSpecificSensorMeasurement);
+
+
+/** SENSORS' DATA */
 
 /** GET request to get all sensors' values of a specific measurement in a determined range of time */
-router.get('/sensors/measurement/data', dataOperations.getAllValuesOfMeasurement);
+router.get('/sensors/measurement/data', dataOperations.getSomeValuesOfSpecificMeasurement);
 
 /** Non la facciamo perché un valore registrato non può più essere cancellato */
 /** DELETE request to delete a specific sensor's value */

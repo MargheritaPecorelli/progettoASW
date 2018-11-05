@@ -1,11 +1,17 @@
-<form (submit)="login()">
+
+<div *ngIf="loginError" class="alert alert-danger alert-dismissible fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" (click)="onAlertClosing()" >&times;</a>
+    <strong>Login Error : </strong> Wrong username or password.
+  </div>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
     <div class="form-group">
       <label for="email">Email address</label>
-      <input type="email" class="form-control" name="email" placeholder="Enter email" [(ngModel)]="credentials.email">
+      <input type="email" class="form-control" [formControl]="email" name="email" placeholder="Enter email" >
     </div>
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="credentials.password">
+      <input type="password" class="form-control" [formControl]="password" name="password" placeholder="Password" >
     </div>
     <button type="submit" class="btn btn-default">Sign in!</button>
   </form>

@@ -31,7 +31,7 @@ export class HomepageComponent implements OnInit {
 
   ngOnInit() {
     this.defaultComponents.forEach(elem => {
-      this.data.getSensorDataWithRange(elem.measurement, elem.range).subscribe(data => {
+      this.data.getValuesOfSpecificMeasurementThroughRange(elem.measurement, elem.range).subscribe(data => {
         console.log(data);
         console.log( elem.aggregationType + " - " + elem.measurement);
         this.sampleChartList.push(new ChartData(elem.aggregationType + " " + elem.measurement,

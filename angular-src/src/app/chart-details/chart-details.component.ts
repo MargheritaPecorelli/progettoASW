@@ -5,18 +5,17 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { Sensor } from '../models/sensor.model';
 import { DataRetrieverService } from '../services/data-retriever.service';
 
-interface Block {
-  id: string, 
-  name: string,
-  room: string[],
-  sensors: Sensor[]
-}
+/* interface Block {
+  id: string,
+  name: string
+} */
 
 interface Level {
-  id: string;
-  name: string;
-  block: Block[];
+  id: string,
+  name: string,
+  blocks: string[]
 }
+
 
 @Component({
   selector: 'app-chart-details',
@@ -30,6 +29,13 @@ export class ChartDetailsComponent implements OnInit {
   availableAggregationRange: string[] = ['1 Hour','1 Day','1 Week','1 Month'];
   availableAggregationType: string[] = ['Average','Min','Max','Peak'];
   selectedSensors: Sensor[] = [];
+
+  locationList: Level[] = [
+    { id: '1', name: 'Level 1', blocks: ['A']},
+    { id: '2', name: 'Level 2', blocks: ['A','B','C','D']},
+    { id: '3', name: 'Level 3', blocks: ['A','B','C','D']},
+    { id: '4', name: 'Level 4', blocks: ['A','B','C','D']}
+  ]
 
 
   ///////////////////
@@ -91,11 +97,12 @@ export class ChartDetailsComponent implements OnInit {
     this.availableSensors = [];
 
     sensors.forEach(element => {
-      var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, element.measurement);
+      var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurement);
       var posId = element.position.idLocation;
       this.dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
         var loc = JSON.parse(JSON.stringify(location));
         sensor.positionName = loc.name + ' | ' + loc.room;
+        sensor.location = loc;
         this.availableSensors.push(sensor);
         this.sensorsControl = this.availableSensors.map(c => ({sensor: c, selected: false}));
       });
@@ -165,6 +172,11 @@ export class ChartDetailsComponent implements OnInit {
     });
 
     console.log("Selected Sensors: " , this.selectedSensors);
+  }
+
+  selectLevel(event: any){
+    console.log("event : ", event);
+    console.log("Selected : ", event.target.name);
   }
 
 }

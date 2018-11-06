@@ -5,6 +5,7 @@ export class Sensor {
         public id : string, 
         public position: Object, 
         public positionName: string,
+        public location: Location,
         public measurements: Object[]) { }
 
 }

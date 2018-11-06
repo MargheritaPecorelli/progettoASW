@@ -14,8 +14,10 @@ import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChartDetailsComponent } from './chart-details/chart-details.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
+
 import { ChartResolver } from './resolvers/chart.resolver';
 import { SensorsResolver } from './resolvers/sensors.resolver';
+import { LocationsResolver } from './resolvers/location.resolver';
 
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticationService } from './services/authentication/authentication.service';
@@ -33,7 +35,7 @@ const route : Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomepageComponent  },
   { path: 'about', component: AboutComponent },
-  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver, sensors: SensorsResolver }},
+  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver }},
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },
@@ -70,6 +72,7 @@ const route : Routes = [
   providers: [
     ChartResolver,
     SensorsResolver,
+    LocationsResolver,
     AuthGuard,
     AuthenticationService
   ],

@@ -9,9 +9,9 @@ export class ChartData {
         public aggregationType: string,
         public usedSensors: string[],
         public data: Object ) {
-            console.log("ChartData created : ");
-            console.log("name : " , this.name);
-            console.log("data : " , data);
+           // console.log("ChartData created : ");
+            //console.log("name : " , this.name);
+            //console.log("data : " , data);
          }
 
     // addData(data: Number): void {
@@ -49,7 +49,7 @@ export class ChartData {
                 timeList.push(entry[elem].timestamp);
             });
         });
-        console.log(timeList);
+        //console.log(timeList);
         return timeList
     }
     
@@ -67,7 +67,7 @@ export class ChartData {
                 dataList.push(entry[elem].value);
             });
         });
-        console.log(dataList);
+        //console.log(dataList);
         return dataList
     }
 

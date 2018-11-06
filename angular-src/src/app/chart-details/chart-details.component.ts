@@ -1,18 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChartData } from '../models/chartdata.model';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { Sensor } from '../models/sensor.model';
+import { DataRetrieverService } from '../services/data-retriever.service';
+
+interface Block {
+  id: string, 
+  name: string,
+  room: string[],
+  sensors: Sensor[]
+}
+
+interface Level {
+  id: string;
+  name: string;
+  block: Block[];
+}
 
 @Component({
   selector: 'app-chart-details',
   templateUrl: './chart-details.component.html',
   styleUrls: ['./chart-details.component.css']
 })
+
 export class ChartDetailsComponent implements OnInit {
 
   availableChartType: string[] = ['type1','type2','type3','type4'];
   availableAggregationRange: string[] = ['1 Hour','1 Day','1 Week','1 Month'];
   availableAggregationType: string[] = ['Average','Min','Max','Peak'];
-  selectedSensors: string = 'Floor 1';
+  selectedSensors: Sensor[] = [];
 
 
   ///////////////////
@@ -21,12 +38,22 @@ export class ChartDetailsComponent implements OnInit {
   id: string;
 
   realtime: boolean = false;
+  selectAll: boolean = false;
 
   data: Object;
 
   chartData: ChartData;
 
-  constructor(private route: ActivatedRoute) { 
+
+  ///////////////// Sensors selection modal ////////////
+  sensorsControl
+  
+
+  //TODO: FILTER FOR AVAILABLE MEASUREMENT 
+  
+  availableSensors: Sensor[];
+
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private dbRetrieverService: DataRetrieverService ) { 
 
     var defaultData: any = {
       measurement: 'pressure', 
@@ -56,7 +83,24 @@ export class ChartDetailsComponent implements OnInit {
     console.log(" ------------------> Generated Chart Data : " , this.chartData);
   }
 
+  
+
   ngOnInit() {
+
+    var sensors = this.route.snapshot.data['sensors'];
+    this.availableSensors = [];
+
+    sensors.forEach(element => {
+      var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, element.measurement);
+      var posId = element.position.idLocation;
+      this.dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
+        var loc = JSON.parse(JSON.stringify(location));
+        sensor.positionName = loc.name + ' | ' + loc.room;
+        this.availableSensors.push(sensor);
+        this.sensorsControl = this.availableSensors.map(c => ({sensor: c, selected: false}));
+      });
+    });  
+    
   }
 
   toggleRealtime(event: any){
@@ -82,6 +126,45 @@ export class ChartDetailsComponent implements OnInit {
 
     console.log("Aggregation range selected: " , range);
 
+  }
+
+
+  ////////////////// Sensor Selector Modal ///////////////////////
+
+  selectAllSensors(event: any) {
+
+    //this.selectAll = !this.selectAll;
+
+    console.log("Select all sensors : " , this.selectAll);
+
+    for( var i= 0 ; i < this.sensorsControl.length; i ++) {
+      this.sensorsControl[i].selected = this.selectAll;
+    }
+
+    console.log(this.sensorsControl);
+
+  }
+
+  checkSelected(event: any) {
+
+    this.selectAll = this.sensorsControl.every(function(item:any) {
+      return item.selected == true;
+    });
+
+  }
+
+  submitModal() {
+
+    this.selectedSensors = [];
+
+
+    this.sensorsControl.forEach( element => {
+      if ( element.selected ) {
+        this.selectedSensors.push(element.sensor);
+      }      
+    });
+
+    console.log("Selected Sensors: " , this.selectedSensors);
   }
 
 }

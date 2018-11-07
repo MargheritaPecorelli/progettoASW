@@ -90,7 +90,7 @@
                         <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let sensor of sensorsControl">
                           <div class="sensor-row">
                             <label>
-                              <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="checkSelected()">
+                              <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="checkSelectedLocation()">
                               {{sensor.sensor.name}}
                             </label>
 

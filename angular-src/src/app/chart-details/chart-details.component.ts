@@ -175,23 +175,30 @@ export class ChartDetailsComponent implements OnInit {
 
   selectAllSensors() {
 
-    //this.selectAll = !this.selectAll;
-
     console.log("Select all sensors : " , this.selectAll);
 
     for( var i= 0 ; i < this.sensorsControl.length; i ++) {
       this.sensorsControl[i].selected = this.selectAll;
     }
 
+    this.checkSelectedLocation();
+
     console.log(this.sensorsControl);
 
   }
 
-  checkSelected() {
+  checkSensors() {
 
     this.selectAll = this.sensorsControl.every(function(item:any) {
       return item.selected == true;
     });
+
+  }
+
+  checkSelectedLocation() {
+
+    console.log("Adesso devo controllare tutte le location");
+    this.checkSensors();
 
   }
 
@@ -243,7 +250,7 @@ export class ChartDetailsComponent implements OnInit {
       }
     });
 
-    this.checkSelected();
+    this.checkSensors();
   }
 
 }

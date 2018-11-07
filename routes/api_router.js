@@ -106,6 +106,9 @@ router.get('/sensor/measurement/data', dataOperations.getSomeValuesOfSpecificSen
 
 /** SENSORS' DATA */
 
+/** GET request to get all values of a specific sensors' list related to a specific measurement in a determined range of time */
+router.get('/sensors/list/measurement/data', dataOperations.getValuesOfSomeSensorsMeasurement);
+
 /** GET request to get all sensors' values of a specific measurement in a determined range of time */
 router.get('/sensors/measurement/data', dataOperations.getSomeValuesOfSpecificMeasurement);
 

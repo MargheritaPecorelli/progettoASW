@@ -1,80 +1,169 @@
 import { Sensor } from "./sensor.model";
+import { map } from "rxjs/internal/operators/map";
 
 export class ChartData {
 
     constructor(
         public name: string,
         public range: string, 
+        public startDate: Date,
+        public endDate: Date,
         public aggregationRange: string, 
         public aggregationType: string,
         public usedSensors: string[],
         public data: Object ) {
-            console.log("ChartData created : ");
-            console.log("name : " , this.name);
-            console.log("data : " , data);
+            // console.log("ChartData created : ");
+            // console.log("name : " , this.name);
+            // console.log("data : " , data);
          }
 
-    // addData(data: Number): void {
-    //     this.data.push(data);
-    // }
+    getDataAndTheirTimestamp(): JSON[] {
+        var dataList = [];
+        var allSensorsData = [];
+        var nwData = this.data as Array<Array<JSON>>
+        // console.log(nwData);
 
-    // addUsedSensor(sensor: string) {
-    //     this.usedSensors.push(sensor);
-    // }
-
-    getXValue(): Number[] {
-        // var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
-        // return list;
-        //TODO: recuperare dati dal db in base alla misurazione (name) e al range specificato e ai sensori 
-        // TODO: restituita in base all'aggregazione specificata ( con un switch )
-        // switch(aggregationRange) {
-        //     case "last week": {
-        //       
-        //       break
-        //     }
-        //     case "last 30 days": {
-        //       
-        //       break
-        //     }
-        //     default: {
-        //       console.log("Invalid choice");  
-        //       break; 
-        //    } 
-        //   }
-        var timeList = [];
-        var dataJson = JSON.parse(JSON.stringify(this.data));
-        Object.keys(dataJson).forEach(element => {
-            var entry = dataJson[element].data;
-            Object.keys(entry).forEach(elem => {
-                timeList.push(entry[elem].timestamp);
-            });
+        for(var i = 0; i < nwData.length; i++) {
+            var entry = JSON.parse(JSON.stringify(nwData[i]));
+            for(var j = 0; j< entry.data.length; j++) {
+                allSensorsData.push(entry.data[j]);
+            }
+        }
+        allSensorsData.sort((a, b) => {
+            var aTime = new Date(a.timestamp);
+            var bTime = new Date(b.timestamp);
+            return aTime.getTime()-bTime.getTime();
         });
-        console.log(timeList);
-        return timeList
+        // console.log(allSensorsData);
+
+        switch(this.aggregationRange) {
+            case "every value": {
+                allSensorsData.forEach(elem => {
+                    var val = JSON.stringify(elem.value);
+                    var valTime = JSON.stringify(elem.timestamp);
+                    var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                    dataList.push(JSON.parse(str));
+                });
+                break
+            }
+            case "aggregation on the day": {
+                var dataToAggregate = [];
+                var day = new Date(allSensorsData[0].timestamp);
+                
+                allSensorsData.forEach(elem => {
+                    var time = new Date(elem.timestamp);
+                    if(time.getDate() == day.getDate()) {
+                        dataToAggregate.push(elem.value);
+                    } else {
+                        var val = JSON.stringify(this._aggregate(dataToAggregate));
+                        var valTime = JSON.stringify(day.getFullYear() + '-' + day.getMonth() + '-' + day.getDate());
+                        var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                        dataList.push(JSON.parse(str));
+
+                        day = new Date(time);
+                        dataToAggregate = [];
+                        dataToAggregate.push(elem.value);
+                    }   
+                });
+                // questo è uguale all'else e serve per aggregare i dati dell'ultima data
+                var val = JSON.stringify(this._aggregate(dataToAggregate));
+                var valTime = JSON.stringify(day.getFullYear() + '-' + day.getMonth() + '-' + day.getDate());
+                var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                dataList.push(JSON.parse(str));
+                break
+            }
+            case "aggregation on the week": {
+                var dataToAggregate = [];
+                var startDayOfTheWeek = new Date(allSensorsData[0].timestamp);
+                var endDayOfTheWeek = new Date();
+                endDayOfTheWeek.setDate(startDayOfTheWeek.getDate() + 7);
+                
+                allSensorsData.forEach(elem => {
+                    var time = new Date(elem.timestamp);
+                    if(time.getDate() >= startDayOfTheWeek.getDate() && time.getDate() < endDayOfTheWeek.getDate()) {
+                        dataToAggregate.push(elem.value);
+                    } else {
+                        var val = JSON.stringify(this._aggregate(dataToAggregate));
+                        var valTime = JSON.stringify('from ' + startDayOfTheWeek.getFullYear() + '-' + (startDayOfTheWeek.getMonth()+1) + '-' + startDayOfTheWeek.getDate() + ' to ' + endDayOfTheWeek.getFullYear() + '-' + (endDayOfTheWeek.getMonth()+1) + '-' + endDayOfTheWeek.getDate());
+                        var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                        dataList.push(JSON.parse(str));
+
+                        startDayOfTheWeek = new Date(time);
+                        endDayOfTheWeek = new Date(time);
+                        endDayOfTheWeek.setDate(startDayOfTheWeek.getDate() + 7);
+                        dataToAggregate = [];
+                        dataToAggregate.push(elem.value);
+                    }       
+                });
+                // questo è uguale all'else e serve per aggregare i dati dell'ultima data
+                var val = JSON.stringify(this._aggregate(dataToAggregate));
+                var valTime = JSON.stringify('from ' + startDayOfTheWeek.getFullYear() + '-' + (startDayOfTheWeek.getMonth()+1) + '-' + startDayOfTheWeek.getDate() + ' to ' + endDayOfTheWeek.getFullYear() + '-' + (endDayOfTheWeek.getMonth()+1) + '-' + endDayOfTheWeek.getDate());
+                var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                dataList.push(JSON.parse(str));
+                break
+            }
+            case "aggregation on the month": {
+                var dataToAggregate = [];
+                var startDayOfTheMonth = new Date(allSensorsData[0].timestamp);
+                
+                allSensorsData.forEach(elem => {
+                    var time = new Date(elem.timestamp);
+                    if(time.getMonth() == startDayOfTheMonth.getMonth()) {
+                        dataToAggregate.push(elem.value);
+                    } else {                        
+                        var val = JSON.stringify(this._aggregate(dataToAggregate));
+                        var valTime = JSON.stringify(startDayOfTheMonth.getFullYear() + '-' + (startDayOfTheMonth.getMonth()+1));
+                        var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                        dataList.push(JSON.parse(str));
+
+                        startDayOfTheMonth = new Date(time);
+                        dataToAggregate = [];
+                        dataToAggregate.push(elem.value);
+                    }
+                });
+                // questo è uguale all'else e serve per aggregare i dati dell'ultima data
+                var val = JSON.stringify(this._aggregate(dataToAggregate));
+                var valTime = JSON.stringify(startDayOfTheMonth.getFullYear() + '-' + (startDayOfTheMonth.getMonth()+1));
+                var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
+                dataList.push(JSON.parse(str));
+                break
+            }
+            default: {
+                console.log("Invalid choice");  
+                break; 
+            } 
+        }
+        // console.log(dataList);
+        return dataList;
     }
     
-    getData(): string[] {
-        // var list : string [] = ['t1', 't2', 't3', 't4', 't5'];
-        // return list;
-        //TODO: recuperare dati dal db in base alla misurazione (name) e al range specificato e ai sensori 
-        // TODO: restituita in base all'aggregazione specificata ( con un switch )
-
-        var dataList = [];
-        var dataJson = JSON.parse(JSON.stringify(this.data));
-        Object.keys(dataJson).forEach(element => {
-            var entry = dataJson[element].data;
-            Object.keys(entry).forEach(elem => {
-                dataList.push(entry[elem].value);
-            });
-        });
-        console.log(dataList);
-        return dataList
+    _aggregate(listOfData: number[]): string {
+        var values;
+        switch(this.aggregationType) {
+            case "max": {
+                listOfData.sort(function(a, b){return b-a});
+                values = listOfData[0];
+                break
+            }
+            case "min": {
+                listOfData.sort(function(a, b){return a-b});
+                values = listOfData[0];
+                break
+            }
+            case "average": {
+                var sum = 0;
+                for(var i = 0; i < listOfData.length; i++) {
+                    sum = sum + listOfData[i];
+                }
+                values = sum/listOfData.length;
+                break
+            }
+            default: {
+                console.log("Invalid choice");  
+                break; 
+            } 
+        }
+        return values;
     }
-
-
-
-
-
-
 }
     

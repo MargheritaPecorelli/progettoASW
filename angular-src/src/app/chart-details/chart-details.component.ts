@@ -34,12 +34,14 @@ export class ChartDetailsComponent implements OnInit {
   availableChartType: string[] = ['type1','type2','type3','type4'];
   availableAggregationRange: string[] = ['1 Hour','1 Day','1 Week','1 Month'];
   availableAggregationType: string[] = ['Average','Min','Max','Peak'];
+  
+  //todo: retrieve default sensor;
   selectedSensors: Sensor[] = [];
 
   private roomList: Room[] = [
     { id: '1001', name: 'parking', locationId:'P0'},
     { id: '2001', name: 'Aula 2.12', locationId:'A212'},
-    { id: '2002', name: 'Lab 2.11', locationId:'L11'},
+    { id: '2002', name: 'Lab 2.11', locationId:'L1'},
     { id: '3003', name: 'Aula 3.5', locationId:'A35'},
     { id: '4004', name: 'Studio prof. Mirri', locationId:'U1'}
   ]
@@ -81,7 +83,7 @@ export class ChartDetailsComponent implements OnInit {
   sensorsControl
   
 
-  //TODO: FILTER FOR AVAILABLE MEASUREMENT 
+  //TODO: FILTER FOR AVAILABLE MEASUREMENT ?
   
   availableSensors: Sensor[];
 
@@ -131,6 +133,7 @@ export class ChartDetailsComponent implements OnInit {
         var loc = JSON.parse(JSON.stringify(location));
         sensor.positionName = loc.name + ' | ' + loc.room;
         sensor.location = loc;
+        console.log(" ----------------> sensor location id: ", loc.idLocation);
         this.availableSensors.push(sensor);
         this.sensorsControl = this.availableSensors.map(c => ({sensor: c, selected: false}));
       });
@@ -211,7 +214,17 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   selectRoom(event: any){
-    console.log("Selected : ", event.target.name);
+
+    var locationId = event.target.name;
+    console.log("Selected : ", locationId);
+
+    this.sensorsControl.forEach(element => {
+      console.log("checking element: " , element);
+      if (element.sensor.position.idLocation == locationId){
+        element.selected = ! element.selected;
+      }
+    });
+
   }
 
 }

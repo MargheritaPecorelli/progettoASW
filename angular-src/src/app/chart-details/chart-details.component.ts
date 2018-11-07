@@ -238,12 +238,12 @@ export class ChartDetailsComponent implements OnInit {
   selectRoom(selected: boolean, locationId: string){
 
     this.sensorsControl.forEach(element => {
-      
       if (element.sensor.position.idLocation == locationId){
         element.selected = selected;
       }
     });
 
+    this.checkSelected();
   }
 
 }

@@ -56,9 +56,9 @@ module.exports.getSensorValues = function(req, res, next){
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    if(endDate > now) {
+    if(endDate.getTime() > now.getTime()) {
         return res.send(500, "The \"end\" date is in the future, please choose a valid date");
-    } else if(endDate <= startDate){
+    } else if(endDate.getTime() <= startDate.getTime()){
         return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
     }
 
@@ -86,9 +86,9 @@ module.exports.getSomeValuesOfSpecificSensorMeasurement = function(req, res, nex
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    if(endDate > now) {
+    if(endDate.getTime() > now.getTime()) {
         return res.send(500, "The \"end\" date is in the future, please choose a valid date");
-    } else if(endDate <= startDate){
+    } else if(endDate.getTime() <= startDate.getTime()){
         return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
     }
 
@@ -97,15 +97,16 @@ module.exports.getSomeValuesOfSpecificSensorMeasurement = function(req, res, nex
 
 /** Checks if this type of measurement is one of those of the sensor */
 function _checkMeasurementAndFindValues(res, idSensor, start, end, measurementType) {
-    console.log('iddddddddddddddddddddddddddddddddddddddddd ' + idSensor);
     sensors.findOne({"idSensor": idSensor},  function(err, response) {
-        console.log('responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + response);
+        var found = false;
         for(var i = 0; i < response.measurements.length; i++){
             if(measurementType == response.measurements[i].measurementType) {
+                found = true;
                 return _findValues(res, idSensor, start, end, measurementType);
+            } else if((i == (response.measurements.length -1)) && !found) {
+                return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
             }
         }
-        return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");
     });
 };
 
@@ -120,10 +121,76 @@ function _findValues(res, idSensor, start, end, measurementType) {
         } else if(value.length == 0) {
             res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
-            res.json(value);
+            var resultsList = [];
+            var val = JSON.stringify(value);
+            var str = '{\"id\": \"' + idSensor + '\", \"data\": ' + val + '}';
+            resultsList.push(JSON.parse(str));
+            res.status(200);
+            res.json(resultsList);
         }
     });
 };
+
+/** Callback to get all values of a specific sensors' list related to a specific measurement in a determined range of time */
+module.exports.getValuesOfSomeSensorsMeasurement = function(req, res, next){
+    var idSensors = req.param('idSensors');
+    var measurementType = req.param('measurementType');
+    var start = req.param('start');
+    var end = req.param('end');
+
+    var sensorsList = idSensors.split(",");
+    
+    var now = new Date();
+    var endDate = new Date(end);
+    var startDate = new Date(start);
+
+    if(endDate.getTime() > now.getTime()) {
+        return res.send(500, "The \"end\" date is in the future, please choose a valid date");
+    } else if(endDate.getTime() <= startDate.getTime()){
+        return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
+    }
+
+    _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, measurementType, 0, []);
+};
+    
+
+/** Checks if this type of measurement is one of those of the sensor */
+function _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, measurementType, index, resultsList) {
+    var idSensor = sensorsList[index];
+    sensors.findOne({"idSensor": idSensor},  function(err, response) {
+        for(var i = 0; i < response.measurements.length; i++){
+            if(measurementType == response.measurements[i].measurementType) {
+                _findAllValues(res, idSensor, start, end, measurementType, sensorsList, index, resultsList);
+            }
+        }
+    });
+};
+
+/** Finds values of this specific sensor in that timestamp */
+function _findAllValues(res, idSensor, start, end, measurementType, sensorsList, index, resultsList) {
+    var collection = _getCollection(idSensor);
+    collection.find({
+        $and: [{"timestamp": { $gte: start, $lt: end}
+    }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
+        if(err){
+            return res.send(500);
+        } else if(value.length == 0) {
+            console.log("In this specific range of time, there are no values that match to this measurement and this sensor");
+            // return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
+        } else {
+            var val = JSON.stringify(value);
+            var str = '{\"id\": \"' + idSensor + '\", \"data\": ' + val + '}';
+            resultsList.push(JSON.parse(str));
+            if(index == (sensorsList.length - 1)) {
+                res.status(200);
+                res.json(resultsList);
+            } else {
+                _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, measurementType, (index+1), resultsList);
+            }           
+        }
+    });
+};
+
 
 /** Callback to get all sensors' values of a specific measurement in a determined range of time */
 module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
@@ -135,9 +202,9 @@ module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
     var endDate = new Date(end);
     var startDate = new Date(start);
 
-    if(endDate > now) {
+    if(endDate.getTime() > now.getTime()) {
         return res.send(500, "The \"end\" date is in the future, please choose a valid date");
-    } else if(endDate <= startDate){
+    } else if(endDate.getTime() <= startDate.getTime()){
         return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
     }
 

@@ -64,8 +64,8 @@ export class ChartDetailsComponent implements OnInit {
     var defaultData: any = {
       measurement: 'pressure', 
       range: 'Last Week', 
-      aggregationRange: '1 Hour',
-      aggregationType: 'Minimun', 
+      aggregationRange: 'aggregation on the day',
+      aggregationType: 'min', 
       usedSensors: ['Level 1']
     }
 
@@ -79,7 +79,9 @@ export class ChartDetailsComponent implements OnInit {
     
     this.chartData = new ChartData(
         defaultData.aggregationType + " " + defaultData.measurement,
-        defaultData.range, 
+        defaultData.range,
+        null,
+        null, 
         defaultData.aggregationRange,
         defaultData.aggregationType,
         defaultData.usedSensors, 

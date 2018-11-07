@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,6 @@ export class DataRetrieverService {
     return this.http.get(`http://localhost:3000/api/sensors`);
   }
     
-  
 
   /** SENSOR */
   
@@ -144,7 +144,7 @@ export class DataRetrieverService {
     return result;
   }
   
-  getSensorValues(idSensor: string, start: Date, end: Date) {
+  getSensorValuesThroughStartAndEnd(idSensor: string, start: Date, end: Date) {
     // examples:
     // var endDate = new Date(); -> mi dice che è nel futuro: è un'ora avanti (oppure p dataOperations ad essere un'ora indietro)
     // var startDate = new Date(endDate.getDate() -7);
@@ -152,14 +152,38 @@ export class DataRetrieverService {
     return this.http.get(`http://localhost:3000/api/sensor/data?idSensor=${idSensor}&start=${start}&end=${end}`);
   }
   
-  getSomeValuesOfSpecificSensorMeasurement(idSensor: string, measurementType: string, start: Date, end: Date) {
+  getSensorValuesThroughRange(idSensor: string, range: string) {
+    var startAndEnd = this._getStartAndEndFromRange(range);
+    var start = startAndEnd[0];
+    var end = startAndEnd[1];
+    return this.getSensorValuesThroughStartAndEnd(idSensor, start, end);
+  }
+  
+  getValuesOfSpecificSensorMeasurementThroughStartAndEnd(idSensor: string, measurementType: string, start: Date, end: Date) {
     // examples:
     // var endDate = new Date(); -> mi dice che è nel futuro: è un'ora avanti (oppure p dataOperations ad essere un'ora indietro)
     // var startDate = new Date(endDate.getDate() -7);
     // 'A1', 'presssure', startDate, endDate
-    return this.http.get(`http://localhost:3000/api/sensors/measurement/data?idSensor=${idSensor}&measurementType=${measurementType}&start=${start}&end=${end}`);
+    return this.http.get(`http://localhost:3000/api/sensor/measurement/data?idSensor=${idSensor}&measurementType=${measurementType}&start=${start}&end=${end}`);
   }
   
+  getValuesOfSpecificSensorMeasurementThroughRange(idSensor: string, measurementType: string, range: string) {
+    var startAndEnd = this._getStartAndEndFromRange(range);
+    var start = startAndEnd[0];
+    var end = startAndEnd[1];
+    return this.getValuesOfSpecificSensorMeasurementThroughStartAndEnd(idSensor, measurementType, start, end);
+  }  
+  
+  getValuesOfSomeSensorsMeasurementThroughStartAndEnd(idSensors: string[], measurementType: string, start: Date, end: Date): Observable<Object> {
+    return this.http.get(`http://localhost:3000/api/sensors/list/measurement/data?idSensors=${idSensors}&measurementType=${measurementType}&start=${start}&end=${end}`);
+  }
+  
+  getValuesOfSomeSensorsMeasurementThroughRange(idSensors: string[], measurementType: string, range: string) {
+    var startAndEnd = this._getStartAndEndFromRange(range);
+    var start = startAndEnd[0];
+    var end = startAndEnd[1];
+    return this.getValuesOfSomeSensorsMeasurementThroughStartAndEnd(idSensors, measurementType, start, end);
+  }
 
   getValuesOfSpecificMeasurementThroughStartAndEnd(measurementType: string, start: Date, end: Date) {
     // examples:
@@ -170,20 +194,32 @@ export class DataRetrieverService {
   }
   
   getValuesOfSpecificMeasurementThroughRange(measurement: string, range: string) {
+    var startAndEnd = this._getStartAndEndFromRange(range);
+    var start = startAndEnd[0];
+    var end = startAndEnd[1];
+    return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end)
+  }
+
+  _getStartAndEndFromRange(range: string) {
     var start : Date = new Date();
     var end : Date;
+    var list = [];
 
     switch(range) {
       case "Last Week": {
         end = new Date();
         end.setHours(end.getHours() - 1);
         start.setDate(end.getDate() - 7);
+        list.push(start);
+        list.push(end);
         break
       }
       case "last 30 days": {
         end = new Date();
         end.setHours(end.getHours() - 1);
         start.setDate(end.getDate() - 30);
+        list.push(start);
+        list.push(end);
         break
       }
       default: {
@@ -191,8 +227,7 @@ export class DataRetrieverService {
         break; 
       } 
     }
-
-    return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end);
+    return list;
   }
 
 

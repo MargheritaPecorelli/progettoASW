@@ -36,7 +36,7 @@ export class AppComponent implements OnInit{
   ngOnInit() {
     this.dbRetrieverService.getAllMeasurements().subscribe(measureList => {
 
-      console.log("Available measurement: ", measureList);
+      // console.log("Available measurement: ", measureList);
       var jsonList = JSON.parse(JSON.stringify(measureList));
 
       jsonList.forEach(measure => {
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit{
     });
 
     this.dbRetrieverService.getAllSensors().subscribe(sensorList => {
-      console.log("Available sensor: ", sensorList);
+      // console.log("Available sensor: ", sensorList);
       
       var jsonList = JSON.parse(JSON.stringify(sensorList));
 

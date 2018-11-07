@@ -13,7 +13,7 @@ export class HomepageComponent implements OnInit {
   list: object;
 
   defaultComponents: any = [
-    // {measurement: 'temperature', range: 'Last Week', aggregationRange: 'every value', aggregationType: 'max', usedSensors: ['All']},
+    {measurement: 'pressure', range: 'Last Week', aggregationRange: 'every value', aggregationType: 'max', usedSensors: ['All']},
     {measurement: 'pressure', range: 'Last Week', aggregationRange: 'aggregation on the week', aggregationType: 'min', usedSensors: ['A1','A3']},
     // {measurement: 'pm', range: 'Last Week', aggregationRange: '1 Day',aggregationType: 'Max', usedSensors: ['A2','A15']},
     // {measurement: 'temperature', range: 'Last Week', aggregationRange: 'every value',aggregationType: 'average', usedSensors: ['Level 1']}

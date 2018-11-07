@@ -11,12 +11,26 @@
     border: 1px solid black;
     border-radius: 5px;
     margin: 5px;
-    padding:  2px 15px;
+    padding: 2px 15px;
 }
 
 .level-row {
-    border: 2px dashed red;
+    border: 1px solid red;
     border-radius: 5px;
     margin: 5px;
-    padding:  2px 15px;
+    padding: 2px 15px;
+}
+
+.block-row {
+    border: 1px solid blue;
+    border-radius: 5px;
+    margin-left: 20px;
+    padding: 2px 15px;
+}
+
+.room-row {
+    border: 1px solid green;
+    border-radius: 5px;
+    margin-left: 35px;
+    padding: 2px 15px;
 }

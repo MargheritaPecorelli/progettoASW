@@ -1,19 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChartData } from '../models/chartdata.model';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { Sensor } from '../models/sensor.model';
 import { DataRetrieverService } from '../services/data-retriever.service';
-
-/* interface Block {
-  id: string,
-  name: string
-} */
 
 interface Level {
   id: string,
   name: string,
-  blocks: string[]
+  blocks: Block[]
+}
+
+interface Block {
+  id: string,
+  name: string,
+  rooms: Room[]
+} 
+
+interface Room {
+  id: string,
+  name: string,
+  locationId: string
 }
 
 
@@ -30,11 +36,31 @@ export class ChartDetailsComponent implements OnInit {
   availableAggregationType: string[] = ['Average','Min','Max','Peak'];
   selectedSensors: Sensor[] = [];
 
+  private roomList: Room[] = [
+    { id: '1001', name: 'parking', locationId:'P0'},
+    { id: '2001', name: 'Aula 2.12', locationId:'A212'},
+    { id: '2002', name: 'Lab 2.11', locationId:'L11'},
+    { id: '3003', name: 'Aula 3.5', locationId:'A35'},
+    { id: '4004', name: 'Studio prof. Mirri', locationId:'U1'}
+  ]
+
+  private blockList : Block[] = [
+    { id: 'P', name: 'Parking', rooms: [this.roomList[0]]},
+    { id: 'A1', name: 'Block A', rooms: [this.roomList[1],this.roomList[2]]},
+    { id: 'A2', name: 'Block A', rooms: [this.roomList[3],this.roomList[4]]},
+    { id: 'A3', name: 'Block A', rooms: [this.roomList[1],this.roomList[3]]},
+    { id: 'A4', name: 'Block A', rooms: [this.roomList[2],this.roomList[4]]},
+
+    { id: 'B', name: 'Block B', rooms: [this.roomList[1],this.roomList[2],this.roomList[3]]},
+    { id: 'C', name: 'Block C', rooms: [this.roomList[2],this.roomList[4]]},
+    { id: 'D', name: 'Block D', rooms: [this.roomList[4]]},
+  ]
+
   locationList: Level[] = [
-    { id: '1', name: 'Level 1', blocks: ['A']},
-    { id: '2', name: 'Level 2', blocks: ['A','B','C','D']},
-    { id: '3', name: 'Level 3', blocks: ['A','B','C','D']},
-    { id: '4', name: 'Level 4', blocks: ['A','B','C','D']}
+    { id: '1', name: 'Level 1', blocks: [this.blockList[0]]},
+    { id: '2', name: 'Level 2', blocks: [this.blockList[1],this.blockList[2],this.blockList[3],this.blockList[4]]},
+    { id: '3', name: 'Level 3', blocks: [this.blockList[5]]},
+    { id: '4', name: 'Level 4', blocks: [this.blockList[6], this.blockList[7]]}
   ]
 
 
@@ -59,7 +85,7 @@ export class ChartDetailsComponent implements OnInit {
   
   availableSensors: Sensor[];
 
-  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder, private dbRetrieverService: DataRetrieverService ) { 
+  constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService ) { 
 
     var defaultData: any = {
       measurement: 'pressure', 
@@ -177,7 +203,14 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   selectLevel(event: any){
-    console.log("event : ", event);
+    console.log("Selected : ", event.target.name);
+  }
+
+  selectBlock(event: any){
+    console.log("Selected : ", event.target.name);
+  }
+
+  selectRoom(event: any){
     console.log("Selected : ", event.target.name);
   }
 

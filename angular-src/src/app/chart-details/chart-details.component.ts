@@ -63,9 +63,9 @@ export class ChartDetailsComponent implements OnInit {
 
   private locationList: Level[] = [
     { id: '1', name: 'Level 1', blocks: [this.blockList[0]], selected: false},
-    { id: '2', name: 'Level 2', blocks: [this.blockList[1],this.blockList[2],this.blockList[3],this.blockList[4]], selected: false},
-    { id: '3', name: 'Level 3', blocks: [this.blockList[5]], selected: false},
-    { id: '4', name: 'Level 4', blocks: [this.blockList[6], this.blockList[7]], selected: false}
+    { id: '2', name: 'Level 2', blocks: [this.blockList[2],this.blockList[5],this.blockList[6],this.blockList[7]], selected: false},
+    { id: '3', name: 'Level 3', blocks: [this.blockList[3]], selected: false},
+    { id: '4', name: 'Level 4', blocks: [this.blockList[4], this.blockList[7]], selected: false}
   ]
 
 

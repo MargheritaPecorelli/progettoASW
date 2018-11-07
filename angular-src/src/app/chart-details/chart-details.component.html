@@ -102,20 +102,24 @@
 
                   </form>
 
-                  <div class="diveder"></div>
-
                   <div class="row form-group">
                     <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let level of locationList; let i = index;">
                       <div id="level-accordion">
                         <div class="card">
                           <div class="card-header" id="heading{{i}}">
-                            <h5 class="mb-0">
-                              <div role="button" class="level-row" data-toggle="collapse" [attr.data-target]="'#level-collapse'+ i" aria-expanded="false" [attr.aria-controls]="'level-collapse'+ i">
+                            <h5 class="mb-0 level-row">
+
+                              <span class="dropdown-item"> 
                                 <label>
                                   <input type="checkbox" [(ngModel)]="level.selected" (ngModelChange)="selectLevel($event, i)">
                                   {{level.name}}
-                                </label> 
-                              </div>
+                                </label>
+                              </span>
+                              
+                              <p class="dropdown-row text-right" role="button" data-toggle="collapse" [attr.data-target]="'#level-collapse'+ i" aria-expanded="false" [attr.aria-controls]="'level-collapse'+ i"> 
+                                <span class="fas fa-angle-down"></span>
+                              </p>
+                              
                             </h5>
                           </div>
                       
@@ -126,13 +130,19 @@
                                   <div class="card">
                                     
                                     <div class="card-header" id="{{i}}-block-heading{{j}}">
-                                      <h5 class="mb-0">
-                                        <div role="button" class="block-row" data-toggle="collapse" [attr.data-target]="'#' + i + '-block-collapse'+ j" aria-expanded="false" [attr.aria-controls]="i + '-block-collapse'+ j">
-                                          <label>
-                                            <input type="checkbox" [(ngModel)]="block.selected" (ngModelChange)="selectBlock($event, i, j)">
-                                            {{block.name}}
-                                          </label>   
-                                        </div>
+                                      <h5 class="mb-0 block-row">
+
+                                        <span class="dropdown-item"> 
+                                            <label>
+                                              <input type="checkbox" [(ngModel)]="block.selected" (ngModelChange)="selectBlock($event, i, j)">
+                                              {{block.name}}
+                                            </label>
+                                          </span>
+                                          
+                                          <p class="dropdown-row text-right " role="button" data-toggle="collapse" [attr.data-target]="'#' + i + '-block-collapse'+ j" aria-expanded="false" [attr.aria-controls]="i + '-block-collapse'+ j"> 
+                                            <span class="fas fa-angle-down"> </span>
+                                          </p>
+
                                       </h5>
                                     </div>
                                   

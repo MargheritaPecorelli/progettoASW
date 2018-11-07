@@ -78,7 +78,7 @@
 
                   <div class="form-group">
                     <div class="form-check form-check-inline">
-                        <input id="select-all-checkbox" type="checkbox" value="select-all" [(ngModel)]="selectAll" (ngModelChange)="selectAllSensors($event)" >
+                        <input id="select-all-checkbox" type="checkbox" value="select-all" [(ngModel)]="selectAll" (ngModelChange)="selectAllSensors()" >
                         <label class="form-check-label" for="select-all-checkbox">  Select All </label>
                     </div>
                   </div>
@@ -89,19 +89,20 @@
                       
                         <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let sensor of sensorsControl">
                           <div class="sensor-row">
-                            <!-- todo : correct html -->
                             <label>
-                              <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="checkSelected($event)">
+                              <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="checkSelected()">
                               {{sensor.sensor.name}}
                             </label>
 
-                            <span class="float-right pull-right text-right" >  - {{ sensor.sensor.positionName }} - </span>
+                            <span class="float-right pull-right text-right">  - {{ sensor.sensor.positionName }} - </span>
                           </div>
                         </div>
                       
                     </div>
 
                   </form>
+
+                  <div class="diveder"></div>
 
                   <div class="row form-group">
                     <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let level of locationList; let i = index;">
@@ -110,7 +111,10 @@
                           <div class="card-header" id="heading{{i}}">
                             <h5 class="mb-0">
                               <div role="button" class="level-row" data-toggle="collapse" [attr.data-target]="'#level-collapse'+ i" aria-expanded="false" [attr.aria-controls]="'level-collapse'+ i">
-                                <a name=" {{level.name}}" (click)="selectLevel($event)"> {{level.name}} </a>
+                                <label>
+                                  <input type="checkbox" [(ngModel)]="level.selected" (ngModelChange)="selectLevel($event, i)">
+                                  {{level.name}}
+                                </label> 
                               </div>
                             </h5>
                           </div>
@@ -124,7 +128,10 @@
                                     <div class="card-header" id="{{i}}-block-heading{{j}}">
                                       <h5 class="mb-0">
                                         <div role="button" class="block-row" data-toggle="collapse" [attr.data-target]="'#' + i + '-block-collapse'+ j" aria-expanded="false" [attr.aria-controls]="i + '-block-collapse'+ j">
-                                            <a name=" {{block.name}}" (click)="selectBlock($event)"> {{block.name}} </a>
+                                          <label>
+                                            <input type="checkbox" [(ngModel)]="block.selected" (ngModelChange)="selectBlock($event, i, j)">
+                                            {{block.name}}
+                                          </label>   
                                         </div>
                                       </h5>
                                     </div>
@@ -133,8 +140,8 @@
                                       <div class="card-body">
                                         <div class="room-row" *ngFor="let room of block.rooms; let k = index;" >
                                           <label>
-                                              <input type="checkbox" name="{{room.locationId}}" (change)="selectRoom($event)">
-                                              {{room.name}}
+                                            <input type="checkbox" [(ngModel)]="room.selected" (ngModelChange)="selectRoom($event, room.locationId)">
+                                            {{room.name}}
                                           </label>                  
                                         </div>
                                       </div>

@@ -7,19 +7,22 @@ import { DataRetrieverService } from '../services/data-retriever.service';
 interface Level {
   id: string,
   name: string,
-  blocks: Block[]
+  blocks: Block[],
+  selected: boolean
 }
 
 interface Block {
   id: string,
   name: string,
-  rooms: Room[]
+  rooms: Room[],
+  selected: boolean
 } 
 
 interface Room {
   id: string,
   name: string,
-  locationId: string
+  locationId: string,
+  selected: boolean
 }
 
 
@@ -39,30 +42,30 @@ export class ChartDetailsComponent implements OnInit {
   selectedSensors: Sensor[] = [];
 
   private roomList: Room[] = [
-    { id: '1001', name: 'parking', locationId:'P0'},
-    { id: '2001', name: 'Aula 2.12', locationId:'A212'},
-    { id: '2002', name: 'Lab 2.11', locationId:'L1'},
-    { id: '3003', name: 'Aula 3.5', locationId:'A35'},
-    { id: '4004', name: 'Studio prof. Mirri', locationId:'U1'}
+    { id: '1001', name: 'parking', locationId:'P0', selected: false},
+    { id: '2001', name: 'Aula 2.12', locationId:'A212', selected: false},
+    { id: '2002', name: 'Lab 2.11', locationId:'L1', selected: false},
+    { id: '3003', name: 'Aula 3.5', locationId:'A35', selected: false},
+    { id: '4004', name: 'Studio prof. Mirri', locationId:'U1', selected: false}
   ]
 
   private blockList : Block[] = [
-    { id: 'P', name: 'Parking', rooms: [this.roomList[0]]},
-    { id: 'A1', name: 'Block A', rooms: [this.roomList[1],this.roomList[2]]},
-    { id: 'A2', name: 'Block A', rooms: [this.roomList[3],this.roomList[4]]},
-    { id: 'A3', name: 'Block A', rooms: [this.roomList[1],this.roomList[3]]},
-    { id: 'A4', name: 'Block A', rooms: [this.roomList[2],this.roomList[4]]},
+    { id: 'P', name: 'Parking', rooms: [this.roomList[0]], selected: false},
+    { id: 'A1', name: 'Block A', rooms: [this.roomList[1],this.roomList[2]], selected: false},
+    { id: 'A2', name: 'Block A', rooms: [this.roomList[3],this.roomList[4]], selected: false},
+    { id: 'A3', name: 'Block A', rooms: [this.roomList[1],this.roomList[3]], selected: false},
+    { id: 'A4', name: 'Block A', rooms: [this.roomList[2],this.roomList[4]], selected: false},
 
-    { id: 'B', name: 'Block B', rooms: [this.roomList[1],this.roomList[2],this.roomList[3]]},
-    { id: 'C', name: 'Block C', rooms: [this.roomList[2],this.roomList[4]]},
-    { id: 'D', name: 'Block D', rooms: [this.roomList[4]]},
+    { id: 'B', name: 'Block B', rooms: [this.roomList[1],this.roomList[2],this.roomList[3]], selected: false},
+    { id: 'C', name: 'Block C', rooms: [this.roomList[2],this.roomList[4]], selected: false},
+    { id: 'D', name: 'Block D', rooms: [this.roomList[4]], selected: false},
   ]
 
-  locationList: Level[] = [
-    { id: '1', name: 'Level 1', blocks: [this.blockList[0]]},
-    { id: '2', name: 'Level 2', blocks: [this.blockList[1],this.blockList[2],this.blockList[3],this.blockList[4]]},
-    { id: '3', name: 'Level 3', blocks: [this.blockList[5]]},
-    { id: '4', name: 'Level 4', blocks: [this.blockList[6], this.blockList[7]]}
+  private locationList: Level[] = [
+    { id: '1', name: 'Level 1', blocks: [this.blockList[0]], selected: false},
+    { id: '2', name: 'Level 2', blocks: [this.blockList[1],this.blockList[2],this.blockList[3],this.blockList[4]], selected: false},
+    { id: '3', name: 'Level 3', blocks: [this.blockList[5]], selected: false},
+    { id: '4', name: 'Level 4', blocks: [this.blockList[6], this.blockList[7]], selected: false}
   ]
 
 
@@ -117,6 +120,7 @@ export class ChartDetailsComponent implements OnInit {
       ) ;
 
     console.log(" ------------------> Generated Chart Data : " , this.chartData);
+
   }
 
   
@@ -169,7 +173,7 @@ export class ChartDetailsComponent implements OnInit {
 
   ////////////////// Sensor Selector Modal ///////////////////////
 
-  selectAllSensors(event: any) {
+  selectAllSensors() {
 
     //this.selectAll = !this.selectAll;
 
@@ -183,7 +187,7 @@ export class ChartDetailsComponent implements OnInit {
 
   }
 
-  checkSelected(event: any) {
+  checkSelected() {
 
     this.selectAll = this.sensorsControl.every(function(item:any) {
       return item.selected == true;
@@ -205,23 +209,38 @@ export class ChartDetailsComponent implements OnInit {
     console.log("Selected Sensors: " , this.selectedSensors);
   }
 
-  selectLevel(event: any){
-    console.log("Selected : ", event.target.name);
+  selectLevel(selected: boolean, levelIndex: string){
+
+    this.locationList[levelIndex].blocks.forEach(block => {
+
+      block.selected = selected;
+      block.rooms.forEach(room => {
+
+        room.selected = selected;
+        this.selectRoom(selected, room.locationId);
+        
+      });
+      
+    });
+    
   }
 
-  selectBlock(event: any){
-    console.log("Selected : ", event.target.name);
+  selectBlock(selected: boolean, levelIndex: string, blockIndex: string){
+
+    this.locationList[levelIndex].blocks[blockIndex].rooms.forEach(room => {
+
+      room.selected = selected;
+      this.selectRoom(selected, room.locationId);
+      
+    });
   }
 
-  selectRoom(event: any){
-
-    var locationId = event.target.name;
-    console.log("Selected : ", locationId);
+  selectRoom(selected: boolean, locationId: string){
 
     this.sensorsControl.forEach(element => {
-      console.log("checking element: " , element);
+      
       if (element.sensor.position.idLocation == locationId){
-        element.selected = ! element.selected;
+        element.selected = selected;
       }
     });
 

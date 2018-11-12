@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ChartData } from '../models/chartdata.model'
-import { DeprecatedI18NPipesModule } from '@angular/common';
+import { ChartData } from '../models/chartdata.model';
 
 @Component({
   selector: 'app-graph-list',
@@ -10,7 +9,6 @@ import { DeprecatedI18NPipesModule } from '@angular/common';
 export class GraphListComponent implements OnInit {
 
   @Input() chartList: ChartData[];
-  exampleList : ChartData []; 
 
   constructor() { 
   }

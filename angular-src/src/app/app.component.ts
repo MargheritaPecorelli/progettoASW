@@ -3,9 +3,6 @@ import { User } from './models/user.model';
 import { DataRetrieverService } from './services/data-retriever.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
 
-
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,17 +17,17 @@ export class AppComponent implements OnInit{
   
 
   constructor(private dbRetrieverService: DataRetrieverService, public authService: AuthenticationService) {
-    this.user = new User();
+    //this.user = new User();
     this.sensors = [];
     this.measurements = [];
   }
 
   setLogin(login: boolean) : void {
-    this.user.setUserLogged(login);
+    /*this.user.setUserLogged(login);
     if (login)
       console.log("User has logged in");
     else 
-      console.log("User has logged out");
+      console.log("User has logged out");*/
   }
 
   ngOnInit() {

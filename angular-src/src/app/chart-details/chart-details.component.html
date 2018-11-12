@@ -86,38 +86,42 @@
                   <form (ngSubmit)="submitModal()">
 
                     <div class="row form-group">
-                      
-                        <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let sensor of sensorsControl">
-                          <div class="sensor-row">
-                            <label>
-                              <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="checkSelectedLocation()">
-                              {{sensor.sensor.name}}
-                            </label>
 
-                            <span class="float-right pull-right text-right">  - {{ sensor.sensor.positionName }} - </span>
-                          </div>
+                      <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let sensor of sensorsControl">
+                        <div class="sensor-row">
+                          <label>
+                            <input type="checkbox" [(ngModel)]="sensor.selected" name="sensor.sensor.idSensor" (ngModelChange)="updateSensor(sensor.sensor, $event)">
+                            {{sensor.sensor.name}}
+                          </label>
+
+                          <span class="float-right pull-right text-right">  - {{ sensor.sensor.positionName }} - </span>
                         </div>
+                      </div>
                       
                     </div>
 
                   </form>
 
+
+
                   <div class="row form-group">
-                    <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let level of locationList; let i = index;">
+                    <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12" *ngFor="let level of levelList; let i = index;">
                       <div id="level-accordion">
+                     
                         <div class="card">
                           <div class="card-header" id="heading{{i}}">
                             <h5 class="mb-0 level-row">
 
                               <span class="dropdown-item"> 
                                 <label>
-                                  <input type="checkbox" [(ngModel)]="level.selected" (ngModelChange)="selectLevel($event, i)">
-                                  {{level.name}}
+                                  <input type="checkbox" [(ngModel)]="levels[level].selected" (ngModelChange)="updateLevel(levels[level], $event)">
+                                  {{levels[level].name}}
                                 </label>
                               </span>
-                              
-                              <p class="dropdown-row text-right" role="button" data-toggle="collapse" [attr.data-target]="'#level-collapse'+ i" aria-expanded="false" [attr.aria-controls]="'level-collapse'+ i"> 
-                                <span class="fas fa-angle-down"></span>
+                          
+                              <p class="dropdown-row text-right" role="button" data-toggle="collapse" [attr.data-target]="'#level-collapse'+ i" aria-expanded="false" [attr.aria-controls]="'level-collapse'+ i" (click)="testSelection()"> 
+                                <span class="fa fa-angle-down" *ngIf="true"> </span>
+                                <span class="fa fa-angle-up" *ngIf="false"> </span>
                               </p>
                               
                             </h5>
@@ -125,7 +129,7 @@
                       
                           <div id="level-collapse{{i}}" class="collapse" [attr.aria-labelledby]="'heading'+ i" data-parent="#level-accordion">
                             <div class="card-body">
-                              <div *ngFor="let block of level.blocks; let j = index;" >
+                              <div *ngFor="let block of levels[level].blocks; let j = index;" >
                                 <div id="block-accordion{{i}}">
                                   <div class="card">
                                     
@@ -134,13 +138,14 @@
 
                                         <span class="dropdown-item"> 
                                             <label>
-                                              <input type="checkbox" [(ngModel)]="block.selected" (ngModelChange)="selectBlock($event, i, j)">
-                                              {{block.name}}
+                                              <input type="checkbox" [(ngModel)]="blocks[block].selected" (ngModelChange)="updateBlock(blocks[block].id, $event)">
+                                              {{blocks[block].name}}
                                             </label>
                                           </span>
                                           
                                           <p class="dropdown-row text-right " role="button" data-toggle="collapse" [attr.data-target]="'#' + i + '-block-collapse'+ j" aria-expanded="false" [attr.aria-controls]="i + '-block-collapse'+ j"> 
-                                            <span class="fas fa-angle-down"> </span>
+                                            <span class="fa fa-angle-down" *ngIf="true"> </span>
+                                            <span class="fa fa-angle-up" *ngIf="false"> </span>
                                           </p>
 
                                       </h5>
@@ -148,10 +153,10 @@
                                   
                                     <div id="{{i}}-block-collapse{{j}}" class="collapse" [attr.aria-labelledby]="i + '-block-heading'+ j" [attr.data-parent]="'#block-accordion' + i">
                                       <div class="card-body">
-                                        <div class="room-row" *ngFor="let room of block.rooms; let k = index;" >
+                                        <div class="room-row" *ngFor="let room of blocks[block].rooms; let k = index;" >
                                           <label>
-                                            <input type="checkbox" [(ngModel)]="room.selected" (ngModelChange)="selectRoom($event, room.locationId)">
-                                            {{room.name}}
+                                            <input type="checkbox" [(ngModel)]="rooms[room].selected" (ngModelChange)="updateRoom(rooms[room].id, $event)">
+                                            {{rooms[room].name}}
                                           </label>                  
                                         </div>
                                       </div>
@@ -163,9 +168,11 @@
                             </div>
                           </div>
                         </div>
+                   
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>      
                      

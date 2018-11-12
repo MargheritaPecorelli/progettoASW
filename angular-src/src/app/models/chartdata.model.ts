@@ -12,7 +12,8 @@ export class ChartData {
         public aggregationType: string,
         public period: number,
         public usedSensors: string[],
-        public data: Object ) {
+        public data: Object,
+        public type: string = "line") {
             if(startDate == null && endDate == null) {
                 switch(range) {
                     case "last week": {
@@ -555,7 +556,7 @@ export class ChartData {
                 break; 
             } 
         }
-        console.log(dataList);
+        //console.log(dataList);
         return dataList;
     }
 

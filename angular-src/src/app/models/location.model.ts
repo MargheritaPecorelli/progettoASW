@@ -1,7 +1,7 @@
 export class Location {
 
     constructor(
-        public id: string, 
+        public idLocation: string, 
         public name : string,
         public room : string, 
         public block: string,

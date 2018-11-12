@@ -28,6 +28,18 @@ export class UserManagementRowComponent implements OnInit {
 
   updateUser(updatedUser: User){
     console.log("------> userRow : Updating User : " , updatedUser);
+    if( updatedUser.email === this.user.email){
+      console.log("updating user")
+      // console.log("updating to db()");
+    } else {
+      console.log("updating user : changed mail -> created a new user.")
+      this.dbRetrieverService.deleteSpecificUser(this.user.email).subscribe(response => {
+        var admin = updatedUser.admin ? 'true' : 'false';
+        this.dbRetrieverService.postNewUser(updatedUser.email, updatedUser.name, updatedUser.surname, admin).subscribe(res => {
+          
+        });
+      });
+    }
     this.user = updatedUser;
     // console.log("updating to db()");
   }

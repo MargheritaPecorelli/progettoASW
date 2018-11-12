@@ -18,6 +18,7 @@ export class AuthGuard implements CanActivate {
 
       if (!this.auth.isLoggedIn()) {
         console.log("Auth Guard AUTH ERROR ! User cannot access")
+        alert("Please login to access this area");
         this.router.navigateByUrl('/');
         return false;
       } else {

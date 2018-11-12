@@ -1,0 +1,21 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+      
+    <div class="modal-header">
+      <h5 class="modal-title text-center" id="userDeleteModalTitle"> Deleting User {{user.mail}} </h5>
+    </div>
+
+    <div class="modal-body">
+
+      <h3> Deletion cannot be undone !  Confirm ?</h3>
+        
+    </div>      
+              
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      <button type="submit" class="btn btn-primary" (click)="confirmDeletion()" data-dismiss="modal">Delete User</button>
+    </div>
+
+  </div>
+  
+</div>

@@ -39,7 +39,7 @@ const route : Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'admin', component: AdminComponent, children: adminRoute, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminComponent, children: adminRoute  },
   { path: '**', component: PageNotFoundComponent}
 ]
 

@@ -79,6 +79,18 @@ router.delete('/user', usersOperations.deleteUser);
 /** GET request to get all locations */
 router.get('/locations', locationsOperations.getAllLocations);
 
+/** GET request to get all levels of a specific campus in a specific city */
+router.get('/levels', locationsOperations.getLevels);
+
+/** GET request to get all blocks present in a specific level of a specific campus in a specific city */
+router.get('/blocks', locationsOperations.getBlocksOfALevel);
+
+/** GET request to get all rooms in a specific block present in a specific level of a specific campus in a specific city */
+router.get('/rooms', locationsOperations.getRoomsFromBlockAndLevel);
+
+/** GET request to get all sensors in a specific room of a specific campus in a specific city */
+router.get('/locations/sensors', locationsOperations.getSensorsOfARoom);
+
 
 /** LOCATION */
 

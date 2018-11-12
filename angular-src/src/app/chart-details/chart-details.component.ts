@@ -115,6 +115,7 @@ export class ChartDetailsComponent implements OnInit {
         null, 
         defaultData.aggregationRange,
         defaultData.aggregationType,
+        null,
         defaultData.usedSensors, 
         this.data 
       ) ;

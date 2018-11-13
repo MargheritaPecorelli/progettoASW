@@ -156,12 +156,17 @@ module.exports.getValuesOfSomeSensorsMeasurement = function(req, res, next){
 
 /** Checks if this type of measurement is one of those of the sensor */
 function _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, measurementType, index, resultsList) {
+    var isPresent = false;
     var idSensor = sensorsList[index];
     sensors.findOne({"idSensor": idSensor},  function(err, response) {
         for(var i = 0; i < response.measurements.length; i++){
             if(measurementType == response.measurements[i].measurementType) {
+                isPresent = true;
                 _findAllValues(res, idSensor, start, end, measurementType, sensorsList, index, resultsList);
             }
+        }
+        if(!isPresent) {
+            return res.send(404, "This specific sensor has not this type of measurement!");
         }
     });
 };
@@ -176,7 +181,7 @@ function _findAllValues(res, idSensor, start, end, measurementType, sensorsList,
             return res.send(500);
         } else if(value.length == 0) {
             console.log("In this specific range of time, there are no values that match to this measurement and this sensor");
-            // return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
+            return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
             var val = JSON.stringify(value);
             var str = '{\"id\": \"' + idSensor + '\", \"data\": ' + val + '}';

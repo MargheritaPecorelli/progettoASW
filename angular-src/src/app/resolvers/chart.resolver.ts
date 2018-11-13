@@ -16,13 +16,11 @@ export class ChartResolver implements Resolve<ChartData> {
       var type: string = route.params.type;
       var id: string = route.params.id;
 
-      var defaultData: any = {
-        measurement: 'pressure', 
-        range: 'Last Week', 
-        aggregationRange: '1 Hour',
-        aggregationType: 'Minimun', 
-        usedSensors: ['Level 1']
-      }
+      var defaultData: any = {measurement: 'pressure', 
+      range: 'last 30 days', 
+      aggregationRange: 'every value', 
+      aggregationType: null, 
+      usedSensors: null}
 
       console.log("Retrieving data for chart " + id + " of type " + type);
 

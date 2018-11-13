@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+
 @Component({
   selector: 'app-side-menu',
   templateUrl: './side-menu.component.html',
@@ -17,6 +18,10 @@ export class SideMenuComponent implements OnInit {
 
   isHome(): boolean {
     return true;
+  }
+
+  redirectTo(type, id) {
+    
   }
 
 }

@@ -22,6 +22,7 @@
             </a>
             <ul class="nav nav-second-level">
               <li *ngFor="let measure of measurementList" >
+                  <!-- <a (click)="redirectTo('m', measure)"> {{measure}} </a> -->
                   <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
               </li>
             </ul>

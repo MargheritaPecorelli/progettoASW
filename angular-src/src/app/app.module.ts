@@ -35,7 +35,12 @@ const route : Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomepageComponent  },
   { path: 'about', component: AboutComponent },
-  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver }},
+  { path: 'charts/:type/:id', 
+      component: ChartDetailsComponent, 
+      resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver }, 
+      runGuardsAndResolvers: 'paramsChange' },
+      // runGuardsAndResolvers: 'always' },
+      
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },
@@ -62,7 +67,7 @@ const route : Routes = [
 
   imports: [
     BrowserModule,
-    RouterModule.forRoot(route),
+    RouterModule.forRoot(route, {onSameUrlNavigation: 'reload'}),
     AdminModule,
     HttpClientModule,
     FormsModule,

@@ -17,7 +17,7 @@ export class GraphHolderComponent implements OnInit {
   dataAndTime: JSON[];
   @Input() update: Subject<ChartData>;
 
-  chart = [];
+  chart: Chart;
   htmlRef
   valuesList = [];
   timesList = [];
@@ -32,35 +32,59 @@ export class GraphHolderComponent implements OnInit {
 
     this.htmlRef = this.elementRef.nativeElement.querySelector('canvas');
     
+    
     this.update.subscribe(chartParams => {
       console.log('value is changing', chartParams);
       this.chartData = chartParams;
       this.updateChart()
     });
 
+    // this.dataAndTime= this.chartData.getDataAndTheirTimestamp();
+    // for(var i = 0; i < this.dataAndTime.length; i++) {
+    //   var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
+    //   this.valuesList.push(jsonObj.value);
+    //   this.timesList.push(jsonObj.timestamp);      
+    // }
+
+    this.updateChart();
+
+    
+  }
+
+  updateChart() {
+
+    console.log("Changing type to ", this.chartData.type);
+    var chartType = this.chartData.type;
+
     this.dataAndTime= this.chartData.getDataAndTheirTimestamp();
+    this.timesList = [];
+    this.valuesList = [];
     for(var i = 0; i < this.dataAndTime.length; i++) {
       var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
       this.valuesList.push(jsonObj.value);
       this.timesList.push(jsonObj.timestamp);      
     }
 
-    this.updateChart();
-  }
+    var chartData = {
+      labels: this.timesList,
+      datasets: [
+        {
+          data: this.valuesList,
+          borderColor: '#3cba9f',
+          fill: false
+        }
+      ]
+    }
 
-  updateChart() {
+    // Remove the old chart and all its event handles
+    if (this.chart) {
+      console.log("chart : ", this.chart);
+      this.chart.destroy();
+    }
+
     this.chart = new Chart(this.htmlRef, {
-      type: this.chartData.type,
-      data: {
-        labels: this.timesList,
-        datasets: [
-          {
-            data: this.valuesList,
-            borderColor: '#3cba9f',
-            fill: false
-          }
-        ]
-      },
+      type: chartType,
+      data: chartData,
       options: {
         legend: {
           display: false

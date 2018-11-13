@@ -1,9 +1,15 @@
 import { Component, OnInit, Testability } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, NavigationEnd, Router } from '@angular/router';
 import { ChartData } from '../models/chartdata.model';
 import { Sensor } from '../models/sensor.model';
+import { Location } from '../models/location.model';
 import { DataRetrieverService } from '../services/data-retriever.service';
-import { groupBy } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+
+interface Measurement{
+  measurementType: string,
+  uom: string
+}
 
 
 interface Level {
@@ -35,8 +41,9 @@ interface A {
 }
 
 interface B {
-  availableSensors, 
-  sensorsControl
+  sensorsList, 
+  sensorsControl,
+  sensorsAllList
 }
 
 interface SensorControlObject{
@@ -53,53 +60,28 @@ interface SensorControlObject{
 
 export class ChartDetailsComponent implements OnInit {
 
-  availableChartType: string[] = ['type1','type2','type3','type4'];
-  availableAggregationRange: string[] = ['1 Hour','1 Day','1 Week','1 Month'];
-  availableAggregationType: string[] = ['Average','Min','Max','Peak'];
+  availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea', 'bubble', 'scatter'];
+  //TODO: add label to select x days.
+  availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months','aggregation every X days', 'aggregation on day and night', 'aggregation of every value', 'every value (without aggregation)'];
+  availableAggregationType: string[] = ['all values', 'average','min','max','moda'];
+
+  // {measurement: 'pressure', range: 'last 30 days' },
+    // {measurement: 'pressure', range: 'last 30 days' },
+    // {measurement: 'pressure', range: 'last 30 days' },
+    // {measurement: 'temperature', range: 'last 30 days' },
+    // {measurement: 'temperature', range: 'last 30 days' },
+    // {measurement: 'temperature', range: 'last 30 days' },
+    // {measurement: 'temperature', range: 'last 30 days' }
   
   //todo: retrieve default sensor;
   selectedSensors: Sensor[] = [];
   ///////////////// Sensors selection modal ////////////
 //  sensorsControl: SensorControlObject[] = [];
-sensorsControl: Array<Object> = [];
+sensorsControl: Object = {};
 
-  levels: Array<Object>;
-  rooms: Array<Object>;
-  blocks: Array<Object>;
-
-  /*
-
-  private roomList: Room[] = [
-    { id: '1001', name: 'parking', locationId:'P0', sensors: [{id:'' , selected: false}, {id:'' , selected: false}], selected: false},
-    { id: '2001', name: 'Aula 2.12', locationId:'A212', sensors: [{id:'A3' , selected: false}] , selected: false},
-    { id: '2002', name: 'Lab 2.11', locationId:'L1', sensors: [{id:'A3' , selected: false}, {id:'A1' , selected: false}, {id:'' , selected: false}] , selected: false},
-    { id: '3003', name: 'Aula 3.5', locationId:'A35', sensors: [{}] , selected: false},
-    { id: '4004', name: 'Studio prof. Mirri', locationId:'U1', sensors: [{}] , selected: false}
-  ]
-
-  private blockList : Block[] = [
-    { id: 'P', name: 'Parking', rooms: [this.roomList[0]], selected: false},
-    { id: 'A1', name: 'Block A', rooms: [this.roomList[1],this.roomList[2]], selected: false},
-    { id: 'A2', name: 'Block A', rooms: [this.roomList[3],this.roomList[4]], selected: false},
-    { id: 'A3', name: 'Block A', rooms: [this.roomList[1],this.roomList[3]], selected: false},
-    { id: 'A4', name: 'Block A', rooms: [this.roomList[2],this.roomList[4]], selected: false},
-
-    { id: 'B', name: 'Block B', rooms: [this.roomList[2]], selected: false},
-    { id: 'C', name: 'Block C', rooms: [this.roomList[2],this.roomList[4]], selected: false},
-    { id: 'D', name: 'Block D', rooms: [this.roomList[4]], selected: false},
-  ]
-
-  private locationList: Level[] = [
-    { id: '1', name: 'Level 1', blocks: [this.blockList[0]], selected: false},
-    { id: '2', name: 'Level 2', blocks: [this.blockList[2],this.blockList[5],this.blockList[6],this.blockList[7]], selected: false},
-    { id: '3', name: 'Level 3', blocks: [this.blockList[5]], selected: false},
-    { id: '4', name: 'Level 4', blocks: [this.blockList[4], this.blockList[7]], selected: false}
-  ]
-
-  */
-
-
-
+  levels: Object = {};
+  rooms: Object = {};
+  blocks: Object = {};
 
   ///////////////////
 
@@ -111,24 +93,32 @@ sensorsControl: Array<Object> = [];
 
   data: Object;
 
-  levelList: Array<Object>;
+  levelList: Array<string>;
 
   chartData: ChartData;
-
+  sensorsAllList: Sensor[];
 
 
   //TODO: FILTER FOR AVAILABLE MEASUREMENT ?
   
-  availableSensors: Sensor[];
+  sensorsList: Sensor[];
 
-  constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService ) { 
+  chartUpdater: Subject<ChartData> = new Subject();
+
+  chartSubscription: Subscription;
+
+  reload : boolean;
+
+  constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService, private router: Router ) {
+    
+    var sensors = this.route.snapshot.data['sensors'];
 
     var defaultData: any = {
       measurement: 'pressure', 
-      range: 'Last Week', 
-      aggregationRange: 'aggregation on the day',
-      aggregationType: 'min', 
-      usedSensors: ['Level 1']
+      range: 'last 30 days', 
+      aggregationRange: 'every value', 
+      aggregationType: null, 
+      usedSensors: sensors
     }
 
     this.route.params.subscribe(params => {
@@ -153,51 +143,79 @@ sensorsControl: Array<Object> = [];
 
     console.log(" ------------------> Generated Chart Data : " , this.chartData);
 
+    this.selectedSensors = defaultData.usedSensors;
+    console.log("default selected sensors", this.selectedSensors);
+
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        this.initialiseInvites();
+      }
+    });
+
   }
+
+  ngOnInit() {
+    this.updateModalData();
+  }
+
+ navigationSubscription;
+
+ initialiseInvites() {
+   console.log("Mi sto ricaricando !");
+
+ }
+
+ ngOnDestroy() {
+    // avoid memory leaks here by cleaning up after ourselves. If we  
+    // don't then we will continue to run our initialiseInvites()   
+    // method on every navigationEnd event.
+    if (this.navigationSubscription) {  
+       this.navigationSubscription.unsubscribe();
+    }
+  }
+
 
   
 
-  ngOnInit() {
-
+  private updateModalData() {
+    console.log("this.updateModalData dentro ngOnInit")
+    
     var updateLists = function(contextClass) {
 
-      var createTree = function (sensorsControl) {
-        var counter = 0;
+      var createTree = function (sensorsList, sensorsControl) {
         var toReturn: A = {rooms: {}, blocks: {}, levels: {}, levelList: []};
 
         return new Promise(resolve => { 
             // sensorsControl.forEach(control => {
-              for(var i = 0; i< sensorsControl.length;i++){
-                console.log("i : ", i);
-                var control = sensorsControl[i];
-                if ( toReturn.rooms[control.sensor.location.id] ) {
-                  if (control.sensor.idSensor in toReturn.rooms[control.sensor.location.id].sensors) {
-                    toReturn.rooms[control.sensor.location.id].sensors.push(control.sensor.idSensor);
+              for(var i = 0; i< sensorsList.length;i++){
+                var control = sensorsControl[`${sensorsList[i]}`];
+                if ( toReturn.rooms[control.sensor.location.idLocation] ) {
+                  if (!toReturn.rooms[control.sensor.location.idLocation].sensors.includes(control.sensor.id)) {
+                    toReturn.rooms[control.sensor.location.idLocation].sensors.push(control.sensor.id);
                   }
                 } else {
-                  toReturn.rooms[control.sensor.location.id] = { id: control.sensor.location.id,
+                  toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
                                                                    name: control.sensor.location.name, 
-                                                                   sensors: [control.sensor.idSensor],
+                                                                   sensors: [control.sensor.id],
                                                                    selected: false};
                 } 
                 
                 var blockID = control.sensor.location.block + control.sensor.location.level
                 if ( toReturn.blocks[blockID] ) {
-                  console.log(toReturn.blocks[blockID].rooms)
 
-                  if (control.sensor.location.id in toReturn.blocks[blockID].rooms){
-                    toReturn.blocks[blockID].rooms.push(control.sensor.location.id);
-                    console.log(toReturn.blocks[blockID].rooms)
+                  if (!toReturn.blocks[blockID].rooms.includes(control.sensor.location.idLocation)){
+                    toReturn.blocks[blockID].rooms.push(control.sensor.location.idLocation);
                   }
                 } else {
                   toReturn.blocks[blockID] = { id: blockID, 
                                                name: 'Block ' + control.sensor.location.block, 
-                                               rooms: [control.sensor.location.id], 
+                                               rooms: [control.sensor.location.idLocation], 
                                                selected: false};
                 }  
 
+
                 if (toReturn.levels[control.sensor.location.level] ) {
-                  if (blockID in toReturn.levels[control.sensor.location.level].blocks){
+                  if (!toReturn.levels[control.sensor.location.level].blocks.includes(blockID)){
                     toReturn.levels[control.sensor.location.level].blocks.push(blockID);
                   }
                 } else {
@@ -216,19 +234,13 @@ sensorsControl: Array<Object> = [];
         }
     
       var f = async function(contextClass)  {
-          let result = await createTree(contextClass.sensorsControl) as A;
+          let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
 
-          console.log("sensorsControl : ", contextClass.sensorsControl);
           contextClass.levels = result.levels
           contextClass.blocks = result.blocks
           contextClass.rooms = result.rooms  
-          console.log("contextClass.blocks : ", contextClass.blocks)
-          console.log("contextClass.levels : ", contextClass.levels)
-          console.log("contextClass.rooms : ", contextClass.rooms)
-
-
+          
           contextClass.levelList = result.levelList;
-          console.log("levellist : ", contextClass.levelList)
       }
 
       
@@ -237,30 +249,35 @@ sensorsControl: Array<Object> = [];
     }
 
     var updateListLauncher = async function(contextClass, sensors) {
-      let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService) as B;
+      let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService, contextClass.id) as B;
       contextClass.sensorsControl = res.sensorsControl;
-      contextClass.availableSensors = res.availableSensors;
+      contextClass.sensorsList = res.sensorsList;
+      contextClass.sensorsAllList = res.sensorsAllList;
       updateLists(contextClass);   
     }
 
-    var sensorControllerBinder = function(sensors, dbRetrieverService) {
+
+
+    var sensorControllerBinder = function(sensors, dbRetrieverService, measurementType: string) {
 
       return new Promise(resolve => { 
         var counter = 0;
-        var availableSensors = [];
-        var sensorsControl = [];
+        var sensorsList = [];
+        var sensorsAllList = [];
+        var sensorsControl = {};
         sensors.forEach(element => {
-          var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurement);
+          var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurements);
           var posId = element.position.idLocation;
           dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
             var loc = JSON.parse(JSON.stringify(location));
             sensor.positionName = loc.name + ' | ' + loc.room;
-            sensor.location = loc;
-            availableSensors.push(sensor);
-            sensorsControl.push({'sensor': sensor, 'selected': false}); 
+            sensor.location = loc//new Location(loc.idLocation, loc.name, loc.room, loc.block, loc.level, loc.campus, loc.city);
+            sensorsList.push(sensor.id);
+            sensorsAllList.push(sensor.id);
+            sensorsControl[sensor.id] = {'sensor': sensor, 'selected': false}; 
             counter ++;
             if(counter == (sensors.length)) {
-              resolve({availableSensors, sensorsControl});
+              resolve({sensorsList, sensorsControl, sensorsAllList});
             }
           });
 
@@ -268,37 +285,75 @@ sensorsControl: Array<Object> = [];
       });  
     });
     }
-    this.availableSensors = [];
+    this.sensorsList = [];
+    // this.selectedSensors = [];
     var sensors = this.route.snapshot.data['sensors'];
-    updateListLauncher(this,  sensors);
+
+    // sensors.forEach(sensor => {
+    //   this.selectedSensors.push(sensor);
+    // });
+    updateListLauncher(this, sensors);
   }
 
   updateSensor(sensor: Sensor, selected: boolean) {
+    this.checkRoomAndUpdate(sensor.location);
+  }
 
-    console.log("Selected sensor ", sensor.name, " : ", selected);
+  checkLevelAndUpdate(location: Location){
+    var allSelected = true;
+    var levelSelected = this.levels[`${location.level}`];
 
+    var blockList = levelSelected.blocks;
+    for(var i = 0; i < blockList.length ; i++ ){
+      allSelected = allSelected && this.blocks[`${blockList[i]}`].selected
+    }
+    levelSelected.selected = allSelected
+  }
+
+  checkBlockAndUpdate(location: Location) {
+    var allSelected = true;
+    var blockSelected = this.blocks[`${location.block + location.level}`];
+    var roomList = blockSelected.rooms;
+    for(var i = 0; i < roomList.length ; i++ ){
+      allSelected = allSelected && this.rooms[`${roomList[i]}`].selected
+    }
+    blockSelected.selected = allSelected
+    this.checkLevelAndUpdate(location);
+  }
+
+  checkRoomAndUpdate(location: Location) {
+    var allSelected = true;
+    var roomSelected = this.rooms[`${location.idLocation}`];
+    var roomSelectedBefore = roomSelected.selected;
+    var sensorsList = roomSelected.sensors;
+    for(var i = 0; i < sensorsList.length ; i++ ){
+      allSelected = allSelected && this.sensorsControl[`${sensorsList[i]}`].selected
+    }
+    roomSelected.selected = allSelected
+    if(roomSelectedBefore!= roomSelected.selected) {
+      this.checkBlockAndUpdate(location);
+    }
   }
 
   updateLevel(level: string, selected: boolean) {
-
-    console.log("Selected level ", level, " : ", selected);
-
+    this.levels[level].blocks.forEach( block => {
+      this.updateBlock(block, selected);
+    });
   }
 
   updateBlock(block: string, selected: boolean) {
-
-    console.log("Selected block ", block, " : ", selected);
-
+    this.blocks[block].selected = selected
+    this.blocks[block].rooms.forEach( room => {
+      this.updateRoom(room, selected);
+    });
   }
 
   updateRoom(room: string, selected: boolean) {
-
-    console.log("Selected room ", room, " : ", selected);
-
-  }
-
-  testSelection() {
-    console.log("changed a dropdown");
+    this.rooms[room].selected = selected
+    this.rooms[room].sensors.forEach( sensor => {
+      this.sensorsControl[`${sensor}`].selected = selected;
+      this.checkBlockAndUpdate(this.sensorsControl[`${sensor}`].sensor.location)
+    });
   }
 
 
@@ -312,19 +367,66 @@ sensorsControl: Array<Object> = [];
   onChangeChartType(chartType: string){
 
     console.log("Chart type selected: " , chartType);
+    this.chartData.type = chartType;
+    this.updateChart();
 
   }
 
-  onChangeAggregationValue(aggregation: string) {
+  onChangeAggregationTypeValue(aggregation: string) {
+
+    if (aggregation == 'all values'){
+      aggregation = null;
+    }
 
     console.log("Aggregation type selected: " , aggregation);
+    this.chartData.aggregationType = aggregation;
+    this.retrieveDataAndUpdate();
+    
+  }
+
+  onChangeAggregationRangeValue(range: string) {
+
+    if( range == 'every value (without aggregation)'){
+      range = 'every value';
+    }
+
+    console.log("Aggregation range selected: " , range);
+    this.chartData.aggregationRange = range;
+    this.retrieveDataAndUpdate();
 
   }
 
-  onChangeRangeValue(range: string) {
+  private retrieveDataAndUpdate() {
+    console.log(" ---> retrieving new data ! ");
+    if(this.type == 'm'){
+      console.log(" -----> retrieving measurement data ! ");
+      var sensors: string[] = [];
+      for ( let i = 0; i < this.selectedSensors.length; i ++ ) {
+        console.log(" -------> retrieving sensor info ! ", this.selectedSensors[i].id);
+        sensors.push(this.selectedSensors[i].id);
+      }
 
-    console.log("Aggregation range selected: " , range);
+      console.log(" ---------> calling db  ! ");
 
+      this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughRange(sensors, this.id, this.chartData.range).subscribe(response => {
+        console.log(" -----------> db response  ! ", response);
+        this.chartData.data = response;
+        this.updateChart();
+      });
+
+    } else if (this.type == 's'){
+      console.log(" -----> retrieving sensor data ! ");
+      this.dbRetrieverService.getSensorValuesThroughRange(this.id,this.chartData.range).subscribe(response => {
+        this.chartData.data = response;
+        this.updateChart();
+      })
+    }
+
+  }
+
+  private updateChart(){
+    console.log("updating chart !");
+    this.chartUpdater.next(this.chartData);
   }
 
 
@@ -335,8 +437,8 @@ sensorsControl: Array<Object> = [];
     this.selectedSensors = [];
 
 
-    this.sensorsControl.forEach( element=> {
-      var e = element as SensorControlObject;
+    this.sensorsList.forEach( element=> {
+      var e = this.sensorsControl[`${element}`] as SensorControlObject;
       if ( e.selected ) {
         this.selectedSensors.push(e.sensor);
       }      
@@ -349,18 +451,23 @@ sensorsControl: Array<Object> = [];
 
   
 
-//   selectAllSensors() {
+selectAllSensors(selected: boolean) {
+  this.levelList.forEach(levelName => {
+    this.updateLevel(levelName, selected);
+  });
 
-//     console.log("Select all sensors : " , this.selectAll);
+}
 
-//     for( var i= 0 ; i < this.sensorsControl.length; i ++) {
-//       this.sensorsControl[i].selected = this.selectAll;
-//       this.checkSelectedLocation(this.sensorsControl[i].sensor.position.idLocation, this.sensorsControl[i].selected);
-//     }
+  //   console.log("Select all sensors : " , this.selectAll);
 
-//     console.log(this.sensorsControl);
+  //   for( var i= 0 ; i < this.sensorsControl.length; i ++) {
+  //     this.sensorsControl[i].selected = this.selectAll;
+  //     this.checkSelectedLocation(this.sensorsControl[i].sensor.position.idLocation, this.sensorsControl[i].selected);
+  //   }
 
-//   }
+  //   console.log(this.sensorsControl);
+
+  // }
 
 //   checkSensors() {
 

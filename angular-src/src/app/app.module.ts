@@ -29,6 +29,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminModule } from './admin/admin.module';
 import { adminRoute } from './admin/admin.module';
+import { CalendarSelectorComponent } from './calendar-selector/calendar-selector.component';
+import { NgxDateRangePickerModule } from 'ngx-daterangepicker';
 
 
 const route : Routes = [
@@ -62,7 +64,8 @@ const route : Routes = [
     SideMenuComponent,
     RegisterComponent,
     LoginComponent,
-    ProfileComponent 
+    ProfileComponent,
+    CalendarSelectorComponent 
   ],
 
   imports: [
@@ -71,13 +74,14 @@ const route : Routes = [
     AdminModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxDateRangePickerModule
   ],
 
   providers: [
     ChartResolver,
-    SensorsResolver,
     LocationsResolver,
+    SensorsResolver,
     AuthGuard,
     AuthenticationService
   ],

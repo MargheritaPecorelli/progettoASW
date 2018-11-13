@@ -12,12 +12,12 @@ interface Measurement{
 }
 
 
-interface Level {
-  id: string,
-  name: string,
-  blocks: Block[],
-  selected: boolean
-}
+// interface Level {
+//   id: string,
+//   name: string,
+//   blocks: Block[],
+//   selected: boolean
+// }
 
 interface Block {
   id: string,
@@ -42,8 +42,7 @@ interface A {
 
 interface B {
   sensorsList, 
-  sensorsControl,
-  sensorsAllList
+  sensorsControl
 }
 
 interface SensorControlObject{
@@ -76,13 +75,11 @@ export class ChartDetailsComponent implements OnInit {
   //todo: retrieve default sensor;
   selectedSensors: Sensor[] = [];
   ///////////////// Sensors selection modal ////////////
-//  sensorsControl: SensorControlObject[] = [];
-sensorsControl: Object = {};
+  sensorsControl: Object = {};
 
   levels: Object = {};
   rooms: Object = {};
   blocks: Object = {};
-
   ///////////////////
 
   type: string;
@@ -96,8 +93,6 @@ sensorsControl: Object = {};
   levelList: Array<string>;
 
   chartData: ChartData;
-  sensorsAllList: Sensor[];
-
 
   //TODO: FILTER FOR AVAILABLE MEASUREMENT ?
   
@@ -107,12 +102,10 @@ sensorsControl: Object = {};
 
   chartSubscription: Subscription;
 
-  reload : boolean;
-
   constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService, private router: Router ) {
     
     var sensors = this.route.snapshot.data['sensors'];
-
+    
     var defaultData: any = {
       measurement: 'pressure', 
       range: 'last 30 days', 
@@ -124,6 +117,123 @@ sensorsControl: Object = {};
     this.route.params.subscribe(params => {
       this.id = params['id'];
       this.type = params['type'];
+      this.levels = {}
+      this.rooms = {}
+      this.blocks = {}
+      this.levelList = []
+      this.sensorsList = []
+      this.sensorsControl = {}
+      var updateLists = function(contextClass) {
+
+        var createTree = function (sensorsList, sensorsControl) {
+          var toReturn: A = {rooms: {}, blocks: {}, levels: {}, levelList: []};
+  
+          return new Promise(resolve => { 
+            for(var i = 0; i< sensorsList.length;i++){
+              var control = sensorsControl[`${sensorsList[i]}`];
+              if ( toReturn.rooms[control.sensor.location.idLocation] ) {
+                if (!toReturn.rooms[control.sensor.location.idLocation].sensors.includes(control.sensor.id)) {
+                  toReturn.rooms[control.sensor.location.idLocation].sensors.push(control.sensor.id);
+                }
+              } else {
+                toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
+                                                                  name: control.sensor.location.name, 
+                                                                  sensors: [control.sensor.id],
+                                                                  selected: false};
+              } 
+              
+              var blockID = control.sensor.location.block + control.sensor.location.level
+              if ( toReturn.blocks[blockID] ) {
+
+                if (!toReturn.blocks[blockID].rooms.includes(control.sensor.location.idLocation)){
+                  toReturn.blocks[blockID].rooms.push(control.sensor.location.idLocation);
+                }
+              } else {
+                toReturn.blocks[blockID] = { id: blockID, 
+                                              name: 'Block ' + control.sensor.location.block, 
+                                              rooms: [control.sensor.location.idLocation], 
+                                              selected: false};
+              }  
+
+
+              if (toReturn.levels[control.sensor.location.level] ) {
+                if (!toReturn.levels[control.sensor.location.level].blocks.includes(blockID)){
+                  toReturn.levels[control.sensor.location.level].blocks.push(blockID);
+                }
+              } else {
+                toReturn.levels[control.sensor.location.level] = { id: control.sensor.location.level, 
+                                                                    name: 'Level ' + control.sensor.location.level, 
+                                                                    blocks: [blockID], 
+                                                                    selected: false};
+                toReturn.levelList.push(control.sensor.location.level)
+
+              }  
+            }
+            resolve(toReturn);
+          });
+      }
+      
+        var f = async function(contextClass)  {
+            let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
+  
+            contextClass.levels = result.levels
+            contextClass.blocks = result.blocks
+            contextClass.rooms = result.rooms  
+            console.log(result.levelList)
+            
+            contextClass.levelList = result.levelList;
+        }
+        f(contextClass);
+      }
+  
+      var updateListLauncher = async function(contextClass, sensors) {
+        let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService, contextClass.id) as B;
+        contextClass.sensorsControl = res.sensorsControl;
+        contextClass.sensorsList = res.sensorsList;
+        updateLists(contextClass);   
+      }
+  
+  
+  
+      var sensorControllerBinder = function(sensors, dbRetrieverService, measurementType: string) {
+        var measurementsListContainsId = function(measurements: Measurement[], id:string){
+          var contains = false;
+          for(var i = 0; i< measurements.length; i++) {
+            if (measurements[i].measurementType === id) {
+              contains = true;
+            }
+          }
+          return contains;
+        }
+        return new Promise(resolve => { 
+          var counter = 0;
+          var sensorsList = [];
+          var sensorsControl = {};
+          sensors.forEach(element => {
+            var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurements);
+            var posId = element.position.idLocation;
+            console.log("posid", posId)
+            dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
+              var loc = JSON.parse(JSON.stringify(location));
+              sensor.positionName = loc.name + ' | ' + loc.room;
+              sensor.location = loc
+              if(measurementsListContainsId(sensor.measurements as Measurement[], measurementType)) {
+                console.log(sensor)
+                sensorsList.push(sensor.id);
+                sensorsControl[sensor.id] = {'sensor': sensor, 'selected': false}; 
+              }
+              counter ++;
+              if(counter == (sensors.length)) {
+                resolve({sensorsList, sensorsControl});
+              }
+            });
+          });  
+        });
+      }
+      this.sensorsList = [];
+      var sensors = this.route.snapshot.data['sensors'];
+      console.log("sensors", sensors)
+      updateListLauncher(this,  sensors);
     });
 
     this.data = this.route.snapshot.data['data'];
@@ -142,157 +252,10 @@ sensorsControl: Object = {};
       ) ;
 
     console.log(" ------------------> Generated Chart Data : " , this.chartData);
-
-    this.selectedSensors = defaultData.usedSensors;
-    console.log("default selected sensors", this.selectedSensors);
-
-    this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      if (e instanceof NavigationEnd) {
-        this.initialiseInvites();
-      }
-    });
-
   }
-
-  ngOnInit() {
-    this.updateModalData();
-  }
-
- navigationSubscription;
-
- initialiseInvites() {
-   console.log("Mi sto ricaricando !");
-
- }
-
- ngOnDestroy() {
-    // avoid memory leaks here by cleaning up after ourselves. If we  
-    // don't then we will continue to run our initialiseInvites()   
-    // method on every navigationEnd event.
-    if (this.navigationSubscription) {  
-       this.navigationSubscription.unsubscribe();
-    }
-  }
-
-
   
 
-  private updateModalData() {
-    console.log("this.updateModalData dentro ngOnInit")
-    
-    var updateLists = function(contextClass) {
-
-      var createTree = function (sensorsList, sensorsControl) {
-        var toReturn: A = {rooms: {}, blocks: {}, levels: {}, levelList: []};
-
-        return new Promise(resolve => { 
-            // sensorsControl.forEach(control => {
-              for(var i = 0; i< sensorsList.length;i++){
-                var control = sensorsControl[`${sensorsList[i]}`];
-                if ( toReturn.rooms[control.sensor.location.idLocation] ) {
-                  if (!toReturn.rooms[control.sensor.location.idLocation].sensors.includes(control.sensor.id)) {
-                    toReturn.rooms[control.sensor.location.idLocation].sensors.push(control.sensor.id);
-                  }
-                } else {
-                  toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
-                                                                   name: control.sensor.location.name, 
-                                                                   sensors: [control.sensor.id],
-                                                                   selected: false};
-                } 
-                
-                var blockID = control.sensor.location.block + control.sensor.location.level
-                if ( toReturn.blocks[blockID] ) {
-
-                  if (!toReturn.blocks[blockID].rooms.includes(control.sensor.location.idLocation)){
-                    toReturn.blocks[blockID].rooms.push(control.sensor.location.idLocation);
-                  }
-                } else {
-                  toReturn.blocks[blockID] = { id: blockID, 
-                                               name: 'Block ' + control.sensor.location.block, 
-                                               rooms: [control.sensor.location.idLocation], 
-                                               selected: false};
-                }  
-
-
-                if (toReturn.levels[control.sensor.location.level] ) {
-                  if (!toReturn.levels[control.sensor.location.level].blocks.includes(blockID)){
-                    toReturn.levels[control.sensor.location.level].blocks.push(blockID);
-                  }
-                } else {
-                  toReturn.levels[control.sensor.location.level] = { id: control.sensor.location.level, 
-                                                                     name: 'Level ' + control.sensor.location.level, 
-                                                                     blocks: [blockID], 
-                                                                     selected: false};
-                  toReturn.levelList.push(control.sensor.location.level)
-
-                }  
-              }
-              resolve(toReturn);
-              
-              // });
-         });
-        }
-    
-      var f = async function(contextClass)  {
-          let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
-
-          contextClass.levels = result.levels
-          contextClass.blocks = result.blocks
-          contextClass.rooms = result.rooms  
-          
-          contextClass.levelList = result.levelList;
-      }
-
-      
-      f(contextClass);
-
-    }
-
-    var updateListLauncher = async function(contextClass, sensors) {
-      let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService, contextClass.id) as B;
-      contextClass.sensorsControl = res.sensorsControl;
-      contextClass.sensorsList = res.sensorsList;
-      contextClass.sensorsAllList = res.sensorsAllList;
-      updateLists(contextClass);   
-    }
-
-
-
-    var sensorControllerBinder = function(sensors, dbRetrieverService, measurementType: string) {
-
-      return new Promise(resolve => { 
-        var counter = 0;
-        var sensorsList = [];
-        var sensorsAllList = [];
-        var sensorsControl = {};
-        sensors.forEach(element => {
-          var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurements);
-          var posId = element.position.idLocation;
-          dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
-            var loc = JSON.parse(JSON.stringify(location));
-            sensor.positionName = loc.name + ' | ' + loc.room;
-            sensor.location = loc//new Location(loc.idLocation, loc.name, loc.room, loc.block, loc.level, loc.campus, loc.city);
-            sensorsList.push(sensor.id);
-            sensorsAllList.push(sensor.id);
-            sensorsControl[sensor.id] = {'sensor': sensor, 'selected': false}; 
-            counter ++;
-            if(counter == (sensors.length)) {
-              resolve({sensorsList, sensorsControl, sensorsAllList});
-            }
-          });
-
-
-      });  
-    });
-    }
-    this.sensorsList = [];
-    // this.selectedSensors = [];
-    var sensors = this.route.snapshot.data['sensors'];
-
-    // sensors.forEach(sensor => {
-    //   this.selectedSensors.push(sensor);
-    // });
-    updateListLauncher(this, sensors);
+  ngOnInit() {
   }
 
   updateSensor(sensor: Sensor, selected: boolean) {
@@ -447,174 +410,9 @@ sensorsControl: Object = {};
     console.log("Selected Sensors: " , this.selectedSensors);
   }
 
-  
-
-  
-
-selectAllSensors(selected: boolean) {
-  this.levelList.forEach(levelName => {
-    this.updateLevel(levelName, selected);
-  });
-
-}
-
-  //   console.log("Select all sensors : " , this.selectAll);
-
-  //   for( var i= 0 ; i < this.sensorsControl.length; i ++) {
-  //     this.sensorsControl[i].selected = this.selectAll;
-  //     this.checkSelectedLocation(this.sensorsControl[i].sensor.position.idLocation, this.sensorsControl[i].selected);
-  //   }
-
-  //   console.log(this.sensorsControl);
-
-  // }
-
-//   checkSensors() {
-
-//     this.selectAll = this.sensorsControl.every(function(item:any) {
-//       return item.selected == true;
-//     });
-
-//   }
-
-//   checkSelectedLocation(locationId: string, selected: boolean) {
-
-//     var checkRooms = function (block: Block, locationId: string, selected: boolean ) {
-//       return new Promise(resolve => {
-
-//         var allSelected: boolean = true;
-
-//         block.rooms.forEach((room, index) => {
-//           console.log(" ------------> checking room : ", room, " for location ", locationId);
-      
-//           // check sensors list
-
-//           if( room.locationId == locationId) {
-//             room.selected = selected;
-//             console.log(" ------------> Found location !"); 
-//           } else {
-//             allSelected = false;
-//           }
-
-//           if( index == (block.rooms.length -1)){
-//             /*allSelected = this.room.sensors.every(function(sensor:any) {
-//               return sensor.selected == true;
-//             });
-//             console.log(" --------------- > returning  ! : ", allSelected);*/
-//             resolve(allSelected);
-//           }
-
-//         });
-//       });
-//     }
-
-
-//     var blk = function (block: Block, locationId: string, selected: boolean) {
-
-//       var f = async function(resolve) {
-
-//         let result = await checkRooms(block, locationId, selected);
-        
-//         console.log(" ------> Rooms checked ! result : ", result);
-//         block.selected = result as boolean;
-//         resolve(result); 
-
-//       }
-
-//       return new Promise(resolve => f(resolve));
-
-//     }    
-
-//     var checkBlocks = function (level, locationID, selected: boolean) {
-//       return new Promise(resolve => {
-
-//         var allSelected: boolean = true;
-
-//         var f = async function (block, index)  {
-//           console.log(" ------> checking block  ", block, " for location ", locationId);
-//           let res =  await blk(block,locationID, selected);
-
-//           if( index == (level.blocks.length -1)){
-//             allSelected = res as boolean;
-//             resolve(allSelected);
-//           }
-//         }
-
-//         level.blocks.forEach((block, index) => f(block, index));
-
-//       });
-//     }
-
-//     var lv = function (level: Level, locationId: string, selected: boolean) {
-
-//       var f = async function(resolve) {
-//         let result = await checkBlocks(level, locationId, selected);
-//         console.log(" ---> Blocks checked ! result : ", result);
-//         level.selected = result as boolean;
-//         resolve(result);
-//       }
-
-//       return new Promise(resolve => f(resolve));
-
-//     }
-
-//     var f = async function(level, locationId, selected: boolean) {
-//       console.log(" ---> checking level  ", level, " for location ", locationId);
-//       let res = await lv(level, locationId, selected);
-//         console.log("Selected level : ", res);
-//     }
-
-//     console.log("Adesso devo controllare tutte le location");
-//     this.locationList.forEach(level => f(level, locationId, selected));
-
-//     //this.checkSensors();
-
-//   }
-
-
-
-  
-
-//   selectLevel(selected: boolean, levelIndex: string){
-
-//     this.locationList[levelIndex].blocks.forEach(block => {
-
-//       block.selected = selected;
-//       block.rooms.forEach(room => {
-
-//         room.selected = selected;
-//         this.selectRoom(selected, room.locationId);
-        
-//       });
-      
-//     });
-    
-//   }
-
-//   selectBlock(selected: boolean, levelIndex: string, blockIndex: string){
-
-//     this.locationList[levelIndex].blocks[blockIndex].rooms.forEach(room => {
-
-//       room.selected = selected;
-//       this.selectRoom(selected, room.locationId);
-      
-//     });
-//   }
-
-//   selectRoom(selected: boolean, locationId: string){
-
-// /*     this.sensorsControl.forEach(element => {
-//       if (element.sensor.position.idLocation == locationId){
-//         element.selected = selected;
-//       }
-//     });
-//  */
-//     for(var i = 0; i < this.sensorsControl.length; i++) {
-//       if (this.sensorsControl[i].sensor.position.idLocation == locationId){
-//         this.sensorsControl[i].selected = selected;
-//       }
-//     }
-//     this.checkSensors();
-//   }
-
+  selectAllSensors(selected: boolean) {
+    this.levelList.forEach(levelName => {
+      this.updateLevel(levelName, selected);
+    });
+  }
 }

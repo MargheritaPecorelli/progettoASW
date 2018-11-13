@@ -1,0 +1,5 @@
+
+
+<div class="ui items">
+  <app-user-management-row *ngFor="let u of userList; let i=index;" [attr.id]=i  [user]="u" [index]="i" (deletedUser)="deletedUser($event)"></app-user-management-row>
+</div>

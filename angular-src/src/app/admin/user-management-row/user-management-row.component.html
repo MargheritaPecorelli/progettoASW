@@ -1,0 +1,32 @@
+<div class="row user-row">
+
+  {{user.name}}  {{user.surname}} [ {{user.email}} ]
+
+  <label>
+    <input type="checkbox" [(ngModel)]="user.admin" (ngModelChange)="updateAccessLevel($event)">
+    Admin
+  </label>
+
+  <button class="btn pull-right option-button" data-toggle="modal" [attr.data-target]="'#userDeleteModal' + index" > 
+    <span class="fa fa-trash-o delete-icon" *ngIf="true"> </span>
+  </button>
+
+  <button class="btn pull-right option-button" data-toggle="modal" [attr.data-target]="'#userEditModal' + index" > 
+    <span class="fa fa-edit" *ngIf="true"> </span>
+  </button>
+
+      
+
+    <div class="modal fade" [attr.id]="'userEditModal' + index" tabindex="-1" role="dialog" aria-labelledby="userEditModalTitle" aria-hidden="true">
+        
+      <app-user-management-edit-modal [user]="user" (onModalSubmitted)="updateUser($event)"> </app-user-management-edit-modal>
+      
+    </div>
+
+    <div class="modal fade" [attr.id]="'userDeleteModal' + index" tabindex="-1" role="dialog" aria-labelledby="userDeleteModalTitle" aria-hidden="true">
+
+      <app-user-management-delete-modal [user]="user" (onModalSubmitted)="deleteUser($event)"> </app-user-management-delete-modal>
+  
+    </div>
+
+</div>

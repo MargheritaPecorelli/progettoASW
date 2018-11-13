@@ -1,3 +1,4 @@
+import { Location } from './location.model'
 export class Sensor {
 
     constructor(

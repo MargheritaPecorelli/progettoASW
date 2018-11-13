@@ -100,6 +100,22 @@ export class DataRetrieverService {
     return this.http.get(`http://localhost:3000/api/locations`);
   }
 
+  getLevels(city: string, campus: string) {
+    return this.http.get(`http://localhost:3000/api/levels?city=${city}&campus=${campus}`);
+  }
+  
+  getBlocks(city: string, campus: string, level: number) {
+    return this.http.get(`http://localhost:3000/api/blocks?city=${city}&campus=${campus}&level=${level}`);
+  }
+  
+  getRooms(city: string, campus: string, level: number, block: string) {
+    return this.http.get(`http://localhost:3000/api/rooms?city=${city}&campus=${campus}&level=${level}&block=${block}`);
+  }
+  
+  getSensorsOfARoom(idLocationOfTheRoom: string) {
+    return this.http.get(`http://localhost:3000/api/locations/sensors?idLocation=${idLocationOfTheRoom}`);
+  }
+
 
   /** LOCATION */
 
@@ -197,33 +213,31 @@ export class DataRetrieverService {
     var startAndEnd = this._getStartAndEndFromRange(range);
     var start = startAndEnd[0];
     var end = startAndEnd[1];
-    return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end)
+    return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end);
   }
 
   _getStartAndEndFromRange(range: string) {
     var start : Date = new Date();
-    var end : Date;
+    var end : Date = new Date();
     var list = [];
 
     switch(range) {
-      case "Last Week": {
-        end = new Date();
+      case "last week": {
         end.setHours(end.getHours() - 1);
-        start.setDate(end.getDate() - 7);
+        start.setDate(end.getDate() - 6);
         list.push(start);
         list.push(end);
         break
       }
       case "last 30 days": {
-        end = new Date();
         end.setHours(end.getHours() - 1);
-        start.setDate(end.getDate() - 30);
+        start.setDate(end.getDate() - 29);
         list.push(start);
         list.push(end);
         break
       }
       default: {
-        console.log("Invalid choice");  
+        console.log("Invalid choice of data range");
         break; 
       } 
     }

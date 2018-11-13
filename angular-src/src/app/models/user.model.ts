@@ -1,18 +1,22 @@
 export class User {
     
-    loggedUSer : boolean;
+    email: string;
+    password: string;
+    name: string;
+    surname: string;
+    admin: boolean;
+    hash: string;
+    salt: string;
 
-    constructor() { 
-        this.loggedUSer = false;
+    constructor( name: string, surname: string, email: string, admin: boolean, hash: string = "0", salt: string = "0") { 
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.admin = admin;
+        this.hash = hash;
+        this.salt = salt;
+
     }
-
-    isUserLogged() : boolean {
-        return this.loggedUSer;
-      }
-    
-      setUserLogged(logged: boolean) : void {
-        this.loggedUSer = logged;
-      }
 
 }
     

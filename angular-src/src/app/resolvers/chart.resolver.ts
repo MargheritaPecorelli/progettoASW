@@ -16,15 +16,25 @@ export class ChartResolver implements Resolve<ChartData> {
       var type: string = route.params.type;
       var id: string = route.params.id;
 
-      var defaultData: any = {measurement: 'pressure', 
-      range: 'last 30 days', 
-      aggregationRange: 'every value', 
-      aggregationType: null, 
-      usedSensors: null}
-
       console.log("Retrieving data for chart " + id + " of type " + type);
 
-      return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(defaultData.measurement, defaultData.range);
+      var defaultData = {
+      measurement: type, 
+      range: 'last 30 days', 
+      aggregationRange: 'aggregation on hours', 
+      aggregationType: null, 
+      usedSensors: 'all'
+      }
+
+      if (type == 'm'){
+        console.log("Retrieving data for measurement : " + id);
+        return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(id,defaultData.range);
+      } else if ( type == 's') {
+        console.log("Retrieving data for sensors: " + id);
+        return this.dbRetrieverService.getSensorValuesThroughRange(id,defaultData.range);
+      }
+
+      //return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(defaultData.measurement, defaultData.range);
 
     }
 

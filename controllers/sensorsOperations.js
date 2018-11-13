@@ -61,7 +61,7 @@ function _checkMeasurementsAndCreateSensor(measArr, i, res, idSensor, name, posi
             console.log("measurements Error");
             return res.send(500);
         } else if(response == null) {
-            return res.send(400, "this type of measurement is not present. Please, add it to the DB before continuing!");
+            return res.send(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
         } else {
             _checkMeasurementsAndCreateSensor(measArr, i+1, res, idSensor, name, positionJSON);
         }
@@ -140,6 +140,61 @@ module.exports.deleteSpecificSensor = function(req, res, next){
     });
 };
 
+/** Callback to romove a speific measurement from a specific sensor */
+module.exports.removeMeasurement = function(req, res, next){
+    var idSensor = req.param('idSensor');
+    var measurement = req.param('measurement');
+
+    // var wait = true
+    // if(wait) {
+        
+    //     wait = false;
+    // }   
+    // if(!wait) {
+    //     console.log('not wait ')
+    var measurementJSON = JSON.parse(JSON.stringify(measurement));
+    console.log('measurementJSON ' + measurementJSON)
+    console.log('idSensor ' + idSensor)
+    _checkMeasurement(measurementJSON, res, idSensor);
+    // }
+};
+
+/** Checks if this type of measurement is present in the DB */
+function _checkMeasurement(measurementJSON, res, idSensor){
+    measurementsTypes.findOne({"measurementType": measurementJSON.measurementType}, function(err, response){
+        if(err){
+            console.log("measurements Error");
+            return res.send(500);
+        } else if(response == null) {
+            return res.send(404, "this type of measurement is not present in this sensor!");
+        } else {
+            return _removeMeasurements(idSensor, measurementJSON, res);
+        }
+    });
+};
+
+/** Romoves the measurements to the specific sensor */
+function _removeMeasurements(idSensor, measurementJSON, res){
+    var list = [];
+    sensors.findOne({"idSensor":idSensor}, function(err, response){
+        if(response == null) {
+            return res.send(404, "sensor not found!");
+        } else {
+            for(var i = 0; i < response.measurements.length; i++) {
+                if(measurementJSON.measurementType != response.measurements[i].measurementType) {
+                    list.push(response.measurements[i]);
+                }
+            }
+            sensors.update({"idSensor": idSensor},{ $set: { "measurements": list }}, function(err, resp){
+                if(err){
+                    res.send(500);
+                }
+                res.send(200, "measurement removed");
+            });
+        }
+    });
+};
+
 /** Callback to add a new measurement to a specific sensor */
 module.exports.addNewMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
@@ -148,43 +203,57 @@ module.exports.addNewMeasurement = function(req, res, next){
     var measurementJSON = JSON.parse(measurement);
     
     /** Checks if this type of measurement is present in the DB */
-    _checkMeasurements(measurementJSON, res, idSensor);
+    _checkMeasurements(measurementJSON, 0, res, idSensor);
 };
 
 /** Checks if this type of measurement is present in the DB */
-function _checkMeasurements(measurementJSON, res, idSensor){
-    // if(i == measArr.length){
-    //     return _addMeasurements(idSensor, name, measArr, positionJSON, res)
-    // }
-    measurementsTypes.findOne({"measurementType": measurementJSON.measurementType}, function(err, response){
+function _checkMeasurements(measurementJSON, i, res, idSensor){
+    
+    measurementsTypes.findOne({"measurementType": measurementJSON[i].measurementType}, function(err, response){
         if(err){
             console.log("measurements Error");
             return res.send(500);
         } else if(response == null) {
-            return res.send(400, "this type of measurement is not present. Please, add it to the DB before continuing!");
+            return res.send(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
         } else {
-            return _addMeasurements(idSensor, measurementJSON, res);
+            return _addMeasurements(idSensor, measurementJSON, i, res);
         }
     });
 };
 
 /** Adds the measurements to the specific sensor */
-function _addMeasurements(idSensor, measurementJSON, res){
+function _addMeasurements(idSensor, measurementJSON, j, res){
+
+    var alreadyPresent = false;
+
     sensors.findOne({"idSensor":idSensor}, function(err, response){
         if(response == null) {
             return res.send(404, "sensor not found!");
         } else {
             for(var i = 0; i < response.measurements.length; i++) {
-                if(measurementJSON.measurementType == response.measurements[i].measurementType) {
-                    return res.send(200, "measurement already present in this sensor");
+                if(measurementJSON[j].measurementType == response.measurements[i].measurementType) {
+                    alreadyPresent = true;
+                    console.log("measurement already present in this sensor");
+                    if(j == (measurementJSON.length-1)){
+                        return res.send(200, "measurement added");
+                    } else {
+                        return _checkMeasurements(measurementJSON, j+1, res, idSensor)
+                    }
                 }
             }
-            sensors.update({"idSensor": idSensor},{ $push: { "measurements": [measurementJSON] }}, function(err, resp){
-                if(err){
-                    res.send(500);
-                }
-                res.send(200, "measurement added");
-            });
+            if(!alreadyPresent) {
+                sensors.update({"idSensor": idSensor},{ $push: { "measurements": [measurementJSON[j]] }}, function(err, resp){
+                    if(err){
+                        res.send(500);
+                    } else {
+                        if(j == (measurementJSON.length-1)){
+                            res.send(200, "measurement added");
+                        } else {
+                            _checkMeasurements(measurementJSON, j+1, res, idSensor)
+                        }
+                    }
+                });
+            }
         }
     });
 };

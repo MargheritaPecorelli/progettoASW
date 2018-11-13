@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartData } from '../models/chartdata.model';
+import { AdminBox } from '../models/admin.model';
 import { DataRetrieverService } from '../services/data-retriever.service';
 
 @Component({
@@ -10,11 +11,12 @@ import { DataRetrieverService } from '../services/data-retriever.service';
 export class HomepageComponent implements OnInit {
 
   sampleChartList : ChartData[];
+  // adminBoxesList : AdminBox[];
   list: object;
 
   defaultComponents: any = [
-    {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'every value', aggregationType: null, usedSensors: null},
-    // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on hours',aggregationType: 'max', usedSensors: null},
+    // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'every value', aggregationType: null, usedSensors: null},
+    {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on hours',aggregationType: 'max', usedSensors: null},
     // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on days', aggregationType: 'moda', usedSensors: null},
     // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on months',aggregationType: 'average', usedSensors: null},
     // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation every X days',aggregationType: 'min', usedSensors: null},
@@ -24,6 +26,7 @@ export class HomepageComponent implements OnInit {
 
   constructor(private data: DataRetrieverService) { 
     this.sampleChartList = [];
+    // this.adminBoxesList = [];
   }
 
   ngOnInit() {
@@ -34,6 +37,17 @@ export class HomepageComponent implements OnInit {
                                                 elem.aggregationType, 7, elem.usedSensors, data ));
       });
     });
+
+    // for(var i = 0; i < 3; i++) {
+    //   if(i==0) {
+    //     this.adminBoxesList.push(new AdminBox("../../assets/images/user.jpeg"));
+    //   } else if(i==1) {
+
+    //   } else {
+
+    //   }      
+    // }
+
 
     // this.data.getLevels('cesena', 'cesena').subscribe(locations => 
     //   console.log('levels ' + locations)

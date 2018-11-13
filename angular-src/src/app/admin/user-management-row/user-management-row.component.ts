@@ -28,13 +28,12 @@ export class UserManagementRowComponent implements OnInit {
 
   updateUser(updatedUser: User){
     console.log("------> userRow : Updating User : " , updatedUser);
-      this.dbRetrieverService.deleteSpecificUser(this.user.email).subscribe(response => {
-        var admin = updatedUser.admin ? 'true' : 'false';
-        // this.dbRetrieverService.postNewUser(updatedUser.email, updatedUser.name, updatedUser.surname, admin, updatedUser.salt).subscribe(res => {
-        //   console.log("update completed ! ");
-        // });
+    this.dbRetrieverService.deleteSpecificUser(this.user.email).subscribe(response => {
+      var admin = updatedUser.admin ? 'true' : 'false';
+      this.dbRetrieverService.postNewUserWithPsw(updatedUser.email, updatedUser.name, updatedUser.surname, admin, updatedUser.salt, updatedUser.hash).subscribe(res => {
+        
       });
-
+    });
     this.user = updatedUser;
   }
 
@@ -44,7 +43,6 @@ export class UserManagementRowComponent implements OnInit {
       this.deletedUser.emit(u);
       this.user = undefined;
     });
-
     this.deletedUser.emit(u);
     this.user = undefined;
   }

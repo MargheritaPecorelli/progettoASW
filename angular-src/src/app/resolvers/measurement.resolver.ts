@@ -7,14 +7,14 @@ import { Observable } from 'rxjs';
 import { Sensor } from '../models/sensor.model';
 
 @Injectable()
-export class SensorsResolver implements Resolve<Sensor[]> {
+export class MeasurementResolver implements Resolve<Sensor[]> {
 
   constructor(private dbRetrieverService: DataRetrieverService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    var sensors = this.dbRetrieverService.getAllSensors();
+    var measurements = this.dbRetrieverService.getAllMeasurements();
     // console.log('SensorsResolver gettAllSensors' + sensors)
-    return sensors;
+    return measurements;
   }
 
 }

@@ -53,7 +53,10 @@ router.delete('/sensor', sensorsOperations.deleteSpecificSensor);
 router.put('/sensor/position', sensorsOperations.changePosition);
 
 /** PUT request to add a new measurement to a specific sensor */
-router.put('/sensor/measurement', sensorsOperations.addNewMeasurement);
+router.put('/sensor/add/measurement', sensorsOperations.addNewMeasurement);
+
+/** PUT request to romove a speific measurement from a specific sensor */
+router.put('/sensor/remove/measurement', sensorsOperations.removeMeasurement);
 
 
 /** USERS */
@@ -66,6 +69,9 @@ router.get('/users', usersOperations.getAllUsers);
 
 /** POST request to add a new user */
 router.post('/user', usersOperations.addNewUser);
+
+/** POST request to add a new user with also salt and hash of the password */
+router.post('/userPsw', usersOperations.addNewUserWithPsw);
 
 /** GET request to get a specific user */
 router.get('/user', usersOperations.getUser);

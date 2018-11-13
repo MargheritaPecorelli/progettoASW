@@ -1,0 +1,21 @@
+<div class="row sensor-row">
+  
+    {{sensor.idSensor}} - {{sensor.name}}
+  
+    <button class="btn pull-right option-button" data-toggle="modal" [attr.data-target]="'#sensorDeleteModal' + index" > 
+      <span class="fa fa-trash-o delete-icon" *ngIf="true"> </span>
+    </button>
+  
+    <button class="btn pull-right option-button" data-toggle="modal" [attr.data-target]="'#sensorEditModal' + index" > 
+      <span class="fa fa-edit" *ngIf="true"> </span>
+    </button>
+  
+      <div class="modal fade" [attr.id]="'sensorEditModal' + index" tabindex="-1" role="dialog" aria-labelledby="sensorEditModalTitle" aria-hidden="true">
+        <app-sensor-management-edit-modal [measurementList]="measurementList" [locationList]="locationList" [sensor]="sensor" (onModalSubmitted)="updateSensor($event)"> </app-sensor-management-edit-modal>
+      </div>
+  
+      <div class="modal fade" [attr.id]="'sensorDeleteModal' + index" tabindex="-1" role="dialog" aria-labelledby="sensorDeleteModalTitle" aria-hidden="true">
+        <app-sensor-management-delete-modal [sensor]="sensor" (onModalSubmitted)="deleteSensor($event)"> </app-sensor-management-delete-modal>
+      </div>
+  
+  </div>

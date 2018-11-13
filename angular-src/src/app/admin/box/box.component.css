@@ -1,0 +1,13 @@
+button {
+    display: inline-block;
+    height: 354px;
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+    width: 354px;
+}
+
+#my-image img {
+    height: 350px;  
+    width: 350px;
+}

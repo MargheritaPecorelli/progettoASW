@@ -1,0 +1,36 @@
+.measurements-row {
+    padding-left: 15px;
+}
+
+.position-row {
+    padding-left: 15px;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.mea-row {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px;
+    /* margin-left: 100px; */
+}
+
+/* .add-row {
+
+} */
+
+.delete-icon {
+    color : red;
+}
+
+.option-button {
+    padding: 5px 10px;
+    margin: 0px 10px;
+}
+
+/* .form-control {
+    padding-right: 50px;
+} */

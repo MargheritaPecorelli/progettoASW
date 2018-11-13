@@ -4,17 +4,17 @@ import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 
 import { DataRetrieverService } from '../services/data-retriever.service';
 import { Observable } from 'rxjs';
-import { Sensor } from '../models/sensor.model';
+import { Location } from '../models/location.model';
 
 @Injectable()
-export class SensorsResolver implements Resolve<Sensor[]> {
+export class LocationsResolver implements Resolve<Location[]> {
 
   constructor(private dbRetrieverService: DataRetrieverService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    var sensors = this.dbRetrieverService.getAllSensors();
-    // console.log('SensorsResolver gettAllSensors' + sensors)
-    return sensors;
+    var locations = this.dbRetrieverService.getAllLocations();
+    // console.log('LocationsResolver gettAllLocations' + locations)
+    return locations;
   }
 
 }

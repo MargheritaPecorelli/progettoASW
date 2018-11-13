@@ -18,6 +18,7 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
 import { ChartResolver } from './resolvers/chart.resolver';
 import { SensorsResolver } from './resolvers/sensors.resolver';
 import { LocationsResolver } from './resolvers/location.resolver';
+import { MeasurementResolver } from './resolvers/measurement.resolver';
 
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticationService } from './services/authentication/authentication.service';
@@ -82,6 +83,7 @@ const route : Routes = [
     ChartResolver,
     LocationsResolver,
     SensorsResolver,
+    MeasurementResolver,
     AuthGuard,
     AuthenticationService
   ],

@@ -1,0 +1,30 @@
+/* button {
+    display: inline-block;
+    height: 154px;
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+    width: 154px;
+} */
+
+.items {
+    float: left;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 10%;
+}
+
+/* #user-image img {
+    height: 150px;  
+    width: 150px;
+}
+
+#sensor-image img {
+    height: 150px;  
+    width: 150px;
+}
+
+#chart-image img {
+    height: 150px;  
+    width: 150px;
+} */

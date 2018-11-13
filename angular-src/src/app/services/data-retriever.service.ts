@@ -45,7 +45,7 @@ export class DataRetrieverService {
   putNewSensorPosition(sensorId: string, sensorPosition: string) {
     // examples:
     // position: {"latitude": 10, "longitude": 4, "elevetion": 7, "idLocation": "L1"}
-    return this.http.put(`http://localhost:3000/api//sensor/position`,
+    return this.http.put(`http://localhost:3000/api/sensor/position`,
     {
       idSensor: sensorId,
       position: sensorPosition
@@ -55,7 +55,17 @@ export class DataRetrieverService {
   putNewSensorMeasurement(sensorId: string, sensorMeasurement: string) {
     // examples:
     // measurements: {"measurementType": "pm", "uom": "mg/m^3"}
-    return this.http.put(`http://localhost:3000/api/sensor/measurement`,
+    return this.http.put(`http://localhost:3000/api/sensor/add/measurement`,
+    {
+      idSensor: sensorId,
+      measurement: sensorMeasurement
+    });
+  }
+  
+  deleteSensorMeasurement(sensorId: string, sensorMeasurement: string) {
+    // examples:
+    // measurements: {"measurementType": "pm", "uom": "mg/m^3"}
+    return this.http.put(`http://localhost:3000/api/sensor/remove/measurement`,
     {
       idSensor: sensorId,
       measurement: sensorMeasurement
@@ -84,6 +94,19 @@ export class DataRetrieverService {
       });
     return result;
   }
+
+  postNewUserWithPsw(userEmail: string, userName: string, userSurname: string, userAdmin: string, userSalt: string, userHash: string) {
+    var result = this.http.post(`http://localhost:3000/api/userPsw`, 
+      {
+        email: userEmail,
+        name: userName,
+        surname: userSurname,
+        admin: userAdmin,
+        salt: userSalt,
+        hash: userHash
+      });
+    return result;
+}
   
   getSpecificUser(email: string) {
     return this.http.get(`http://localhost:3000/api/user?email=${email}`);
@@ -212,7 +235,9 @@ export class DataRetrieverService {
   getValuesOfSpecificMeasurementThroughRange(measurement: string, range: string) {
     var startAndEnd = this._getStartAndEndFromRange(range);
     var start = startAndEnd[0];
+    console.log(start)
     var end = startAndEnd[1];
+    console.log(end)
     return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end);
   }
 

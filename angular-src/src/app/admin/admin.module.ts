@@ -15,13 +15,30 @@ import { UserManagementRowComponent } from './user-management-row/user-managemen
 import { UserManagementListComponent } from './user-management-list/user-management-list.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UsersResolver } from '../resolvers/users.resolver';
+import { SensorsResolver } from '../resolvers/sensors.resolver';
+import { LocationsResolver } from '../resolvers/locations.resolver';
+import { MeasurementResolver } from '../resolvers/measurement.resolver';
 import { UserManagementEditModalComponent } from './user-management-edit-modal/user-management-edit-modal.component';
 import { UserManagementDeleteModalComponent } from './user-management-delete-modal/user-management-delete-modal.component'
+import { BoxComponent } from './box/box.component';
+import { BoxListComponent } from './box-list/box-list.component';
+import { UserManagerComponent } from './user-manager/user-manager.component';
+import { ChartManagerComponent } from './chart-manager/chart-manager.component';
+import { SensorManagementListComponent } from './sensor-management-list/sensor-management-list.component';
+import { SensorManagementComponent } from './sensor-management/sensor-management.component';
+import { SensorManagementRowComponent } from './sensor-management-row/sensor-management-row.component';
+import { SensorManagementDeleteModalComponent } from './sensor-management-delete-modal/sensor-management-delete-modal.component';
+import { SensorManagementEditModalComponent } from './sensor-management-edit-modal/sensor-management-edit-modal.component';
 
 export const adminRoute : Routes = [
   { path: 'admin', component: AdminComponent , canActivate: [AuthGuard]},
-  { path: 'test', component: AboutComponent, canActivate: [AuthGuard]},
-  { path: 'users', component: UserManagementComponent, resolve: { users: UsersResolver}, canActivate: [AuthGuard]},
+  // { path: 'admin/management', component: BoxComponent, data: {provaAncora : '../../assets/images/user.jpeg'}},
+  { path: 'admin/management', component: BoxListComponent, data: {userImage : '../../assets/images/user.jpeg',
+                                                                  sensorImage : '../../assets/images/sensors.jpg',
+                                                                  chartImage : '../../assets/images/chart.jpg'}, canActivate: [AuthGuard]},
+  { path: 'admin/management/users', component: UserManagementComponent, resolve: { users: UsersResolver}, canActivate: [AuthGuard]},
+  { path: 'admin/management/sensors', component: SensorManagementComponent, resolve: { sensors: SensorsResolver, locations: LocationsResolver, measurements: MeasurementResolver}, canActivate: [AuthGuard]},
+  { path: 'admin/management/charts', component: ChartManagerComponent, canActivate: [AuthGuard]}
 ] ;
 
 @NgModule({
@@ -36,11 +53,13 @@ export const adminRoute : Routes = [
   providers: [
     UsersResolver,
     AuthGuard,
-    AuthenticationService
+    AuthenticationService,
+    SensorsResolver,
+    LocationsResolver
   ],
 
-  declarations: [AdminComponent, UserManagementRowComponent, UserManagementListComponent, UserManagementComponent, UserManagementEditModalComponent, UserManagementDeleteModalComponent]
+  declarations: [AdminComponent, UserManagementRowComponent, UserManagementListComponent, UserManagementComponent, UserManagementEditModalComponent, UserManagementDeleteModalComponent, BoxComponent, BoxListComponent, UserManagerComponent, ChartManagerComponent, SensorManagementListComponent, SensorManagementComponent, SensorManagementRowComponent, SensorManagementDeleteModalComponent, SensorManagementEditModalComponent]
   
 })
 
-export class AdminModule { }
+export class AdminModule {}

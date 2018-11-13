@@ -1,0 +1,4 @@
+<div class="ui items">
+  <!-- <app-sensor-management-row *ngFor="let sens of sensorList; let i=index;" [attr.id]=i  [user]="u" [index]="i" (deletedUser)="deletedUser($event)"></app-sensor-management-row> -->
+  <app-sensor-management-row [measurementList]="measurementList" [locationList]="locationList" *ngFor="let sens of sensorList; let i=index;" (deletedSensor)="deletedSensor($event)" [sensor]="sens" [index]="i"></app-sensor-management-row>
+</div>

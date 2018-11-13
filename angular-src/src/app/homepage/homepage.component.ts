@@ -16,7 +16,7 @@ export class HomepageComponent implements OnInit {
 
   defaultComponents: any = [
     // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'every value', aggregationType: null, usedSensors: null},
-    {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on hours',aggregationType: 'max', usedSensors: null},
+    {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on hours',aggregationType: 'max', usedSensors: ['all']},
     // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on days', aggregationType: 'moda', usedSensors: null},
     // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on months',aggregationType: 'average', usedSensors: null},
     // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation every X days',aggregationType: 'min', usedSensors: null},

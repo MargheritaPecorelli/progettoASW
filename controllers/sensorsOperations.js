@@ -6,18 +6,29 @@ var location = require('../models/location');
 
 /** Callback to add a new sensor and create a new collection related to this specific sensor */
 module.exports.addNewSensor = function(req, res, next){
+    console.log(req)
     var idSensor = req.param('idSensor');
     var name = req.param('name');
     var measurements = req.param('measurements'); //{"measurementType": "temperature", "uom": "C"}; {"measurementType": "pressure", "uom": "Pa"}
     var position = req.param('position'); //{"latitude": 3, "longitude": 4, "elevetion": 5, "idLocation": "L1"}
-
-    var positionJSON = JSON.parse(position);
-
-    var measurementsArray = measurements.split(";");
+    var positionJSON
+    try {
+        positionJSON = JSON.parse(position);
+    }
+    catch (e) {
+        positionJSON = position
+    }
+    if (measurements.includes(";")) {
+        var measurementsArray = measurements.split(";");
+    }
+    else {
+        measurementsArray = measurements
+    }
     var measArr = [];
 
     /** Checks if this location is present in the DB */
     var loc = positionJSON.idLocation;
+    console.log(loc)
     location.findOne({"idLocation": loc}, function(err, response){
         if(err){
             console.log("position Error");
@@ -26,7 +37,12 @@ module.exports.addNewSensor = function(req, res, next){
             return res.send(400, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
         } else {
             for(var j = 0; j < measurementsArray.length; j++) {
-                var el = JSON.parse(measurementsArray[j]);     
+                var el
+                try {
+                    el = JSON.parse(measurementsArray[j]);  
+                } catch(e) {
+                    el = measurementsArray[j]
+                }
                 measArr.push(el);
             }
             /** Checks if this types of measurements are present in the DB */

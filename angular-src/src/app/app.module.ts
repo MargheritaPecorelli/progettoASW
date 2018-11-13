@@ -29,13 +29,15 @@ import { ProfileComponent } from './profile/profile.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminModule } from './admin/admin.module';
 import { adminRoute } from './admin/admin.module';
+import { CalendarSelectorComponent } from './calendar-selector/calendar-selector.component';
+import { NgxDateRangePickerModule } from 'ngx-daterangepicker';
 
 
 const route : Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomepageComponent  },
   { path: 'about', component: AboutComponent },
-  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver }},
+  { path: 'charts/:type/:id', component: ChartDetailsComponent, resolve: { data: ChartResolver,  locations: LocationsResolver, sensors: SensorsResolver }},//sensors: SensorsResolver,
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile/:mail', component: ProfileComponent, canActivate: [AuthGuard] },
@@ -57,7 +59,8 @@ const route : Routes = [
     SideMenuComponent,
     RegisterComponent,
     LoginComponent,
-    ProfileComponent 
+    ProfileComponent,
+    CalendarSelectorComponent 
   ],
 
   imports: [
@@ -66,13 +69,14 @@ const route : Routes = [
     AdminModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxDateRangePickerModule
   ],
 
   providers: [
     ChartResolver,
-    SensorsResolver,
     LocationsResolver,
+    SensorsResolver,
     AuthGuard,
     AuthenticationService
   ],

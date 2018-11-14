@@ -14,11 +14,25 @@
     /* overflow-x: hidden; */
     padding: 8px 5px;
     height: 100%;
+    width: 100%;
 }
 
 .nav-row {
     margin: 0px 3px;
     width: 100%;
+}
+
+/* a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: rgb(7, 94, 165);
+    display: block;
+    width: 100%;
+} */
+
+ul {
+    width: 100%
 }
 
 .sidenav a {
@@ -28,6 +42,10 @@
     color: rgb(7, 94, 165);
     display: block;
     width: 100%;
+}
+
+.nav-second-level {
+    margin-left: 25px;
 }
 
 /* .sidenav a:hover {

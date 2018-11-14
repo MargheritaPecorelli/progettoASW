@@ -3,33 +3,38 @@
     <nav class="sidenav">
         <ul class="nav navbar-nav" id="side-menu">
             
-          <li class="divider"></li>
-
-          <li class="nav-row">
-            <a>
-            Measurement <span class="fa arrow" style="float:right;"> </span>
-            </a>
-            <ul class="nav nav-second-level">
-              <li *ngFor="let measure of measurementList" >
-                  <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-row">
-              <a>
-              Sensors <span class="fa arrow" style="float:right;"> </span>
-              </a>
-              <ul class="nav nav-second-level">
-                <li *ngFor="let sensor of sensorsList">
-                    <a routerLink="/charts/s/{{sensor}}"> {{sensor}} </a>
-                </li>
-              </ul>
+          
+          <div class="row">
+            <li class="nav-row">
+                <a>
+                Measurement <span class="fa arrow" style="float:right;"> </span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <!-- <div class="row"> -->
+                        <li *ngFor="let measure of measurementList" >
+                            <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
+                        </li>
+                    <!-- </div>   -->
+                </ul>
             </li>
+          </div>
 
-          <li class="nav-row" *ngIf="isHome()">
-            <a routerLink="/"> <i class="fa fa-home fa-fw"></i> Home </a>
-          </li>
+          <div class="row">
+            <li class="nav-row">
+                <a>
+                Sensors <span class="fa arrow" style="float:right;"> </span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li *ngFor="let sensor of sensorsList">
+                        <a routerLink="/charts/s/{{sensor}}"> {{sensor}} </a>
+                    </li>
+                </ul>
+                </li>
+
+            <li class="nav-row">
+                <a routerLink="/"> <i class="fa fa-home fa-fw"></i> Home </a>
+            </li>
+          </div>
 
           </ul>
     </nav>

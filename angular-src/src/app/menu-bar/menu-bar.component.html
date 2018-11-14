@@ -1,13 +1,8 @@
 
 <nav class="navbar-header menu-bar col-xs-12 col-sm-12 col-md-12 col-lg-12 w-100">
 
-   <!--  home page menu smartphone
-   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-  </button> -->
+   <!--  home page menu smartphone -->
+
 
   <!-- float-left -->
   <a class="image_container navbar-brand" routerLink="/">
@@ -20,13 +15,12 @@
   <ul class="nav navbar-top-links navbar-right float-right">
 
     <!-- Menu element Options-->
-    <li class="dropdown"> 
+    <!-- <li class="dropdown"> 
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-gear fa-fw"></i> 
         <i class="fa fa-caret-down"></i>
       </a>
-      
-      <!-- list of options in the options button-->
+
       <ul class="dropdown-menu dropdown-options">
 
         <li>
@@ -49,7 +43,7 @@
 
         <li class="divider"></li>
       </ul>
-    </li>
+    </li> -->
 
     <!-- menu element logged user -->
     <li class="dropdown" *ngIf="authService.isLoggedIn()">
@@ -107,9 +101,12 @@
 
       </ul>
 
-
-
-  
-    </li>
+      </li>
   </ul>
+
+  <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="glyphicon glyphicon-menu-hamburger"></span>
+  </button>  -->
+
 </nav>

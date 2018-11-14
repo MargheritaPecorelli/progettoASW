@@ -16,12 +16,4 @@ export class SideMenuComponent implements OnInit {
   ngOnInit() {
   }
 
-  isHome(): boolean {
-    return true;
-  }
-
-  redirectTo(type, id) {
-    
-  }
-
 }

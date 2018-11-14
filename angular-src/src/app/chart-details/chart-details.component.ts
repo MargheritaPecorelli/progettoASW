@@ -88,7 +88,7 @@ export class ChartDetailsComponent implements OnInit {
   realtime: boolean = false;
   selectAll: boolean = false;
 
-  data: Object;
+  receivedData: Object;
 
   levelList: Array<string>;
 
@@ -118,19 +118,23 @@ export class ChartDetailsComponent implements OnInit {
       this.update(params);
     });
 
-
-    this.data = this.route.snapshot.data['data'];
-    // console.log(" ------------------> Received chart data : " , this.data);
+    this.receivedData = this.route.snapshot.data['data'];
+    console.log(" ------------------> Received chart receivedData : " , this.receivedData);
 
     if(this.type == 's') {
-      var list = this.data;
+      var l = this.receivedData as Array<JSON>;
+      var list = [];
+      for(var t = 0; t < l.length; t ++) {
+        list.push(l[t]);
+      }
       var json = {id: this.id, data: list};
       var da = [];
       da.push(json);
-      this.data = da;
+      this.receivedData = da;
+      // console.log(" ------------------> Received chart receivedData : " , this.receivedData);
     }
 
-    console.log(" ------------------> Received chart data : " , this.data);
+    console.log(" ------------------> Received chart receivedData : " , this.receivedData);
     
     this.chartData = new ChartData(
         defaultData.aggregationType + " " + defaultData.measurement,
@@ -140,8 +144,8 @@ export class ChartDetailsComponent implements OnInit {
         defaultData.aggregationRange,
         defaultData.aggregationType,
         null,
-        defaultData.usedSensors, 
-        this.data 
+        defaultData.usedSensors,
+        this.receivedData
       ) ;
 
     console.log(" ------------------> Generated Chart Data : " , this.chartData);

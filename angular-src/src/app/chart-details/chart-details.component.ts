@@ -162,7 +162,7 @@ export class ChartDetailsComponent implements OnInit {
               toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
                                                                 name: control.sensor.location.name, 
                                                                 sensors: [control.sensor.id],
-                                                                selected: false};
+                                                                selected: true};
             } 
             
             var blockID = control.sensor.location.block + control.sensor.location.level
@@ -175,7 +175,7 @@ export class ChartDetailsComponent implements OnInit {
               toReturn.blocks[blockID] = { id: blockID, 
                                             name: 'Block ' + control.sensor.location.block, 
                                             rooms: [control.sensor.location.idLocation], 
-                                            selected: false};
+                                            selected: true};
             }  
 
 
@@ -187,23 +187,23 @@ export class ChartDetailsComponent implements OnInit {
               toReturn.levels[control.sensor.location.level] = { id: control.sensor.location.level, 
                                                                   name: 'Level ' + control.sensor.location.level, 
                                                                   blocks: [blockID], 
-                                                                  selected: false};
+                                                                  selected: true};
               toReturn.levelList.push(control.sensor.location.level)
 
             }  
           }
           resolve(toReturn);
         });
-    }
+      }
     
       var f = async function(contextClass)  {
           let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
 
-          contextClass.levels = result.levels
-          contextClass.blocks = result.blocks
-          contextClass.rooms = result.rooms  
-          console.log(result.levelList)
-          contextClass.initialiseSelectedSensorsList()
+          contextClass.levels = result.levels;
+          contextClass.blocks = result.blocks;
+          contextClass.rooms = result.rooms;
+          contextClass.selectAll = true;
+          contextClass.initialiseSelectedSensorsList();
           contextClass.retrieveDataAndUpdate();
           contextClass.levelList = result.levelList;
       }
@@ -265,6 +265,14 @@ export class ChartDetailsComponent implements OnInit {
     this.checkRoomAndUpdate(sensor.location);
   }
 
+  checkSelectAll() {
+    var allSelected = true;
+    for(var i = 0; i < this.levelList.length ; i++ ){
+      allSelected = allSelected && this.levels[this.levelList[i]].selected
+    }
+    this.selectAll = allSelected
+  }
+
   checkLevelAndUpdate(location: Location){
     var allSelected = true;
     var levelSelected = this.levels[`${location.level}`];
@@ -274,6 +282,7 @@ export class ChartDetailsComponent implements OnInit {
       allSelected = allSelected && this.blocks[`${blockList[i]}`].selected
     }
     levelSelected.selected = allSelected
+    this.checkSelectAll()
   }
 
   checkBlockAndUpdate(location: Location) {

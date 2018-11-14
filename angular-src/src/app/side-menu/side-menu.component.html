@@ -2,18 +2,7 @@
     
     <nav class="sidenav">
         <ul class="nav navbar-nav" id="side-menu">
-
-          <li class="sidebar-search nav-row" >
-            <div class="input-group custom-search-form">
-              <input type="text" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="button">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-            </div>
-          </li>
-
+            
           <li class="divider"></li>
 
           <li class="nav-row">
@@ -22,7 +11,6 @@
             </a>
             <ul class="nav nav-second-level">
               <li *ngFor="let measure of measurementList" >
-                  <!-- <a (click)="redirectTo('m', measure)"> {{measure}} </a> -->
                   <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
               </li>
             </ul>

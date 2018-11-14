@@ -1,13 +1,19 @@
 
     <div id="wrapper" class="container-fluid">
 
-        <app-menu-bar [user]="user" (onUserLogin)="setLogin($event)"></app-menu-bar>
-    
-        <app-side-menu [sensorsList]="sensors" [measurementList]="measurements" class="col-lg-2 col-md-2 col-sm-12 hidden-xs"></app-side-menu>
+        <div class="row">
+            <app-menu-bar [user]="user" (onUserLogin)="setLogin($event)"></app-menu-bar>
+        </div>
 
-        <section class="main-window col-lg-10 col-md-10 col-sm-12 col-xs-12 fill">
-            <router-outlet></router-outlet>
-        </section> 
+        <div class="row">
+            <app-side-menu [sensorsList]="sensors" [measurementList]="measurements" class="col-lg-2 col-md-2 col-sm-12 col-xs-12"></app-side-menu>
+            <!-- <app-side-menu [sensorsList]="sensors" [measurementList]="measurements" class="col-lg-2 col-md-2 col-sm-12 hidden-xs"></app-side-menu> -->
+
+            <section class="main-window col-lg-10 col-md-10 col-sm-12 col-xs-12">
+            <!-- <section class="main-window col-lg-10 col-md-10 col-sm-12 col-xs-12 fill"> -->
+                <router-outlet></router-outlet>
+            </section> 
+        </div>
 
     </div>
 

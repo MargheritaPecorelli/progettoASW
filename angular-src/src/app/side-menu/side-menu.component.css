@@ -2,15 +2,16 @@
 .sidenav {
     /* width: 200px; */
     /* width: 150px; */
-    width: 20%;
-    position: fixed;
-    z-index: 1;
+    /* width: 20%; */
+    /* position: fixed; */
+    /* z-index: 1; */
+    float: left;
     margin-top: 50px;
     padding-right: 5px;
     padding-left: 5px;
-    left: 0;
-    background: #eee;
-    overflow-x: hidden;
+    /* left: 0; */
+    /* background: #eee; */
+    /* overflow-x: hidden; */
     padding: 8px 5px;
     height: 100%;
 }
@@ -23,17 +24,24 @@
 .sidenav a {
     padding: 6px 8px 6px 16px;
     text-decoration: none;
-    font-size: 12px;
-    color: #2196F3;
+    font-size: 18px;
+    color: rgb(7, 94, 165);
     display: block;
     width: 100%;
 }
 
-.sidenav a:hover {
-    color: #064579;
+/* .sidenav a:hover {
+    color: #023661;
+} */
+
+.sidenav :hover {
+    /* color: #004d2d;  */
+    /* color: #2b7556;  */
+    color: #f1730b
+
 }
 
-@media screen and (max-height: 450px) {
+/* @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
-}
+} */

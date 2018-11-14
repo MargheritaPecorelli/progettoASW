@@ -64,12 +64,14 @@ module.exports.getSensorValues = function(req, res, next){
 
     var collection = _getCollection(idSensor);
     
-    collection.find({ "timestamp": { $gte: start, $lt: end}},{"_id":0, "__v":0},function(err, value){
+    collection.find({ "timestamp": { $gte: startDate, $lt: endDate}},{"_id":0, "__v":0},function(err, value){
         if(err){
             res.send(500);
         } else if(value.length == 0) {
-            res.send(404, "In this specific range of time, there are no values that match to this sensor");
+            res.json(value);
+            res.status(404, "In this specific range of time, there are no values that match to this sensor");
         } else {
+            res.status(200);
             res.json(value);
         }
     });
@@ -179,9 +181,9 @@ function _findAllValues(res, idSensor, start, end, measurementType, sensorsList,
     }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
         if(err){
             return res.send(500);
-        } else if(value.length == 0) {
-            console.log("In this specific range of time, there are no values that match to this measurement and this sensor");
-            return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
+        // } else if(value.length == 0) {
+        //     console.log("In this specific range of time, there are no values that match to this measurement and this sensor");
+        //     return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
             var val = JSON.stringify(value);
             var str = '{\"id\": \"' + idSensor + '\", \"data\": ' + val + '}';
@@ -199,6 +201,7 @@ function _findAllValues(res, idSensor, start, end, measurementType, sensorsList,
 
 /** Callback to get all sensors' values of a specific measurement in a determined range of time */
 module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
+    console.log('sono in getSomeValuesOfSpecificMeasurement')
     var measurementType = req.param('measurementType');
     var start = req.param('start');
     var end = req.param('end');
@@ -213,6 +216,8 @@ module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
         return res.send(500, "The \"end\" date is before the \"start\" date, please choose a valid date");
     }
 
+    var dataList = [];
+
     sensors.find({
         measurements: {
             $elemMatch: {
@@ -221,11 +226,11 @@ module.exports.getSomeValuesOfSpecificMeasurement = function(req, res, next){
         }
     }, {"_id":0, '__v': 0, 'name':0, 'measurements': 0, 'position': 0}, function(err, sensorsList) {
         if(sensorsList.length == 0) {
-            res.send(404, "No values found. Please check if the measurement and the range of time are correct!");
+            res.json(dataList);
+            res.status(404, "No values found. Please check if the measurement and the range of time are correct!");
         } else if (err) {
             res.send(500);
         } else {
-            var dataList = [];
             sensorsList.forEach(elem => {
                 var collection = _getCollection(elem.idSensor);
         

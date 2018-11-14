@@ -49,7 +49,7 @@ export class AppComponent implements OnInit{
       var jsonList = JSON.parse(JSON.stringify(sensorList));
 
       jsonList.forEach(sensor => {
-        this.sensors.push((sensor.idSensor + " | " + sensor.name));
+        this.sensors.push((sensor.idSensor));
         //console.log("Sensor : ", (sensor.idSensor + "-" + sensor.name));
       });
     });

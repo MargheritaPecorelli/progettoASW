@@ -56,6 +56,7 @@ export class GraphHolderComponent implements OnInit {
     console.log("Changing type to ", this.chartData.type);
     var chartType = this.chartData.type;
 
+    console.log(" ------------------> GraphHolderComponent : " , this.chartData);
     this.dataAndTime= this.chartData.getDataAndTheirTimestamp();
     this.timesList = [];
     this.valuesList = [];

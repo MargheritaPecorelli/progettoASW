@@ -14,6 +14,7 @@ export class ChartData {
         public usedSensors: string[],
         public data: Object,
         public type: string = "line") {
+            // console.log('data ' + this.data);
             if(startDate == null && endDate == null) {
                 switch(range) {
                     case "last week": {
@@ -41,11 +42,14 @@ export class ChartData {
         }
 
     getDataAndTheirTimestamp(): JSON[] {
+        console.log('sono in getDataAndTheirTimestamp');
         var dataList = [];
         var allSensorsData = [];
-        var nwData = this.data as Array<Array<JSON>>
-        // console.log(nwData);
-
+        // var nwData = this.data as Array<Array<JSON>>
+        var nwData = this.data as Array<JSON>
+        // var json = this.data as JSON
+        // var nwData = JSON.parse(JSON.stringify(json)).data
+        console.log('nwData.length ' + nwData.length);
 
         for(var i = 0; i < nwData.length; i++) {
             var entry = JSON.parse(JSON.stringify(nwData[i]));
@@ -58,7 +62,7 @@ export class ChartData {
             var bTime = new Date(b.timestamp);
             return aTime.getTime()-bTime.getTime();
         });
-        // console.log(allSensorsData);
+        console.log(allSensorsData);
 
         var millisecondsInOneHour = 3600000;
 

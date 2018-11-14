@@ -235,9 +235,7 @@ export class DataRetrieverService {
   getValuesOfSpecificMeasurementThroughRange(measurement: string, range: string) {
     var startAndEnd = this._getStartAndEndFromRange(range);
     var start = startAndEnd[0];
-    console.log(start)
     var end = startAndEnd[1];
-    console.log(end)
     return this.getValuesOfSpecificMeasurementThroughStartAndEnd(measurement, start, end);
   }
 

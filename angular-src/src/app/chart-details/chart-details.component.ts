@@ -120,6 +120,16 @@ export class ChartDetailsComponent implements OnInit {
 
 
     this.data = this.route.snapshot.data['data'];
+    // console.log(" ------------------> Received chart data : " , this.data);
+
+    if(this.type == 's') {
+      var list = this.data;
+      var json = {id: this.id, data: list};
+      var da = [];
+      da.push(json);
+      this.data = da;
+    }
+
     console.log(" ------------------> Received chart data : " , this.data);
     
     this.chartData = new ChartData(

@@ -28,16 +28,17 @@ module.exports.addNewSensor = function(req, res, next){
 
     /** Checks if this location is present in the DB */
     var loc = positionJSON.idLocation;
-    console.log(loc)
+
     location.findOne({"idLocation": loc}, function(err, response){
         if(err){
             console.log("position Error");
             return res.send(500);
         } else if(response == null) {
-            return res.send(400, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
+            res.status(404, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
+            // return res.send(404, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
         } else {
             for(var j = 0; j < measurementsArray.length; j++) {
-                var el
+                var el;
                 try {
                     el = JSON.parse(measurementsArray[j]);  
                 } catch(e) {
@@ -61,7 +62,8 @@ function _checkMeasurementsAndCreateSensor(measArr, i, res, idSensor, name, posi
             console.log("measurements Error");
             return res.send(500);
         } else if(response == null) {
-            return res.send(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
+            res.status(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
+            // return res.send(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
         } else {
             _checkMeasurementsAndCreateSensor(measArr, i+1, res, idSensor, name, positionJSON);
         }
@@ -85,7 +87,7 @@ function _createSensorAndItsCollection(idSensor, name, measArr, positionJSON, re
             /** Add the new sensor to sensors' collection and create a new collection related to this specific sensor */
             sensors.create(sensor, function(err, response){
                 if(err){
-                    return res.sendStatus(400);
+                    return res.sendStatus(500);
                 } else {
                     /** create a new collection related to this specific sensor */
                     connection.createCollection(idSensor);
@@ -115,11 +117,13 @@ module.exports.getSpecificSensor = function(req, res, next){
 
     sensors.findOne({"idSensor": idSensor}, {"_id":0, '__v': 0}, function(err, sensor) {
         if(sensor == null) {
-            res.send(404);
+            res.json(sensor);
+            res.status(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.json(sensor); 
+            res.status(200);
         }
     });
     
@@ -133,7 +137,7 @@ module.exports.deleteSpecificSensor = function(req, res, next){
         if(sensor == null) {
             res.send(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.send(200);
         }
@@ -166,7 +170,7 @@ function _checkMeasurement(measurementJSON, res, idSensor){
             console.log("measurements Error");
             return res.send(500);
         } else if(response == null) {
-            return res.send(404, "this type of measurement is not present in this sensor!");
+            res.send(404, "this type of measurement is not present in this sensor!");
         } else {
             return _removeMeasurements(idSensor, measurementJSON, res);
         }
@@ -178,7 +182,7 @@ function _removeMeasurements(idSensor, measurementJSON, res){
     var list = [];
     sensors.findOne({"idSensor":idSensor}, function(err, response){
         if(response == null) {
-            return res.send(404, "sensor not found!");
+            res.send(404, "sensor not found!");
         } else {
             for(var i = 0; i < response.measurements.length; i++) {
                 if(measurementJSON.measurementType != response.measurements[i].measurementType) {
@@ -228,7 +232,7 @@ function _addMeasurements(idSensor, measurementJSON, j, res){
 
     sensors.findOne({"idSensor":idSensor}, function(err, response){
         if(response == null) {
-            return res.send(404, "sensor not found!");
+            res.send(404, "sensor not found!");
         } else {
             for(var i = 0; i < response.measurements.length; i++) {
                 if(measurementJSON[j].measurementType == response.measurements[i].measurementType) {

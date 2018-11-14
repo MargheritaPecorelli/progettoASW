@@ -31,7 +31,8 @@ module.exports.addNewLocation = function(req, res, next){
             /** Add the new location to locations' collection */
             locations.create(location, function(err, response){
                 if(err){
-                    return res.send(400);
+                    return res.send(500);
+                    // return res.send(400);
                 } else {
                     res.send(200);
                 }
@@ -62,7 +63,8 @@ module.exports.getLevels = function(req, res, next){
 
     locations.find({"city": city,"campus": campus}, {"_id":0, '__v': 0, "idLocation":0, "name":0, "room":0, "block":0, "campus":0, "city":0}, function(err, value) {
         if(value == null) {
-            res.send(404);
+            res.json(listOfLevels);
+            res.status(404);
         } else if (err) {
             res.send(500);
         } else {
@@ -81,20 +83,21 @@ module.exports.getBlocksOfALevel = function(req, res, next){
     var city = req.param('city');
     var campus = req.param('campus');
     var level = req.param('level');
-    var listOfLevels = [];
+    var listOfBlocks = [];
 
     locations.find({"city": city,"campus": campus,"level": level}, {"_id":0, '__v': 0, "idLocation":0, "name":0, "room":0, "level":0, "campus":0, "city":0}, function(err, value) {
         if(value == null) {
-            res.send(404);
+            res.json(listOfBlocks);
+            res.status(404);
         } else if (err) {
             res.send(500);
         } else {
             value.forEach(elem => {
-                if(!listOfLevels.includes(elem.block)) {
-                    listOfLevels.push(elem.block);
+                if(!listOfBlocks.includes(elem.block)) {
+                    listOfBlocks.push(elem.block);
                 }
             });
-            res.json(listOfLevels.sort()); 
+            res.json(listOfBlocks.sort()); 
         }
     });
 };
@@ -107,8 +110,9 @@ module.exports.getRoomsFromBlockAndLevel = function(req, res, next){
     var block = req.param('block');
 
     locations.find({"city": city,"campus": campus,"level": level,"block": block}, {"_id":0, '__v': 0, "block":0, "level":0, "campus":0, "city":0}, function(err, value) {
-        if(value == null) {
-            res.send(404);
+        if(value.length == 0) {
+            res.json(value);
+            res.status(404);
         } else if (err) {
             res.send(500);
         } else {
@@ -123,8 +127,9 @@ module.exports.getSensorsOfARoom = function(req, res, next){
     var listOfLevels = [];
     
     sensors.find({"position.idLocation":idLocation}, {"_id":0, '__v': 0, "measurements":0, "position":0}, function(err, value) {
-        if(value == null) {
-            res.send(404);
+        if(value.length == 0) {
+            res.json(value);
+            res.status(404);
         } else if (err) {
             res.send(500);
         } else {
@@ -139,9 +144,10 @@ module.exports.getLocation = function(req, res, next){
     
     locations.findOne({"idLocation": idLocation}, {"_id":0, '__v': 0}, function(err, location) {
         if(location == null) {
-            res.send(404);
+            res.json(location);
+            res.status(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.json(location); 
         }
@@ -156,7 +162,7 @@ module.exports.deleteLocation = function(req, res, next){
         if(location == null) {
             res.send(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.send(200);
         }

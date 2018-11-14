@@ -28,7 +28,8 @@ function _checkMeasurementAndAddValue(res, idSensor, measurementType, value) {
                 return _addValue(res, idSensor, value);
             }
         }
-        return res.send(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
+        res.status(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
+        // return res.send(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
     });
 };
 
@@ -106,7 +107,10 @@ function _checkMeasurementAndFindValues(res, idSensor, start, end, measurementTy
                 found = true;
                 return _findValues(res, idSensor, start, end, measurementType);
             } else if((i == (response.measurements.length -1)) && !found) {
-                return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
+                var emptyList = [];
+                res.json(emptyList);
+                res.status(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
+                // return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
             }
         }
     });
@@ -121,7 +125,8 @@ function _findValues(res, idSensor, start, end, measurementType) {
         if(err){
             res.send(500);
         } else if(value.length == 0) {
-            res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
+            res.json(value);
+            res.status(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
             var resultsList = [];
             var val = JSON.stringify(value);
@@ -168,7 +173,10 @@ function _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, 
             }
         }
         if(!isPresent) {
-            return res.send(404, "This specific sensor has not this type of measurement!");
+            var emptyList = [];
+            res.json(emptyList);
+            res.status(404, "This specific sensor has not this type of measurement!");
+            // return res.send(404, "This specific sensor has not this type of measurement!");
         }
     });
 };

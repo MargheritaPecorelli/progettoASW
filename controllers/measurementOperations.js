@@ -19,14 +19,14 @@ module.exports.addNewMeasurement = function(req, res, next){
         } else if(response == null) {
             measurements.create(measurement, function(err, response){
                 if(err){
-                    return res.send(400);
+                    return res.send(500);
                 } else {
                     res.send(200);
                 }
             });
         } else {
             console.log("this type of measurement is already present!");
-            res.send(400);
+            res.send(200);
         }
     });
 };
@@ -48,9 +48,10 @@ module.exports.getSpecificMeasurement = function(req, res, next){
 
     measurements.findOne({"measurementType": measurementType}, {"_id":0, "__v":0}, function(err, measurement) {
         if(measurement == null) {
-            res.send(404);
+            res.json(measurement);
+            res.status(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.json(measurement); 
         }

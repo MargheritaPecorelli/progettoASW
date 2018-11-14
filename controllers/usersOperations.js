@@ -24,7 +24,7 @@ module.exports.addNewUser = function(req, res, next){
            /** Add the new user to users' collection */
             users.create(user, function(error, resp){
                 if(error){
-                    return res.send(400);
+                    return res.send(500);
                 } else {
                     res.send(200);
                 }
@@ -61,7 +61,7 @@ module.exports.addNewUserWithPsw = function(req, res, next){
            /** Add the new user to users' collection */
             users.create(user, function(error, resp){
                 if(error){
-                    return res.send(400);
+                    return res.send(500);
                 } else {
                     res.send(200);
                 }
@@ -90,9 +90,10 @@ module.exports.getUser = function(req, res, next){
     
     users.findOne({"email": email}, {"_id":0, '__v': 0}, function(err, user) {
         if(user == null) {
-            res.send(404);
+            res.json(user);
+            res.status(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.json(user); 
         }
@@ -107,7 +108,7 @@ module.exports.deleteUser = function(req, res, next){
         if(user == null) {
             res.send(404);
         } else if (err) {
-            res.send(400);
+            res.send(500);
         } else {
             res.send(200);
         }

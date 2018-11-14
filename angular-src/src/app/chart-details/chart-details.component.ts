@@ -279,7 +279,7 @@ export class ChartDetailsComponent implements OnInit {
 
   ngOnDestroy(){
     this.routeSubscription.unsubscribe();
-    this.chartSubscription.unsubscribe();
+    // this.chartSubscription.unsubscribe();
   }
 
   resetAllFields() {

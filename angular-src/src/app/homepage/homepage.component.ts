@@ -24,7 +24,7 @@ export class HomepageComponent implements OnInit {
     // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on day and night',aggregationType: 'average', usedSensors: null}
   ];
 
-  constructor(private data: DataRetrieverService) { 
+  constructor(private data: DataRetrieverService) {
     this.sampleChartList = [];
     // this.adminBoxesList = [];
   }

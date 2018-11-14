@@ -115,126 +115,9 @@ export class ChartDetailsComponent implements OnInit {
     }
 
     this.route.params.subscribe(params => {
-      this.id = params['id'];
-      this.type = params['type'];
-      this.levels = {}
-      this.rooms = {}
-      this.blocks = {}
-      this.levelList = []
-      this.sensorsList = []
-      this.sensorsControl = {}
-      var updateLists = function(contextClass) {
-
-        var createTree = function (sensorsList, sensorsControl) {
-          var toReturn: A = {rooms: {}, blocks: {}, levels: {}, levelList: []};
-  
-          return new Promise(resolve => { 
-            for(var i = 0; i< sensorsList.length;i++){
-              var control = sensorsControl[`${sensorsList[i]}`];
-              if ( toReturn.rooms[control.sensor.location.idLocation] ) {
-                if (!toReturn.rooms[control.sensor.location.idLocation].sensors.includes(control.sensor.id)) {
-                  toReturn.rooms[control.sensor.location.idLocation].sensors.push(control.sensor.id);
-                }
-              } else {
-                toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
-                                                                  name: control.sensor.location.name, 
-                                                                  sensors: [control.sensor.id],
-                                                                  selected: false};
-              } 
-              
-              var blockID = control.sensor.location.block + control.sensor.location.level
-              if ( toReturn.blocks[blockID] ) {
-
-                if (!toReturn.blocks[blockID].rooms.includes(control.sensor.location.idLocation)){
-                  toReturn.blocks[blockID].rooms.push(control.sensor.location.idLocation);
-                }
-              } else {
-                toReturn.blocks[blockID] = { id: blockID, 
-                                              name: 'Block ' + control.sensor.location.block, 
-                                              rooms: [control.sensor.location.idLocation], 
-                                              selected: false};
-              }  
-
-
-              if (toReturn.levels[control.sensor.location.level] ) {
-                if (!toReturn.levels[control.sensor.location.level].blocks.includes(blockID)){
-                  toReturn.levels[control.sensor.location.level].blocks.push(blockID);
-                }
-              } else {
-                toReturn.levels[control.sensor.location.level] = { id: control.sensor.location.level, 
-                                                                    name: 'Level ' + control.sensor.location.level, 
-                                                                    blocks: [blockID], 
-                                                                    selected: false};
-                toReturn.levelList.push(control.sensor.location.level)
-
-              }  
-            }
-            resolve(toReturn);
-          });
-      }
-      
-        var f = async function(contextClass)  {
-            let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
-  
-            contextClass.levels = result.levels
-            contextClass.blocks = result.blocks
-            contextClass.rooms = result.rooms  
-            console.log(result.levelList)
-            
-            contextClass.levelList = result.levelList;
-        }
-        f(contextClass);
-      }
-  
-      var updateListLauncher = async function(contextClass, sensors) {
-        let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService, contextClass.id) as B;
-        contextClass.sensorsControl = res.sensorsControl;
-        contextClass.sensorsList = res.sensorsList;
-        updateLists(contextClass);   
-      }
-  
-  
-  
-      var sensorControllerBinder = function(sensors, dbRetrieverService, measurementType: string) {
-        var measurementsListContainsId = function(measurements: Measurement[], id:string){
-          var contains = false;
-          for(var i = 0; i< measurements.length; i++) {
-            if (measurements[i].measurementType === id) {
-              contains = true;
-            }
-          }
-          return contains;
-        }
-        return new Promise(resolve => { 
-          var counter = 0;
-          var sensorsList = [];
-          var sensorsControl = {};
-          sensors.forEach(element => {
-            var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurements);
-            var posId = element.position.idLocation;
-            console.log("posid", posId)
-            dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
-              var loc = JSON.parse(JSON.stringify(location));
-              sensor.positionName = loc.name + ' | ' + loc.room;
-              sensor.location = loc
-              if(measurementsListContainsId(sensor.measurements as Measurement[], measurementType)) {
-                console.log(sensor)
-                sensorsList.push(sensor.id);
-                sensorsControl[sensor.id] = {'sensor': sensor, 'selected': false}; 
-              }
-              counter ++;
-              if(counter == (sensors.length)) {
-                resolve({sensorsList, sensorsControl});
-              }
-            });
-          });  
-        });
-      }
-      this.sensorsList = [];
-      var sensors = this.route.snapshot.data['sensors'];
-      console.log("sensors", sensors)
-      updateListLauncher(this,  sensors);
+      this.update(params);
     });
+
 
     this.data = this.route.snapshot.data['data'];
     console.log(" ------------------> Received chart data : " , this.data);
@@ -254,6 +137,126 @@ export class ChartDetailsComponent implements OnInit {
     console.log(" ------------------> Generated Chart Data : " , this.chartData);
   }
   
+  private update(params) {
+    this.id = params['id'];
+    this.type = params['type'];
+    this.levels = {}
+    this.rooms = {}
+    this.blocks = {}
+    this.levelList = []
+    this.sensorsList = []
+    this.sensorsControl = {}
+    var updateLists = function(contextClass) {
+
+      var createTree = function (sensorsList, sensorsControl) {
+        var toReturn: A = {rooms: {}, blocks: {}, levels: {}, levelList: []};
+
+        return new Promise(resolve => { 
+          for(var i = 0; i< sensorsList.length;i++){
+            var control = sensorsControl[`${sensorsList[i]}`];
+            if ( toReturn.rooms[control.sensor.location.idLocation] ) {
+              if (!toReturn.rooms[control.sensor.location.idLocation].sensors.includes(control.sensor.id)) {
+                toReturn.rooms[control.sensor.location.idLocation].sensors.push(control.sensor.id);
+              }
+            } else {
+              toReturn.rooms[control.sensor.location.idLocation] = { id: control.sensor.location.idLocation,
+                                                                name: control.sensor.location.name, 
+                                                                sensors: [control.sensor.id],
+                                                                selected: false};
+            } 
+            
+            var blockID = control.sensor.location.block + control.sensor.location.level
+            if ( toReturn.blocks[blockID] ) {
+
+              if (!toReturn.blocks[blockID].rooms.includes(control.sensor.location.idLocation)){
+                toReturn.blocks[blockID].rooms.push(control.sensor.location.idLocation);
+              }
+            } else {
+              toReturn.blocks[blockID] = { id: blockID, 
+                                            name: 'Block ' + control.sensor.location.block, 
+                                            rooms: [control.sensor.location.idLocation], 
+                                            selected: false};
+            }  
+
+
+            if (toReturn.levels[control.sensor.location.level] ) {
+              if (!toReturn.levels[control.sensor.location.level].blocks.includes(blockID)){
+                toReturn.levels[control.sensor.location.level].blocks.push(blockID);
+              }
+            } else {
+              toReturn.levels[control.sensor.location.level] = { id: control.sensor.location.level, 
+                                                                  name: 'Level ' + control.sensor.location.level, 
+                                                                  blocks: [blockID], 
+                                                                  selected: false};
+              toReturn.levelList.push(control.sensor.location.level)
+
+            }  
+          }
+          resolve(toReturn);
+        });
+    }
+    
+      var f = async function(contextClass)  {
+          let result = await createTree(contextClass.sensorsList, contextClass.sensorsControl) as A;
+
+          contextClass.levels = result.levels
+          contextClass.blocks = result.blocks
+          contextClass.rooms = result.rooms  
+          console.log(result.levelList)
+          contextClass.initialiseSelectedSensorsList()
+          contextClass.retrieveDataAndUpdate();
+          contextClass.levelList = result.levelList;
+      }
+      f(contextClass);
+    }
+
+    var updateListLauncher = async function(contextClass, sensors) {
+      let res = await sensorControllerBinder(sensors, contextClass.dbRetrieverService, contextClass.id) as B;
+      contextClass.sensorsControl = res.sensorsControl;
+      contextClass.sensorsList = res.sensorsList;
+      updateLists(contextClass);   
+    }
+
+    var sensorControllerBinder = function(sensors, dbRetrieverService, measurementType: string) {
+      var measurementsListContainsId = function(measurements: Measurement[], id:string){
+        var contains = false;
+        for(var i = 0; i< measurements.length; i++) {
+          if (measurements[i].measurementType === id) {
+            contains = true;
+          }
+        }
+        return contains;
+      }
+      return new Promise(resolve => { 
+        var counter = 0;
+        var sensorsList = [];
+        var sensorsControl = {};
+        sensors.forEach(element => {
+          var sensor = new Sensor(element.name, element.idSensor, element.position, undefined, undefined, element.measurements);
+          var posId = element.position.idLocation;
+          console.log("posid", posId)
+          dbRetrieverService.getSpecificLocation(posId).subscribe(location => {
+            var loc = JSON.parse(JSON.stringify(location));
+            sensor.positionName = loc.name + ' | ' + loc.room;
+            sensor.location = loc
+            if(measurementsListContainsId(sensor.measurements as Measurement[], measurementType)) {
+              console.log(sensor)
+              sensorsList.push(sensor.id);
+              sensorsControl[sensor.id] = {'sensor': sensor, 'selected': true}; 
+            }
+            counter ++;
+            if(counter == (sensors.length)) {
+              resolve({sensorsList, sensorsControl});
+            }
+          });
+        });  
+      });
+    }
+    this.sensorsList = [];
+    var sensors = this.route.snapshot.data['sensors'];
+    console.log("sensors", sensors)
+    updateListLauncher(this,  sensors);
+  }
 
   ngOnInit() {
   }
@@ -327,6 +330,15 @@ export class ChartDetailsComponent implements OnInit {
     console.log("Real time update enabled: " , this.realtime);
   }
 
+  onChangeDateRange(event) {
+    var dates = event.split(";");
+    this.chartData.startDate = new Date(dates[0]);
+    this.chartData.endDate = new Date(dates[1]);
+    this.chartData.range = null
+    console.log(this.chartData);
+    this.retrieveDataAndUpdate();
+  }
+
   onChangeChartType(chartType: string){
 
     console.log("Chart type selected: " , chartType);
@@ -371,7 +383,8 @@ export class ChartDetailsComponent implements OnInit {
 
       console.log(" ---------> calling db  ! ");
 
-      this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughRange(sensors, this.id, this.chartData.range).subscribe(response => {
+      this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughStartAndEnd(sensors, this.id, this.chartData.startDate, this.chartData.endDate).subscribe(response => {
+      //this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughRange(sensors, this.id, this.chartData.range).subscribe(response => {
         console.log(" -----------> db response  ! ", response);
         this.chartData.data = response;
         this.updateChart();
@@ -379,7 +392,7 @@ export class ChartDetailsComponent implements OnInit {
 
     } else if (this.type == 's'){
       console.log(" -----> retrieving sensor data ! ");
-      this.dbRetrieverService.getSensorValuesThroughRange(this.id,this.chartData.range).subscribe(response => {
+      this.dbRetrieverService.getSensorValuesThroughStartAndEnd(this.id,this.chartData.startDate, this.chartData.endDate).subscribe(response => {
         this.chartData.data = response;
         this.updateChart();
       })
@@ -395,7 +408,7 @@ export class ChartDetailsComponent implements OnInit {
 
   ////////////////// Sensor Selector Modal ///////////////////////
 
-  submitModal() {
+  initialiseSelectedSensorsList() {
 
     this.selectedSensors = [];
 
@@ -406,6 +419,10 @@ export class ChartDetailsComponent implements OnInit {
         this.selectedSensors.push(e.sensor);
       }      
     });
+  }
+
+  submitModal() {
+    this.initialiseSelectedSensorsList();
 
     console.log("Selected Sensors: " , this.selectedSensors);
   }

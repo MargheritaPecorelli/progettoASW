@@ -8,7 +8,7 @@
       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
         <h5 class="text-center"> Range </h5>
-
+        <!--
         <div class="form-group row">
           <label for="range-from" class="col-sm-2 col-form-label">From: </label>
           <div class="col-sm-10">
@@ -22,6 +22,8 @@
             <input id="range-to" type="text" class="form-control" placeholder="stop to">
           </div>
         </div>
+      -->
+      <calendar-selector (dateChangeEventEmitter)="onChangeDateRange($event)"></calendar-selector>
 
       </div>
 

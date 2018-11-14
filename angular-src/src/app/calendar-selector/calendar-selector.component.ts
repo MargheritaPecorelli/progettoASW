@@ -18,9 +18,9 @@ export class CalendarSelectorComponent {
   }
 
   emitDateChangeEvent() {
-    console.log(this.value.from.toString() + " 00:00;" + this.value.to.toString() + " 23:59");
-    //TODO: set date right
-    this.dateChangeEventEmitter.emit(this.value.from.toString + " 00:00;" + this.value.to.toString + " 23:59");
+    var dateRange = this.value.from.toString() + "T00:00:00Z;" + this.value.to.toString() + "T23:59:00Z";
+    // console.log(dateRange);
+    this.dateChangeEventEmitter.emit(dateRange);
   }
 
   ngOnInit() {
@@ -42,7 +42,7 @@ export class CalendarSelectorComponent {
             outputFormat: 'YYYY-MM-DD',
             startOfWeek: 0,
             outputType: 'object',
-            locale: 'it',
+            locale: 'en-UK',
             date: {
                 from: new Date(),
                 to: new Date()

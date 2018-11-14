@@ -42,7 +42,6 @@ export class ChartData {
         }
 
     getDataAndTheirTimestamp(): JSON[] {
-        console.log('sono in getDataAndTheirTimestamp');
         var dataList = [];
         var allSensorsData = [];
         // var nwData = this.data as Array<Array<JSON>>
@@ -53,8 +52,12 @@ export class ChartData {
 
         for(var i = 0; i < nwData.length; i++) {
             var entry = JSON.parse(JSON.stringify(nwData[i]));
-            for(var j = 0; j< entry.data.length; j++) {
-                allSensorsData.push(entry.data[j]);
+            if(entry.data == undefined) {
+                allSensorsData.push(nwData[i]);
+            } else {
+                for(var j = 0; j< entry.data.length; j++) {
+                    allSensorsData.push(entry.data[j]);
+                }
             }
         }
         allSensorsData.sort((a, b) => {

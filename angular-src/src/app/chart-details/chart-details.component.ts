@@ -1,4 +1,4 @@
-import { Component, OnInit, Testability } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params, NavigationEnd, Router } from '@angular/router';
 import { ChartData } from '../models/chartdata.model';
 import { Sensor } from '../models/sensor.model';
@@ -58,7 +58,7 @@ interface SensorControlObject{
 })
 
 export class ChartDetailsComponent implements OnInit {
-
+  dateUpdater: Subject<string> = new Subject();
   availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea', 'bubble', 'scatter'];
   //TODO: add label to select x days.
   availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months','aggregation every X days', 'aggregation on day and night', 'aggregation of every value', 'every value (without aggregation)'];
@@ -101,11 +101,12 @@ export class ChartDetailsComponent implements OnInit {
   chartUpdater: Subject<ChartData> = new Subject();
 
   chartSubscription: Subscription;
+  routeSubscription
 
   constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService, private router: Router ) {
-    
+
     var sensors = this.route.snapshot.data['sensors'];
-    
+    console.log(this.dateUpdater);
     var defaultData: any = {
       measurement: 'pressure', 
       range: 'last 30 days', 
@@ -114,7 +115,8 @@ export class ChartDetailsComponent implements OnInit {
       usedSensors: sensors
     }
 
-    this.route.params.subscribe(params => {
+    this.routeSubscription = this.route.params.subscribe(params => {
+      this.resetAllFields();
       this.update(params);
     });
 
@@ -275,6 +277,15 @@ export class ChartDetailsComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy(){
+    this.routeSubscription.unsubscribe();
+    this.chartSubscription.unsubscribe();
+  }
+
+  resetAllFields() {
+    this.dateUpdater.next("reset");
+  }
+
   updateSensor(sensor: Sensor, selected: boolean) {
     this.checkRoomAndUpdate(sensor.location);
   }
@@ -357,7 +368,6 @@ export class ChartDetailsComponent implements OnInit {
     var dates = event.split(";");
     this.chartData.startDate = new Date(dates[0]);
     this.chartData.endDate = new Date(dates[1]);
-    this.chartData.range = null
     console.log(this.chartData);
     this.retrieveDataAndUpdate();
   }
@@ -394,7 +404,7 @@ export class ChartDetailsComponent implements OnInit {
 
   }
 
-  private retrieveDataAndUpdate() {
+  private async retrieveDataAndUpdate() {
     console.log(" ---> retrieving new data ! ");
     if(this.type == 'm'){
       console.log(" -----> retrieving measurement data ! ");
@@ -405,13 +415,17 @@ export class ChartDetailsComponent implements OnInit {
       }
 
       console.log(" ---------> calling db  ! ");
-
-      this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughStartAndEnd(sensors, this.id, this.chartData.startDate, this.chartData.endDate).subscribe(response => {
-      //this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughRange(sensors, this.id, this.chartData.range).subscribe(response => {
-        console.log(" -----------> db response  ! ", response);
-        this.chartData.data = response;
+      if (sensors.length != 0 ) {
+        this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughStartAndEnd(sensors, this.id, this.chartData.startDate, this.chartData.endDate).subscribe(response => {
+        //this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughRange(sensors, this.id, this.chartData.range).subscribe(response => {
+          console.log(" -----------> db response  ! ", response);
+          this.chartData.data = response;
+          this.updateChart();
+        });
+      } else {
+        this.chartData.data = []
         this.updateChart();
-      });
+      }
 
     } else if (this.type == 's'){
       console.log(" -----> retrieving sensor data ! ");
@@ -423,7 +437,7 @@ export class ChartDetailsComponent implements OnInit {
 
   }
 
-  private updateChart(){
+  private async updateChart(){
     console.log("updating chart !");
     this.chartUpdater.next(this.chartData);
   }

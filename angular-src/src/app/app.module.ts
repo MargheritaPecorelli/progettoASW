@@ -40,7 +40,7 @@ const route : Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'charts/:type/:id', 
       component: ChartDetailsComponent, 
-      resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver }, 
+      resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver, measurements: MeasurementResolver}, 
       runGuardsAndResolvers: 'paramsChange' },
       // runGuardsAndResolvers: 'always' },
       

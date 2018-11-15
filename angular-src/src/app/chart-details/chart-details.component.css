@@ -69,6 +69,11 @@
     color: black;
 }
 
+.alert {
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
 /*
 .select-selected {
     color: black;

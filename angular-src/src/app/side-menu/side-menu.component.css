@@ -1,3 +1,12 @@
+#side-menu {
+    position: fixed;
+    z-index: 1;
+    background-color:  #f8f8f8;
+    overflow-y: auto;
+    max-height: 80%;
+    overflow-x: hidden;
+}
+
 
 .sidenav {
     /* width: 200px; */
@@ -6,6 +15,7 @@
     /* position: fixed; */
     /* z-index: 1; */
     float: left;
+    overflow-x: hidden;
     margin-top: 50px;
     padding-right: 5px;
     padding-left: 5px;
@@ -14,12 +24,17 @@
     /* overflow-x: hidden; */
     padding: 8px 5px;
     height: 100%;
-    width: 100%;
+    /* width: 100%; */
+    /* position: fixed;
+    z-index: 1;
+    overflow:auto;
+    overflow:initial; */
+
 }
 
 .nav-row {
     margin: 0px 3px;
-    width: 100%;
+    /* width: 100%; */
 }
 
 /* a {
@@ -30,10 +45,10 @@
     display: block;
     width: 100%;
 } */
-
+/* 
 ul {
     width: 100%
-}
+} */
 
 .sidenav a {
     padding: 6px 8px 6px 16px;
@@ -41,7 +56,7 @@ ul {
     font-size: 18px;
     color: black;
     display: block;
-    width: 100%;
+    /* width: 100%; */
 }
 
 .nav-second-level {
@@ -69,12 +84,22 @@ ul {
         padding-left: 5px;
     }
 } */
-
-/* @media screen and (min-width: 992px) {
-    .sidebar-collapse {
-        aria-expanded : "true";
-    };
-  } */
+@media (max-width: 992px) {
+    ul {
+            width: 95%;
+            padding: 2px 15px;
+        }
+}
+.arrow{
+    padding-left:5px;
+}
+@media (min-width: 992px) {
+    #side-menu {
+        position: fixed;
+        z-index: 0;
+        background-color: transparent;
+    }
+  }
 
 /* @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

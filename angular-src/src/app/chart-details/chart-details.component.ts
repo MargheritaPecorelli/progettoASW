@@ -111,11 +111,13 @@ export class ChartDetailsComponent implements OnInit {
   chartUpdaterList : Array<Subject<ChartData>> = [];
 
   chartSubscription: Subscription;
-  routeSubscription
+  routeSubscription;
+  allMeasurements;
 
   constructor(private route: ActivatedRoute, private dbRetrieverService: DataRetrieverService, private router: Router ) {
     this.chartDataList = [];
     var sensors = this.route.snapshot.data['sensors'];
+    this.allMeasurements = this.route.snapshot.data['measurements'];
     console.log(this.dateUpdater);
     this.defaultData = {
       measurement: 'pressure', 
@@ -446,22 +448,18 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   onChangeAggregationRangeValue(range: string) {
-
     if( range == 'every value (without aggregation)'){
       range = 'every value';
     }
-
     console.log("Aggregation range selected: " , range);
     this.chartData.aggregationRange = range;
     this.retrieveDataAndUpdate();
-
   }
 
   private async retrieveDataAndUpdate() {
     console.log(" ---> retrieving new data ! ");
     if(this.type == 'm'){
       if(!this.chartData) {
-        console.log(" ---> ifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         this.chartData = new ChartData(
           this.defaultData.aggregationType + " " + this.defaultData.measurement,
           this.defaultData.range,
@@ -474,13 +472,12 @@ export class ChartDetailsComponent implements OnInit {
           this.receivedData
         );
       }
-     console.log(" -----> retrieving measurement data ! ");
+      console.log(" -----> retrieving measurement data ! ");
       var sensors: string[] = [];
       for(let i = 0; i < this.selectedSensors.length; i++) {
         console.log(" -------> retrieving sensor info ! ", this.selectedSensors[i].id);
         sensors.push(this.selectedSensors[i].id);
       }
-
       console.log(" ---------> calling db  ! ");
       if (sensors.length != 0 ) {
         this.dbRetrieverService.getValuesOfSomeSensorsMeasurementThroughStartAndEnd(sensors, this.id, this.chartData.startDate, this.chartData.endDate).subscribe(response => {
@@ -495,10 +492,26 @@ export class ChartDetailsComponent implements OnInit {
       }
     } else if (this.type == 's'){
       console.log(" -----> retrieving sensor data ! ");
-      // if(this.chartDataList.length == 0) {
-      //   var finalList = this._getAllMeasurementsListOfASensor(this.receivedData);
+      var newStartDate;
+      var newEndDate ;
+      if(this.chartDataList.length == 0) {
+        if(this.chartData) {
+          newStartDate = this.chartData.startDate;
+          newEndDate = this.chartData.endDate;
+        } else {
+          newStartDate = new Date();
+          newEndDate = new Date();
+          newStartDate.setDate(newStartDate.getDate() - 29);
+          newEndDate.setHours(newEndDate.getHours() - 2);
+        }
+      // } else if(this.chartDataList.length < this.allMeasurements.length) {
+      //   newStartDate = this.chartDataList[0].startDate;
+      //   newEndDate = this.chartDataList[0].endDate;
+      //   this.chartDataList = [];
       //   this.chartUpdaterList = [];
-      //   for(var w = 0; w < finalList.length; w++) {
+      //   // var measurements = this.route.snapshot.data['measurements'];
+      //   for(var w = 0; w < this.allMeasurements.length; w++) {
+      //     this.chartUpdaterList.push(new Subject());
       //     this.chartDataList.push(new ChartData(
       //       this.defaultData.aggregationType + " " + this.defaultData.measurement,
       //       this.defaultData.range,
@@ -508,22 +521,21 @@ export class ChartDetailsComponent implements OnInit {
       //       this.defaultData.aggregationType,
       //       null,
       //       this.defaultData.usedSensors,
-      //       finalList[w]
+      //       this.receivedData
       //     ));
-      //     this.chartUpdaterList.push(new Subject());
       //   }
-      //   console.log(" -----> this.chartDataList : ", this.chartDataList);
-      // }
+      //   console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+      } else {
+        newStartDate = this.chartDataList[0].startDate;
+        newEndDate = this.chartDataList[0].endDate;
+      }
+      this.dbRetrieverService.getSensorValuesThroughStartAndEnd(this.id, newStartDate, newEndDate).subscribe(response => {
+        var finalList = this._getAllMeasurementsListOfASensor(response);
+        console.log(" ------------------> final list : " , finalList);
 
-
-      var newStartDate;
-      var newEndDate;
-      if(this.chartDataList.length == 0) {
-        newStartDate = this.chartData.startDate;
-        newEndDate = this.chartData.endDate;
-        this.chartUpdaterList = [];
-        var measurements = this.route.snapshot.data['measurements'];
-        for(var w = 0; w < measurements.length; w++) {
+        if(finalList.length == 0) {
+          this.chartUpdaterList = [];
+          this.chartDataList = [];
           this.chartUpdaterList.push(new Subject());
           this.chartDataList.push(new ChartData(
             this.defaultData.aggregationType + " " + this.defaultData.measurement,
@@ -534,29 +546,47 @@ export class ChartDetailsComponent implements OnInit {
             this.defaultData.aggregationType,
             null,
             this.defaultData.usedSensors,
-            this.receivedData
+            []
           ));
+          console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+          this.updateChart();
+
+        } else {
+          console.log(" ------------------> final list : " , finalList);
+          this.chartDataList = [];
+          this.chartUpdaterList = [];
+          console.log(" ------------------> final list length : " , finalList.length);
+          console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+          console.log(" ------------------> this.chartDataList length : " , this.chartDataList.length);
+          for(var t = 0; t < finalList.length; t++) {
+            this.chartDataList.push(new ChartData(
+              this.defaultData.aggregationType + " " + this.defaultData.measurement,
+              this.defaultData.range,
+              null,
+              null, 
+              this.defaultData.aggregationRange,
+              this.defaultData.aggregationType,
+              null,
+              this.defaultData.usedSensors,
+              finalList[t]
+            ));
+            this.chartUpdaterList.push(new Subject());
+          }
+          console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+          console.log(" ------------------> this.chartDataList length : " , this.chartDataList.length);
+          console.log(" ------------------> final list length : " , finalList.length);
+          for(var q = 0; q < finalList.length; q++) {
+            console.log(" ------------------> q : " , q);
+            console.log(" ------------------> finalList[q] : " , finalList[q]);
+            this.chartDataList[q].data = finalList[q];
+            console.log(" ------------------> this.chartDataList[q].data : " , this.chartDataList[q].data);
+          }
+          console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+          this.updateChart();
         }
-      } else {
-        newStartDate = this.chartDataList[0].startDate;
-        newEndDate = this.chartDataList[0].endDate;
-      }
-      this.dbRetrieverService.getSensorValuesThroughStartAndEnd(this.id, newStartDate, newEndDate).subscribe(response => {
-        var finalList = this._getAllMeasurementsListOfASensor(response);
-        console.log(" ------------------> final list : " , finalList);
-        for(var t = 0; t < finalList.length; t++) {
-          console.log(" ------------------> finalList[t] : " , finalList[t]);
-          this.chartDataList[t].data = finalList[t];
-          console.log(" ------------------> this.chartDataList[t].data : " , this.chartDataList[t].data);
-        }
-        for(var q = finalList.length; q < this.chartDataList.length; q++) {
-          this.chartDataList.splice(q, 1);
-        }
-        console.log(" ------------------> this.chartDataList : " , this.chartDataList);
-        this.updateChart();
+
       });
     }
-
   }
 
   private async updateChart(){
@@ -602,37 +632,41 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   _getAllMeasurementsListOfASensor(receivedData) {
-    var measurements = this.route.snapshot.data['measurements'];
     var resultsList = [];
     var finalList = [];
-    for(var i = 0; i < measurements.length; i++) {
+    
+    for(var i = 0; i < this.allMeasurements.length; i++) {
       resultsList.push([]);    
     }
     console.log(" ------------------> resultsList : " , resultsList);
     var jsonArr = receivedData as Array<JSON>;
     console.log(" ------------------> jsonArr : " , jsonArr);
-    var allData;
-    if(jsonArr.length > 1) {
-      allData = jsonArr;
-    } else {
-      allData = JSON.parse(JSON.stringify(jsonArr[0])).data;
-    }
-    console.log(" ------------------> allData : " , allData);
-    for(var y = 0; y < allData.length; y++) {
-      var entry = JSON.parse(JSON.stringify(allData[y]));
-      for(var k = 0; k < measurements.length; k++) {
-        if(entry.measurementType === JSON.parse(JSON.stringify(measurements[k])).measurementType) {
-          resultsList[k].push(entry);
-        }
-      }        
-    }
-    console.log(" ------------------> List of lists, one for every measurements : " , resultsList);
-    for(var e = 0; e < resultsList.length; e++) {
-      if(resultsList[e].length != 0) {
-        finalList.push(resultsList[e])
+
+    if(jsonArr.length != 0) {
+      var allData;
+      if(jsonArr.length > 1) {
+        allData = jsonArr;
+      } else {
+        allData = JSON.parse(JSON.stringify(jsonArr[0])).data;
       }
+      console.log(" ------------------> allData : " , allData);
+      for(var y = 0; y < allData.length; y++) {
+        var entry = JSON.parse(JSON.stringify(allData[y]));
+        for(var k = 0; k < this.allMeasurements.length; k++) {
+          if(entry.measurementType === JSON.parse(JSON.stringify(this.allMeasurements[k])).measurementType) {
+            resultsList[k].push(entry);
+          }
+        }        
+      }
+      console.log(" ------------------> List of lists, one for every measurements : " , resultsList);
+      for(var e = 0; e < resultsList.length; e++) {
+        if(resultsList[e].length != 0) {
+          finalList.push(resultsList[e])
+        }
+      }
+      console.log(" ------------------> List of lists, one for every measurements (except the empty ones) : " , finalList);
     }
-    console.log(" ------------------> List of lists, one for every measurements (except the empty ones) : " , finalList);
+
     return finalList;
   }
 }

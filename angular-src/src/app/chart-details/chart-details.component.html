@@ -220,9 +220,19 @@
   </div>
 
   <div *ngIf="type == 's'">
-    <h2>
-        Displaying Sensor Chart for sensor #{{id}}  
-    </h2>
-    <app-graph-holder *ngFor="let chart of chartDataList; let i = index" [chartData]="chart" [update]="chartUpdaterList[i]" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder>
+    <div  *ngFor="let chart of chartDataList; let i = index">
+      <div *ngIf="chart.data.length > 0; else emptyData">
+        <h2 class="text-center">
+            Displaying Sensor Chart for {{chart.data[0].measurementType}}  
+        </h2>
+        <app-graph-holder  [chartData]="chart" [update]="chartUpdaterList[i]" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder>
+      </div>
+      <ng-template #emptyData>
+        <div class="alert alert-danger text-center" role="alert">
+          No data available for this sensor!
+        </div>
+      </ng-template>
+    </div>
   </div>
+
 </div> 

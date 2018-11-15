@@ -30,13 +30,19 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.defaultComponents.forEach(elem => {
-      this.data.getValuesOfSpecificMeasurementThroughRange(elem.measurement, elem.range).subscribe(data => {
-        this.sampleChartList.push(new ChartData(elem.aggregationType + " " + elem.measurement,
-                                                elem.range, null, null, elem.aggregationRange,
-                                                elem.aggregationType, 7, elem.usedSensors, data ));
+
+    // this.data.getAllMeasurements().subscribe(measurements => {
+      // var js = JSON.parse(JSON.stringify(measurements));
+      // var js = JSON.stringify(measurements);
+      // console.log('measurements ' + js);
+      this.defaultComponents.forEach(elem => {
+        this.data.getValuesOfSpecificMeasurementThroughRange(elem.measurement, elem.range).subscribe(data => {
+          this.sampleChartList.push(new ChartData(elem.aggregationType + " " + elem.measurement,
+                                                  elem.range, null, null, elem.aggregationRange,
+                                                  elem.aggregationType, 7, elem.usedSensors, data ));
+        });
       });
-    });
+    // });
 
     // for(var i = 0; i < 3; i++) {
     //   if(i==0) {

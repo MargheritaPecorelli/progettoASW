@@ -223,6 +223,6 @@
     <h2>
         Displaying Sensor Chart for sensor #{{id}}  
     </h2>
-    <app-graph-holder [chartData]="chartData" [update]="chartUpdater" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder>
+    <app-graph-holder *ngFor="let chart of chartDataList; let i = index" [chartData]="chart" [update]="chartUpdaterList[i]" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder>
   </div>
 </div> 

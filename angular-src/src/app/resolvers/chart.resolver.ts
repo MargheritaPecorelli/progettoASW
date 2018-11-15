@@ -31,7 +31,9 @@ export class ChartResolver implements Resolve<ChartData> {
         return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(id,defaultData.range);
       } else if ( type == 's') {
         console.log("Retrieving data for sensors: " + id);
-        return this.dbRetrieverService.getSensorValuesThroughRange(id,defaultData.range);
+        var list = this.dbRetrieverService.getSensorValuesThroughRange(id,defaultData.range);
+        console.log(list);
+        return list
       }
 
       //return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(defaultData.measurement, defaultData.range);

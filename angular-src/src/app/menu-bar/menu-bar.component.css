@@ -1,11 +1,16 @@
 .menu-bar {
-    background-color: #cc0000 ;
+    background-color:#bb2e29 ;
     margin-left: 0px;
     margin-right: 0px;
     position: fixed;
     z-index: 1;
     width: 100%;
     min-width: 100%;
+}
+
+
+a {
+    color: white;
 }
 
 a.image_container {
@@ -20,9 +25,36 @@ a.image_container img {
 }
 
 .dropdown-toggle:hover {
-    background-color: aqua;
+    background-color:darkred;
+}
+
+.nav > li > a:focus, .nav > li > a:hover, nav .open > a, .nav .open > a:focus, .nav .open > a:hover{
+    background-color: darkred;
+}
+
+.dropdown .open {
+    background-color:darkred;
 }
 
 li .open {
-    background-color: aqua;
+    background-color: darkred;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+@media screen and (min-width: 992px) {
+    .menu-collapse-button {
+        visibility: hidden;
+        display: none;
+    };
+}
+
+@media screen and (max-width: 480px)  {
+
+    .navbar-title {
+        visibility: hidden;
+        display: none;
+    }
 }

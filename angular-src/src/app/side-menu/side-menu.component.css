@@ -39,7 +39,7 @@ ul {
     padding: 6px 8px 6px 16px;
     text-decoration: none;
     font-size: 18px;
-    color: rgb(7, 94, 165);
+    color: black;
     display: block;
     width: 100%;
 }
@@ -52,12 +52,29 @@ ul {
     color: #023661;
 } */
 
-.sidenav :hover {
+.menu-sidenav-element:hover {
     /* color: #004d2d;  */
     /* color: #2b7556;  */
-    color: #f1730b
+    /*color: #f1730b*/
+    background-color: #c5c5c5;
 
 }
+
+/* @media screen and (min-width: 992px) {
+    .sidenav {
+        position: fixed;
+        z-index: 1;
+        margin-top: 50px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+} */
+
+/* @media screen and (min-width: 992px) {
+    .sidebar-collapse {
+        aria-expanded : "true";
+    };
+  } */
 
 /* @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

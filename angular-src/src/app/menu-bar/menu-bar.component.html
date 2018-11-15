@@ -9,10 +9,15 @@
     <img class="img-fluid rounded" alt="logo image" src="../../assets/images/logo.png">
   </a> 
  
-  <a class="navbar-brand" routerLink="/"> MSC - MultiSensor Campus </a> 
+  <a class="navbar-brand navbar-title" routerLink="/"> MSC - MultiSensor Campus </a> 
 
   <!-- menu element list-->
   <ul class="nav navbar-top-links navbar-right float-right">
+
+      <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="glyphicon glyphicon-menu-hamburger"></span>
+  </button>  -->
 
     <!-- Menu element Options-->
     <!-- <li class="dropdown"> 
@@ -20,30 +25,14 @@
         <i class="fa fa-gear fa-fw"></i> 
         <i class="fa fa-caret-down"></i>
       </a>
-
-      <ul class="dropdown-menu dropdown-options">
-
-        <li>
-          <a href="#">
-            <div>
-                <i class="fa fa-comment fa-fw"></i> New Comment
-              </div>
-          </a>
-        </li>
-            
-        <li class="divider"></li>
-          
-        <li>
-          <a href="#">
-            <div>
-              <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-            </div>
-          </a>
-        </li>
-
-        <li class="divider"></li>
-      </ul>
     </li> -->
+
+    <li class="dropdown menu-collapse-button"> 
+      <a role="button" class="dropdown-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+        <i class="sr-only">Toggle navigation</i>
+        <i class="glyphicon glyphicon-menu-hamburger"></i>
+      </a>
+    </li>
 
     <!-- menu element logged user -->
     <li class="dropdown" *ngIf="authService.isLoggedIn()">
@@ -103,10 +92,5 @@
 
       </li>
   </ul>
-
-  <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-    <span class="sr-only">Toggle navigation</span>
-    <span class="glyphicon glyphicon-menu-hamburger"></span>
-  </button>  -->
 
 </nav>

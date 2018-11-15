@@ -1,5 +1,5 @@
 .chart-menu {
-    background-color: aquamarine;
+    background-color: #e6e6e6;
     padding: 2px 15px;
 }
 
@@ -28,24 +28,65 @@
 }
 
 .level-row {
-    border: 1px solid red;
+    border: 1px solid darkred;
     border-radius: 5px;
     margin: 5px;
     padding: 2px 15px;
 }
 
 .block-row {
-    border: 1px solid blue;
+    border: 1px solid darkred;
     border-radius: 5px;
     margin:5px;
     margin-left: 20px;
     padding: 2px 15px;
 }
 
+.btn-primary{
+    color: black;
+    background-color: white;
+    border-color: black;
+}
+
+.btn-primary:hover{
+    background-color: #c5c5c5;
+}
+
+.btn-primary:focus
+{
+    background-color: white;
+}
+
 .room-row {
-    border: 1px solid green;
+    border: 1px solid darkred;
     border-radius: 5px;
     margin:5px;
     margin-left: 35px;
     padding: 2px 15px;
 }
+
+.select-graph-options select {
+    color: black;
+}
+
+/*
+.select-selected {
+    color: black;
+    background-color: white;
+}
+
+.select-items div,.select-selected {
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+  }
+  .select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }*/

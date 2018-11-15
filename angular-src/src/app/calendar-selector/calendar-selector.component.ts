@@ -2,6 +2,10 @@ import { Component, Output, EventEmitter , Input } from '@angular/core';
 import { NgxDateRangePickerOptions, NgxDateRangePickerDates } from 'ngx-daterangepicker';
 import { Subject } from 'rxjs';
 
+interface DateRange{
+  start: Date,
+  end: Date
+}
 @Component({
   selector: 'calendar-selector',
   templateUrl: './calendar-selector.component.html',
@@ -12,16 +16,51 @@ import { Subject } from 'rxjs';
 export class CalendarSelectorComponent {
   options: NgxDateRangePickerOptions;
   value: NgxDateRangePickerDates;
-  @Output() dateChangeEventEmitter: EventEmitter<String>;
+  @Output() dateChangeEventEmitter: EventEmitter<DateRange>;
   @Input() updateDate: Subject<string>;
 
   constructor() {
     this.dateChangeEventEmitter = new EventEmitter();
   }
+  
+  createStartDate(date:string){
+    var dateFields = date.split("-");
+    var dateToReturn = new Date()
+    dateToReturn.setUTCFullYear(Number(dateFields[0]))
+    dateToReturn.setUTCMonth(Number(dateFields[1])-1)
+    dateToReturn.setUTCDate(Number(dateFields[2]))
+    dateToReturn.setHours(1)
+    dateToReturn.setMinutes(0)
+    dateToReturn.setSeconds(0)
+    var dateToday = new Date()
+    if(dateToReturn.getTime() > dateToday.getTime()) {
+      dateToReturn.setUTCFullYear(dateToday.getUTCFullYear())
+      dateToReturn.setUTCMonth(dateToday.getUTCMonth())
+      dateToReturn.setUTCDate(dateToday.getUTCDate())
+    }
+    return dateToReturn
+  } 
+
+  createEndDate(date:string){
+    var dateFields = date.split("-");
+    var dateToReturn = new Date()
+    dateToReturn.setUTCFullYear(Number(dateFields[0]))
+    dateToReturn.setUTCMonth(Number(dateFields[1])-1)
+    dateToReturn.setUTCDate(Number(dateFields[2]))
+    var dateToday = new Date()
+    dateToReturn.setHours(dateToday.getUTCHours())
+    dateToReturn.setMinutes(dateToday.getUTCMinutes())
+    dateToReturn.setSeconds(0)
+    if(dateToReturn.getTime() > dateToday.getTime()) {
+      dateToReturn.setUTCFullYear(dateToday.getUTCFullYear())
+      dateToReturn.setUTCMonth(dateToday.getUTCMonth())
+      dateToReturn.setUTCDate(dateToday.getUTCDate())
+    }
+    return dateToReturn
+  } 
 
   emitDateChangeEvent() {
-    var dateRange = this.value.from.toString() + "T00:00:00Z;" + this.value.to.toString() + "T23:59:00Z";
-    console.log(dateRange);
+    var dateRange: DateRange = {start: this.createStartDate(this.value.from.toString()), end: this.createEndDate(this.value.to.toString())};
     this.dateChangeEventEmitter.emit(dateRange);
   }
 
@@ -36,7 +75,7 @@ export class CalendarSelectorComponent {
 
   ngOnInit() {
     this.options = {
-      theme: 'green',
+      theme: 'gray',
       labels: ['Start', 'End'],
       menu: [
           {alias: 'td', text: 'Today', operation: '0d'},

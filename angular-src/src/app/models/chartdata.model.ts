@@ -1,7 +1,10 @@
 import { Sensor } from "./sensor.model";
 import { map } from "rxjs/internal/operators/map";
+import { DataRetrieverService } from 'src/app/services/data-retriever.service';
 
 export class ChartData {
+
+    // dataRetriever: DataRetrieverService;
 
     constructor(
         public name: string,
@@ -42,13 +45,19 @@ export class ChartData {
         }
 
     getDataAndTheirTimestamp(): JSON[] {
+        // var resultsList = [];
         var dataList = [];
         var allSensorsData = [];
-        // var nwData = this.data as Array<Array<JSON>>
         var nwData = this.data as Array<JSON>
-        // var json = this.data as JSON
-        // var nwData = JSON.parse(JSON.stringify(json)).data
-        console.log('nwData.length ' + nwData.length);
+        // var nameList = this.allMeasurements as Array<string>
+
+        
+        // if(JSON.parse(JSON.stringify(nwData[0])).data == undefined) {
+        //     console.log('nameList.length ' + nameList.length);
+        //     for(var f = 0; f < nameList.length; f++) {
+        //         allSensorsData.push([]);
+        //     }
+        // }
 
         for(var i = 0; i < nwData.length; i++) {
             var entry = JSON.parse(JSON.stringify(nwData[i]));
@@ -60,15 +69,28 @@ export class ChartData {
                 }
             }
         }
-        allSensorsData.sort((a, b) => {
-            var aTime = new Date(a.timestamp);
-            var bTime = new Date(b.timestamp);
-            return aTime.getTime()-bTime.getTime();
-        });
-        console.log(allSensorsData);
+        // if(allSensorsData[0].length === undefined) {
+            allSensorsData.sort((a, b) => {
+                var aTime = new Date(a.timestamp);
+                var bTime = new Date(b.timestamp);
+                return aTime.getTime()-bTime.getTime();
+            });
+            console.log(allSensorsData);
+            // resultsList = this._returnDataList(allSensorsData);
+        // } else {
+        //     for(var y = 0; y < nameList.length; y++) {
+        //         allSensorsData[y].sort((a, b) => {
+        //             var aTime = new Date(a.timestamp);
+        //             var bTime = new Date(b.timestamp);
+        //             return aTime.getTime()-bTime.getTime();
+        //         });
+        //         console.log(allSensorsData[y]);
+        //         resultsList.push(this._returnDataList(allSensorsData[y]));
+        //     }
+        // }        
 
         var millisecondsInOneHour = 3600000;
-
+        
         switch(this.aggregationRange) {
             case "every value": {
                 allSensorsData.forEach(elem => {
@@ -561,8 +583,9 @@ export class ChartData {
             default: {
                 console.log("Invalid choice");  
                 break; 
-            } 
+            }
         }
+
         //console.log(dataList);
         return dataList;
     }

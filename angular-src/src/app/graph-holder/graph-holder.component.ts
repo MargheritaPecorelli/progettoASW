@@ -14,10 +14,13 @@ import { ChartData } from '../models/chartdata.model';
 export class GraphHolderComponent implements OnInit {
 
   @Input() chartData : ChartData;
-  dataAndTime: JSON[];
+  dataAndTime;
   @Input() update: Subject<ChartData>;
 
   chart: Chart;
+
+  chartList: Chart[];
+
   htmlRef
   valuesList = [];
   timesList = [];
@@ -57,49 +60,100 @@ export class GraphHolderComponent implements OnInit {
     var chartType = this.chartData.type;
 
     console.log(" ------------------> GraphHolderComponent : " , this.chartData);
+    console.log(" ------------------> GraphHolderComponent data: " , this.chartData.data);
+
+
     this.dataAndTime= this.chartData.getDataAndTheirTimestamp();
-    this.timesList = [];
-    this.valuesList = [];
-    for(var i = 0; i < this.dataAndTime.length; i++) {
-      var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
-      this.valuesList.push(jsonObj.value);
-      this.timesList.push(jsonObj.timestamp);      
-    }
+    console.log(" ------------------> GraphHolderComponent dataAndTime : " , this.dataAndTime);
 
-    var chartData = {
-      labels: this.timesList,
-      datasets: [
-        {
-          data: this.valuesList,
-          borderColor: '#3cba9f',
-          fill: false
-        }
-      ]
-    }
 
-    // Remove the old chart and all its event handles
-    if (this.chart) {
-      console.log("chart : ", this.chart);
-      this.chart.destroy();
-    }
-
-    this.chart = new Chart(this.htmlRef, {
-      type: chartType,
-      data: chartData,
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          xAxes: [{
-            display: true
-          }],
-          yAxes: [{
-            display: true
-          }],
-        }
+    // if(this.dataAndTime[0].length === undefined) {
+      this.timesList = [];
+      this.valuesList = [];
+      for(var i = 0; i < this.dataAndTime.length; i++) {
+        var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
+        this.valuesList.push(jsonObj.value);
+        this.timesList.push(jsonObj.timestamp);      
       }
-    });
+      var chartData = {
+        labels: this.timesList,
+        datasets: [
+          {
+            data: this.valuesList,
+            borderColor: '#3cba9f',
+            fill: false
+          }
+        ]
+      }
+      // Remove the old chart and all its event handles
+      if(this.chart) {
+        console.log("chart : ", this.chart);
+        this.chart.destroy();
+      }
+  
+      this.chart = new Chart(this.htmlRef, {
+        type: chartType,
+        data: chartData,
+        options: {
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              display: true
+            }],
+            yAxes: [{
+              display: true
+            }],
+          }
+        }
+      });
+    // } else {
+    //   // var charts = [];
+    //   for(var j = 0; j < this.dataAndTime.length; j++) {
+    //     this.timesList = [];
+    //     this.valuesList = [];
+    //     for(var i = 0; i < this.dataAndTime[j].length; i++) {
+    //       var list = this.dataAndTime[j];
+    //       var jsonObj = JSON.parse(JSON.stringify(list[i]));
+    //       this.valuesList.push(jsonObj.value);
+    //       this.timesList.push(jsonObj.timestamp);      
+    //     }
+    //     var chartData = {
+    //       labels: this.timesList,
+    //       datasets: [
+    //         {
+    //           data: this.valuesList,
+    //           borderColor: '#3cba9f',
+    //           fill: false
+    //         }
+    //       ]
+    //     }
+    //     // Remove the old chart and all its event handles
+    //     if(this.chart) {
+    //       console.log("chart : ", this.chart);
+    //       this.chart.destroy();
+    //     }
+    //     this.chart = new Chart(this.htmlRef, {
+    //       type: chartType,
+    //       data: chartData,
+    //       options: {
+    //         legend: {
+    //           display: false
+    //         },
+    //         scales: {
+    //           xAxes: [{
+    //             display: true
+    //           }],
+    //           yAxes: [{
+    //             display: true
+    //           }],
+    //         }
+    //       }
+    //     });      
+    //   }
+    // }
+
   }
 
 }

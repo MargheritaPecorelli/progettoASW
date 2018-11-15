@@ -11,86 +11,75 @@
  
   <a class="navbar-brand navbar-title" routerLink="/"> MSC - MultiSensor Campus </a> 
 
-  <!-- menu element list-->
-  <ul class="nav navbar-top-links navbar-right float-right">
-
-      <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-    <span class="sr-only">Toggle navigation</span>
-    <span class="glyphicon glyphicon-menu-hamburger"></span>
-  </button>  -->
-
-    <!-- Menu element Options-->
-    <!-- <li class="dropdown"> 
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-        <i class="fa fa-gear fa-fw"></i> 
-        <i class="fa fa-caret-down"></i>
-      </a>
-    </li> -->
-
-    <li class="dropdown menu-collapse-button"> 
-      <a role="button" class="dropdown-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-        <i class="sr-only">Toggle navigation</i>
-        <i class="glyphicon glyphicon-menu-hamburger"></i>
-      </a>
-    </li>
-
-    <!-- menu element logged user -->
-    <li class="dropdown" *ngIf="authService.isLoggedIn()">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-        <!-- user icon -->
-        <i class="fa fa-user fa-fw"></i> 
-        <i class="fa fa-caret-down"></i>
-      </a>
-
-      <!-- list of options in the user button-->
-      <ul class="dropdown-menu dropdown-user">
-
-        <li>
-          <a routerLink="/profile/{{ authService.getUserDetails()?.email }}"> 
-            <i class="fa fa-user fa-fw"></i> {{ authService.getUserDetails()?.name }} 
-          </a>
-        </li>
-
-        <li class="divider"></li>
+  <div class="top-right-menu float-right">
+    <!-- menu element list-->
+    <ul class="nav navbar-top-links navbar-right float-right">
 
 
-        <li>
-          <a (click)='authService.logout()'>
-            <i class="fa fa-sign-out fa-fw"></i> Logout
-          </a>
-        </li>
-      </ul>
-    </li>
-
-
-    <!-- menu element not logged user -->
-    <li class="dropdown" *ngIf="!authService.isLoggedIn()">
+      <!-- menu element logged user -->
+      <li class="dropdown" *ngIf="authService.isLoggedIn()">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           <!-- user icon -->
           <i class="fa fa-user fa-fw"></i> 
           <i class="fa fa-caret-down"></i>
         </a>
-  
+
         <!-- list of options in the user button-->
-      <ul class="dropdown-menu dropdown-user">
-  
-        <li>
-          <a routerLink="/login">
-            <i class="fa fa-sign-in fa-fw"></i> Login
-          </a>
-        </li>
+        <ul class="dropdown-menu dropdown-user">
 
-        <li class="divider"></li>
-
-        <li>
-            <a routerLink="/register">
-              <i class="fa fa-user-plus fa-fw"></i> Register
+          <li>
+            <a routerLink="/profile/{{ authService.getUserDetails()?.email }}"> 
+              <i class="fa fa-user fa-fw"></i> {{ authService.getUserDetails()?.name }} 
             </a>
           </li>
 
-      </ul>
+          <li class="divider"></li>
+
+
+          <li>
+            <a (click)='authService.logout()'>
+              <i class="fa fa-sign-out fa-fw"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </li>
+
+
+      <!-- menu element not logged user -->
+      <li class="dropdown" *ngIf="!authService.isLoggedIn()">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <!-- user icon -->
+            <i class="fa fa-user fa-fw"></i> 
+            <i class="fa fa-caret-down"></i>
+          </a>
+    
+          <!-- list of options in the user button-->
+        <ul class="dropdown-menu dropdown-user">
+    
+          <li>
+            <a routerLink="/login">
+              <i class="fa fa-sign-in fa-fw"></i> Login
+            </a>
+          </li>
+
+          <li class="divider"></li>
+
+          <li>
+              <a routerLink="/register">
+                <i class="fa fa-user-plus fa-fw"></i> Register
+              </a>
+            </li>
+
+        </ul>
 
       </li>
-  </ul>
+      <li class="dropdown menu-collapse-button"> 
+          <a role="button" class="dropdown-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+            <i class="sr-only">Toggle navigation</i>
+            <i class="glyphicon glyphicon-menu-hamburger"></i>
+          </a>
+        </li>
+    </ul>
+  </div>
 
 </nav>

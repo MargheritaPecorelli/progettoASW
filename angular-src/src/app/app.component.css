@@ -4,8 +4,10 @@
     margin-top: 50px;
 }
 
+
 @media (min-width: 992px) {
     .sidebar-collapse {
         display: block !important;
+        
     };
   }

@@ -1,15 +1,15 @@
-    
-    
-    <nav class="sidenav">
+
+<nav class="sidenav">
+    <div id="sidenav-div">
         <ul class="nav navbar-nav" id="side-menu">
             
-          
-          <div class="row">
+        
+        <div class="row">
             <li class="nav-row">
                 <a class="menu-sidenav-element">
                 Measurement <span class="fa arrow" style="float:right;"> </span>
                 </a>
-                <ul class="nav nav-second-level">
+                <ul class="nav nav-second-level collapse">
                     <!-- <div class="row"> -->
                         <li *ngFor="let measure of measurementList">
                             <a routerLink="/charts/m/{{measure}}" class="menu-sidenav-element"> {{measure}} </a>
@@ -17,14 +17,14 @@
                     <!-- </div>   -->
                 </ul>
             </li>
-          </div>
+        </div>
 
-          <div class="row">
+        <div class="row">
             <li class="nav-row">
                 <a class="menu-sidenav-element">
                 Sensors <span class="fa arrow" style="float:right;"> </span>
                 </a>
-                <ul class="nav nav-second-level">
+                <ul class="nav nav-second-level collapse">
                     <li *ngFor="let sensor of sensorsList">
                         <a routerLink="/charts/s/{{sensor}}" class="menu-sidenav-element"> {{sensor}} </a>
                     </li>
@@ -33,10 +33,11 @@
             <li class="nav-row">
                 <a class="menu-sidenav-element" routerLink="/"> <i class="fa fa-home fa-fw"></i> Home </a>
             </li>
-          </div>
+        </div>
 
-          </ul>
-    </nav>
+        </ul>
+    </div>
+</nav>
     
     
     <!--

@@ -131,7 +131,8 @@ export class ChartDetailsComponent implements OnInit {
       aggregationRange: 'every value', 
       aggregationType: 'average', 
       usedSensors: sensors,
-      chartType: 'line'
+      chartMType: 'line',
+      chartSType: 'line'
     }
 
     this.routeSubscription = this.route.params.subscribe(params => {
@@ -443,12 +444,13 @@ export class ChartDetailsComponent implements OnInit {
   onChangeChartType(chartType: string){
     console.log("Chart type selected: " , chartType);
     if(this.type == 's') {
-      this.defaultData.chartType = chartType;
+      this.defaultData.chartSType = chartType;
       console.log('defaultttttttttttttttttttttttttttttttttttttttttttttttt ');
       for(var i = 0; i < this.chartDataList.length; i++) {
         this.chartDataList[i].type = chartType;  
       }
     } else {
+      this.defaultData.chartMType = chartType;
       this.chartData.type = chartType;
     }
     this.updateChart();
@@ -491,7 +493,7 @@ export class ChartDetailsComponent implements OnInit {
           null,
           this.defaultData.usedSensors,
           this.receivedData,
-          this.defaultData.chartType
+          this.defaultData.chartMType
         );
       }
       console.log(" -----> retrieving measurement data ! ");
@@ -553,7 +555,7 @@ export class ChartDetailsComponent implements OnInit {
             null,
             this.defaultData.usedSensors,
             [],
-            this.defaultData.chartType
+            this.defaultData.chartSType
           ));
           console.log(" ------------------> this.chartDataList : " , this.chartDataList);
           this.updateChart();
@@ -576,9 +578,9 @@ export class ChartDetailsComponent implements OnInit {
               null,
               this.defaultData.usedSensors,
               finalList[t],
-              this.defaultData.chartType
+              this.defaultData.chartSType
             ));
-            console.log('defaultttttttttttttttttt        typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.defaultData.chartType);
+            // console.log('defaultttttttttttttttttt        typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.defaultData.chartType);
             this.chartUpdaterList.push(new Subject());
           }
           console.log(" ------------------> this.chartDataList : " , this.chartDataList);

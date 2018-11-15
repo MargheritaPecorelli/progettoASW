@@ -11,6 +11,10 @@ interface Measurement{
   uom: string
 }
 
+interface DateRange{
+  start: Date,
+  end: Date
+}
 
 // interface Level {
 //   id: string,
@@ -365,9 +369,9 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   onChangeDateRange(event) {
-    var dates = event.split(";");
-    this.chartData.startDate = new Date(dates[0]);
-    this.chartData.endDate = new Date(dates[1]);
+    this.chartData.startDate = (event as DateRange).start;
+    this.chartData.startDate.setHours(0)
+    this.chartData.endDate = (event as DateRange).end;
     console.log(this.chartData);
     this.retrieveDataAndUpdate();
   }

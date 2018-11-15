@@ -1,15 +1,5 @@
 
-/*TODO: vedere se c'è un modo dinamico di gestire la cosa, non con posizioni fisse */
 
 .main-window {
     margin-top: 50px;
 }
-
-/*
-
-@media screen and (min-width: 768px) {
-    .main-window {
-    margin-left: 210px;
-    margin-top: 50px;
-    }
-} */

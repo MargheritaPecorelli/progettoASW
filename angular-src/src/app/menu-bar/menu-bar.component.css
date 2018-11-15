@@ -43,3 +43,18 @@ li .open {
 .navbar-brand {
     font-weight: bold;
 }
+
+@media screen and (min-width: 992px) {
+    .menu-collapse-button {
+        visibility: hidden;
+        display: none;
+    };
+}
+
+@media screen and (max-width: 480px)  {
+
+    .navbar-title {
+        visibility: hidden;
+        display: none;
+    }
+}

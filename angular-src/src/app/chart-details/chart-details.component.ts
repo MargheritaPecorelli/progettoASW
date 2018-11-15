@@ -62,7 +62,7 @@ export class ChartDetailsComponent implements OnInit {
   availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea', 'bubble', 'scatter'];
   //TODO: add label to select x days.
   availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months','aggregation every X days', 'aggregation on day and night', 'aggregation of every value', 'every value (without aggregation)'];
-  availableAggregationType: string[] = ['all values', 'average','min','max','moda'];
+  availableAggregationType: string[] = ['average','min','max','moda'];
 
   // {measurement: 'pressure', range: 'last 30 days' },
     // {measurement: 'pressure', range: 'last 30 days' },
@@ -117,7 +117,7 @@ export class ChartDetailsComponent implements OnInit {
       measurement: 'pressure', 
       range: 'last 30 days', 
       aggregationRange: 'every value', 
-      aggregationType: null, 
+      aggregationType: 'average', 
       usedSensors: sensors
     }
 
@@ -431,9 +431,9 @@ export class ChartDetailsComponent implements OnInit {
 
   onChangeAggregationTypeValue(aggregation: string) {
 
-    if (aggregation == 'all values'){
-      aggregation = null;
-    }
+    // if (aggregation == 'all values'){
+    //   aggregation = null;
+    // }
 
     console.log("Aggregation type selected: " , aggregation);
     this.chartData.aggregationType = aggregation;
@@ -456,9 +456,23 @@ export class ChartDetailsComponent implements OnInit {
   private async retrieveDataAndUpdate() {
     console.log(" ---> retrieving new data ! ");
     if(this.type == 'm'){
-      console.log(" -----> retrieving measurement data ! ");
+      if(!this.chartData) {
+        console.log(" ---> ifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        this.chartData = new ChartData(
+          this.defaultData.aggregationType + " " + this.defaultData.measurement,
+          this.defaultData.range,
+          null,
+          null, 
+          this.defaultData.aggregationRange,
+          this.defaultData.aggregationType,
+          null,
+          this.defaultData.usedSensors,
+          this.receivedData
+        );
+      }
+     console.log(" -----> retrieving measurement data ! ");
       var sensors: string[] = [];
-      for ( let i = 0; i < this.selectedSensors.length; i ++ ) {
+      for(let i = 0; i < this.selectedSensors.length; i++) {
         console.log(" -------> retrieving sensor info ! ", this.selectedSensors[i].id);
         sensors.push(this.selectedSensors[i].id);
       }
@@ -475,17 +489,66 @@ export class ChartDetailsComponent implements OnInit {
         this.chartData.data = []
         this.updateChart();
       }
-
     } else if (this.type == 's'){
       console.log(" -----> retrieving sensor data ! ");
-      this.dbRetrieverService.getSensorValuesThroughStartAndEnd(this.id,this.chartDataList[0].startDate, this.chartDataList[0].endDate).subscribe(response => {
+      // if(this.chartDataList.length == 0) {
+      //   var finalList = this._getAllMeasurementsListOfASensor(this.receivedData);
+      //   this.chartUpdaterList = [];
+      //   for(var w = 0; w < finalList.length; w++) {
+      //     this.chartDataList.push(new ChartData(
+      //       this.defaultData.aggregationType + " " + this.defaultData.measurement,
+      //       this.defaultData.range,
+      //       null,
+      //       null, 
+      //       this.defaultData.aggregationRange,
+      //       this.defaultData.aggregationType,
+      //       null,
+      //       this.defaultData.usedSensors,
+      //       finalList[w]
+      //     ));
+      //     this.chartUpdaterList.push(new Subject());
+      //   }
+      //   console.log(" -----> this.chartDataList : ", this.chartDataList);
+      // }
+
+
+      var newStartDate;
+      var newEndDate;
+      if(this.chartDataList.length == 0) {
+        newStartDate = this.chartData.startDate;
+        newEndDate = this.chartData.endDate;
+        this.chartUpdaterList = [];
+        var measurements = this.route.snapshot.data['measurements'];
+        for(var w = 0; w < measurements.length; w++) {
+          this.chartUpdaterList.push(new Subject());
+          this.chartDataList.push(new ChartData(
+            this.defaultData.aggregationType + " " + this.defaultData.measurement,
+            this.defaultData.range,
+            null,
+            null, 
+            this.defaultData.aggregationRange,
+            this.defaultData.aggregationType,
+            null,
+            this.defaultData.usedSensors,
+            this.receivedData
+          ));
+        }
+      } else {
+        newStartDate = this.chartDataList[0].startDate;
+        newEndDate = this.chartDataList[0].endDate;
+      }
+      this.dbRetrieverService.getSensorValuesThroughStartAndEnd(this.id, newStartDate, newEndDate).subscribe(response => {
         var finalList = this._getAllMeasurementsListOfASensor(response);
         console.log(" ------------------> final list : " , finalList);
-        for(var t = 0; t < this.chartDataList.length; t++) {
+        for(var t = 0; t < finalList.length; t++) {
           console.log(" ------------------> finalList[t] : " , finalList[t]);
           this.chartDataList[t].data = finalList[t];
           console.log(" ------------------> this.chartDataList[t].data : " , this.chartDataList[t].data);
         }
+        for(var q = finalList.length; q < this.chartDataList.length; q++) {
+          this.chartDataList.splice(q, 1);
+        }
+        console.log(" ------------------> this.chartDataList : " , this.chartDataList);
         this.updateChart();
       });
     }
@@ -495,6 +558,8 @@ export class ChartDetailsComponent implements OnInit {
   private async updateChart(){
     console.log("updating chart !");
     if (this.type == 's') {
+      console.log(" ------------------> this.chartDataList : " , this.chartDataList);
+      console.log(" ------------------> this.chartUpdaterList : " , this.chartUpdaterList);
       for(var t = 0; t < this.chartDataList.length; t++) {  
       this.chartUpdaterList[t].next(this.chartDataList[t]);
       }

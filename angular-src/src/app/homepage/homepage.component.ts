@@ -17,11 +17,11 @@ export class HomepageComponent implements OnInit {
   defaultComponents: any = [
     // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'every value', aggregationType: null, usedSensors: null},
     {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on hours',aggregationType: 'max', usedSensors: ['all']},
-    // {measurement: 'pressure', range: 'last 30 days', aggregationRange: 'aggregation on days', aggregationType: 'moda', usedSensors: null},
-    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on months',aggregationType: 'average', usedSensors: null},
-    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation every X days',aggregationType: 'min', usedSensors: null},
-    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation of every value',aggregationType: 'average', usedSensors: null},
-    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on day and night',aggregationType: 'average', usedSensors: null}
+    {measurement: 'pm', range: 'last 30 days', aggregationRange: 'aggregation on days', aggregationType: 'moda', usedSensors: ['all']},
+    {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on months',aggregationType: 'average', usedSensors: ['all']},
+    {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation every X days',aggregationType: 'min', usedSensors: ['all']},
+    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation of every value',aggregationType: 'average', usedSensors: ['all']},
+    // {measurement: 'temperature', range: 'last 30 days', aggregationRange: 'aggregation on day and night',aggregationType: 'average', usedSensors: ['all']}
   ];
 
   constructor(private data: DataRetrieverService) {

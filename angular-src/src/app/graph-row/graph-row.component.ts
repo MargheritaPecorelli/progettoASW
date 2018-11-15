@@ -20,17 +20,4 @@ export class GraphRowComponent implements OnInit {
     this.chartUpdater.next(data);
   }
 
-  // testType() {
-  //   console.log("old chart type: ", this.chart.type);
-  //   if (this.chart.type == 'line' ) {
-  //     this.chart.type = 'bar';
-  //   } else {
-  //     this.chart.type = 'line';
-  //   }
-
-  //   console.log("new chart type: ", this.chart.type);
-  //   console.log("updating chart");
-  //   this.updateChart(this.chart);
-  // };
-
 }

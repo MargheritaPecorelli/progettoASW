@@ -1,17 +1,15 @@
 <div class="row">
   
-  <app-graph-holder [chartData]="chart" [update]="chartUpdater" class=" col-lg-7 col-md-7 col-sm-10 col-xs-10"></app-graph-holder> 
-
-  <!-- <button class="btn btn-primary" (click)=testType()> TEST ME ! </button> -->
+  <app-graph-holder [chartData]="chart" [update]="chartUpdater" class=" col-lg-9 col-md-9 col-sm-12 col-xs-12"></app-graph-holder> 
   
-  <div class="chart-info col-lg-3 col-md-3 col-sm-10 col-xs-10">
+  <div class="chart-info col-lg-2 col-md-2 col-sm-12 col-xs-12">
     
     <table class="table table-sm table-hover">
       <thead>
         <tr>
           <th scope="col" colspan="2" class="header"> 
             <a routerLink="/charts">
-              <h3 class="chart-title">- {{ chart.name }} -</h3> 
+              <h3 class="chart-title"> {{ chart.name }} </h3> 
             </a>
           </th>
         </tr>

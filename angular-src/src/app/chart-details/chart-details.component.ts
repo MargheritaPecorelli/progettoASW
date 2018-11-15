@@ -430,7 +430,13 @@ export class ChartDetailsComponent implements OnInit {
   onChangeChartType(chartType: string){
 
     console.log("Chart type selected: " , chartType);
-    this.chartData.type = chartType;
+    if(this.type == 's') {
+      for(var i = 0; i < this.chartDataList.length; i++) {
+        this.chartDataList[i].type = chartType;
+      }
+    } else {
+      this.chartData.type = chartType;
+    }
     this.updateChart();
 
   }

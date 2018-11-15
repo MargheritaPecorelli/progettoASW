@@ -213,10 +213,17 @@
   
   
   <div *ngIf="type == 'm'">
-    <h2>
-    Displaying Measurement Chart : {{id}} 
-    </h2>
-    <app-graph-holder [chartData]="chartData" [update]="chartUpdater" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder> 
+    <div *ngIf="chartData.data.length > 0; else emptyDataMeasurements">
+      <h2>
+      Displaying Measurement Chart : {{id}} 
+      </h2>
+      <app-graph-holder [chartData]="chartData" [update]="chartUpdater" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></app-graph-holder> 
+    </div>
+    <ng-template #emptyDataMeasurements>
+        <div class="alert alert-danger text-center" role="alert">
+          No data available for this sensor!
+        </div>
+      </ng-template>
   </div>
 
   <div *ngIf="type == 's'">

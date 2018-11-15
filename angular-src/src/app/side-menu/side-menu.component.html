@@ -6,13 +6,13 @@
           
           <div class="row">
             <li class="nav-row">
-                <a>
+                <a class="menu-sidenav-element">
                 Measurement <span class="fa arrow" style="float:right;"> </span>
                 </a>
                 <ul class="nav nav-second-level">
                     <!-- <div class="row"> -->
-                        <li *ngFor="let measure of measurementList" >
-                            <a routerLink="/charts/m/{{measure}}"> {{measure}} </a>
+                        <li *ngFor="let measure of measurementList">
+                            <a routerLink="/charts/m/{{measure}}" class="menu-sidenav-element"> {{measure}} </a>
                         </li>
                     <!-- </div>   -->
                 </ul>
@@ -21,18 +21,17 @@
 
           <div class="row">
             <li class="nav-row">
-                <a>
+                <a class="menu-sidenav-element">
                 Sensors <span class="fa arrow" style="float:right;"> </span>
                 </a>
                 <ul class="nav nav-second-level">
                     <li *ngFor="let sensor of sensorsList">
-                        <a routerLink="/charts/s/{{sensor}}"> {{sensor}} </a>
+                        <a routerLink="/charts/s/{{sensor}}" class="menu-sidenav-element"> {{sensor}} </a>
                     </li>
                 </ul>
                 </li>
-
             <li class="nav-row">
-                <a routerLink="/"> <i class="fa fa-home fa-fw"></i> Home </a>
+                <a class="menu-sidenav-element" routerLink="/"> <i class="fa fa-home fa-fw"></i> Home </a>
             </li>
           </div>
 

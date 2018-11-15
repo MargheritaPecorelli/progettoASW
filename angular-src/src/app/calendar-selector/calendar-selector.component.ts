@@ -36,7 +36,7 @@ export class CalendarSelectorComponent {
 
   ngOnInit() {
     this.options = {
-      theme: 'green',
+      theme: 'gray',
       labels: ['Start', 'End'],
       menu: [
           {alias: 'td', text: 'Today', operation: '0d'},

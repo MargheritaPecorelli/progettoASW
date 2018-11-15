@@ -10,3 +10,7 @@ app-graph-holder {
 .value {
     font-weight: bold;
 }
+
+.chart-title{
+    color: black
+}

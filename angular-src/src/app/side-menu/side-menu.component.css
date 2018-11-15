@@ -39,7 +39,7 @@ ul {
     padding: 6px 8px 6px 16px;
     text-decoration: none;
     font-size: 18px;
-    color: rgb(7, 94, 165);
+    color: black;
     display: block;
     width: 100%;
 }
@@ -52,10 +52,11 @@ ul {
     color: #023661;
 } */
 
-.sidenav :hover {
+.menu-sidenav-element:hover {
     /* color: #004d2d;  */
     /* color: #2b7556;  */
-    color: #f1730b
+    /*color: #f1730b*/
+    background-color: #c5c5c5;
 
 }
 

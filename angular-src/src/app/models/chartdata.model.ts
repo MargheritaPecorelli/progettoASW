@@ -17,7 +17,7 @@ export class ChartData {
         public usedSensors: string[],
         public data: Object,
         public type: string = "line") {
-            // console.log('data ' + this.data);
+            console.log('typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.type);
             if(startDate == null && endDate == null) {
                 switch(range) {
                     case "last week": {
@@ -45,6 +45,7 @@ export class ChartData {
         }
 
     getDataAndTheirTimestamp(): JSON[] {
+        console.log('typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.type);
         // var resultsList = [];
         var dataList = [];
         var allSensorsData = [];

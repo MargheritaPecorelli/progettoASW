@@ -10,4 +10,8 @@
         display: block !important;
         
     };
+
+    app-side-menu {
+        padding-right: 0px !important;
+    }
   }

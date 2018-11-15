@@ -1,3 +1,7 @@
 .error {
     border: 1px solid red;
 }
+
+form {
+    padding-top: 15px;
+}

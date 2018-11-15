@@ -65,7 +65,7 @@ export class ChartDetailsComponent implements OnInit {
   dateUpdater: Subject<string> = new Subject();
   availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea'];
   //TODO: add label to select x days.
-  availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months','aggregation every X days', 'aggregation on day and night', 'aggregation of every value', 'every value (without aggregation)'];
+  availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months', 'aggregation of every value', 'every value (without aggregation)'];
   availableAggregationType: string[] = ['average','min','max','moda'];
 
   // {measurement: 'pressure', range: 'last 30 days' },

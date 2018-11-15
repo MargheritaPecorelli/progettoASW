@@ -1,33 +1,19 @@
 <div class="row">
 
-  <div class="chart-menu col fill">
-    <h2 class="text-center"> {{id}} </h2>
+  <div class="chart-menu col fill" *ngIf="type=='m'; else sensorsMenuView">
+    <h2 class="text-center"> Chart for {{id}} data </h2>
 
       <div class="row">
 
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 
           <h5 class="text-center"> Range </h5>
-          <!--
-          <div class="form-group row">
-            <label for="range-from" class="col-sm-2 col-form-label">From: </label>
-            <div class="col-sm-10">
-              <input id="range-from" type="text" class="form-control" placeholder="start from">
-            </div>
-          </div>
 
-          <div class="form-group row">
-            <label for="range-to" class="col-sm-2 col-form-label">To: </label>
-            <div class="col-sm-10">
-              <input id="range-to" type="text" class="form-control" placeholder="stop to">
-            </div>
-          </div>
-        -->
-        <calendar-selector (dateChangeEventEmitter)="onChangeDateRange($event)" [updateDate]="dateUpdater"></calendar-selector>
+          <calendar-selector (dateChangeEventEmitter)="onChangeDateRange($event)" [updateDate]="dateUpdater"></calendar-selector>
 
         </div>
 
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
           <h5 class="text-center"> Aggregation </h5>
 
           <div class="form-group select-graph-options">
@@ -44,19 +30,14 @@
 
         </div>
 
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" *ngIf="type=='m'">
           <h5 class="text-center"> Used Sensors </h5>
 
           <div class="form-group" *ngIf="type=='m'">
             <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#sensorSelectorModal" > Select Sensors </button>
           </div>
 
-          <!-- <div class="form-group">
-            todo: gestire le stringhe da visualizzare 
-            <p class="text-center" *ngFor="let s of selectedSensors" > {{s.name}} </p>
-          </div> -->
-
-          <div class="modal fade" id="sensorSelectorModal" tabindex="-1" role="dialog" aria-labelledby="sensorSelectorModalTitle" aria-hidden="true">
+          <div class="modal fade" *ngIf="type=='m'" id="sensorSelectorModal" tabindex="-1" role="dialog" aria-labelledby="sensorSelectorModalTitle" aria-hidden="true">
             
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
@@ -206,10 +187,59 @@
         </select>
       </div>
 
+  </div>
+
+  <!-- template for sensor's chart view -->
+
+  <ng-template #sensorsMenuView >
+    <div class="chart-menu col fill">
+      <h2 class="text-center"> Chart data for sensor :  {{id}} </h2>
+
+      <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+          <h5 class="text-center"> Range </h5>
+          <calendar-selector (dateChangeEventEmitter)="onChangeDateRange($event)" [updateDate]="dateUpdater"></calendar-selector>
+
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <h5 class="text-center"> Aggregation </h5>
+
+          <div class="form-group select-graph-options">
+            <select class="form-control" id="aggregation-range-list" (change)="onChangeAggregationRangeValue($event.target.value)">
+                <option *ngFor="let range of availableAggregationRange" value='{{range}}'  class="select-graph-options-element"> {{ range }} </option>
+            </select>
+          </div>
+
+          <div class="form-group select-graph-options">
+            <select class="form-control" id="aggregation-type-list" (change)="onChangeAggregationTypeValue($event.target.value)">
+                <option *ngFor="let type of availableAggregationType" value='{{type}}' class="select-graph-options-element"> {{ type }} </option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+  <!--
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="realtime-checkbox" value="realtime" [ngModel]="realtime" (ngModelChange)="toggleRealtime($event)">
+            <label class="form-check-label" for="realtime-checkbox">  Real Time Update </label>
+        </div>
+      </div>
+    -->
+
+      <div class="form-group select-graph-options">
+        <label for="chart-type-list">Chart Type:</label>
+        <select class="form-control" id="chart-type-list" (change)="onChangeChartType($event.target.value)">
+          <option *ngFor="let type of availableChartType" > {{ type }} </option>
+        </select>
+      </div>
     </div>
-
-  
-
+  </ng-template>
   
   
   <div *ngIf="type == 'm'">

@@ -11,6 +11,10 @@ interface Measurement{
   uom: string
 }
 
+interface DateRange{
+  start: Date,
+  end: Date
+}
 
 // interface Level {
 //   id: string,
@@ -59,7 +63,7 @@ interface SensorControlObject{
 
 export class ChartDetailsComponent implements OnInit {
   dateUpdater: Subject<string> = new Subject();
-  availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea', 'bubble', 'scatter'];
+  availableChartType: string[] = ['line','bar','radar','doughnut', 'pie', 'polarArea'];
   //TODO: add label to select x days.
   availableAggregationRange: string[] = ['aggregation on hours','aggregation on days','aggregation on months','aggregation every X days', 'aggregation on day and night', 'aggregation of every value', 'every value (without aggregation)'];
   availableAggregationType: string[] = ['all values', 'average','min','max','moda'];
@@ -365,9 +369,9 @@ export class ChartDetailsComponent implements OnInit {
   }
 
   onChangeDateRange(event) {
-    var dates = event.split(";");
-    this.chartData.startDate = new Date(dates[0]);
-    this.chartData.endDate = new Date(dates[1]);
+    this.chartData.startDate = (event as DateRange).start;
+    this.chartData.startDate.setHours(0)
+    this.chartData.endDate = (event as DateRange).end;
     console.log(this.chartData);
     this.retrieveDataAndUpdate();
   }
@@ -460,7 +464,7 @@ export class ChartDetailsComponent implements OnInit {
 
   submitModal() {
     this.initialiseSelectedSensorsList();
-
+    this.retrieveDataAndUpdate();
     console.log("Selected Sensors: " , this.selectedSensors);
   }
 

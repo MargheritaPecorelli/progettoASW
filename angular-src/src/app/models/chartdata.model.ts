@@ -4,8 +4,6 @@ import { DataRetrieverService } from 'src/app/services/data-retriever.service';
 
 export class ChartData {
 
-    // dataRetriever: DataRetrieverService;
-
     constructor(
         public name: string,
         public range: string, 
@@ -17,7 +15,6 @@ export class ChartData {
         public usedSensors: string[],
         public data: Object,
         public type: string = "line") {
-            console.log('typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.type);
             if(startDate == null && endDate == null) {
                 switch(range) {
                     case "last week": {
@@ -45,20 +42,11 @@ export class ChartData {
         }
 
     getDataAndTheirTimestamp(): JSON[] {
-        console.log('typeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee ' + this.type);
-        // var resultsList = [];
+
         var dataList = [];
         var allSensorsData = [];
         var nwData = this.data as Array<JSON>
-        // var nameList = this.allMeasurements as Array<string>
-
         
-        // if(JSON.parse(JSON.stringify(nwData[0])).data == undefined) {
-        //     console.log('nameList.length ' + nameList.length);
-        //     for(var f = 0; f < nameList.length; f++) {
-        //         allSensorsData.push([]);
-        //     }
-        // }
 
         for(var i = 0; i < nwData.length; i++) {
             var entry = JSON.parse(JSON.stringify(nwData[i]));
@@ -70,25 +58,13 @@ export class ChartData {
                 }
             }
         }
-        // if(allSensorsData[0].length === undefined) {
             allSensorsData.sort((a, b) => {
                 var aTime = new Date(a.timestamp);
                 var bTime = new Date(b.timestamp);
                 return aTime.getTime()-bTime.getTime();
             });
             console.log(allSensorsData);
-            // resultsList = this._returnDataList(allSensorsData);
-        // } else {
-        //     for(var y = 0; y < nameList.length; y++) {
-        //         allSensorsData[y].sort((a, b) => {
-        //             var aTime = new Date(a.timestamp);
-        //             var bTime = new Date(b.timestamp);
-        //             return aTime.getTime()-bTime.getTime();
-        //         });
-        //         console.log(allSensorsData[y]);
-        //         resultsList.push(this._returnDataList(allSensorsData[y]));
-        //     }
-        // }        
+            
 
         var millisecondsInOneHour = 3600000;
         
@@ -154,7 +130,6 @@ export class ChartData {
                     }
                 });
                 if(dataToAggregate.length > 0) {
-                    // questo è uguale all'else e serve per aggregare i dati dell'ultima data
                     var val = JSON.stringify(this._aggregate(dataToAggregate));
                     var valTime = JSON.stringify(date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() 
                         + ' from ' + date.getHours() + 'h to ' + (date.getHours()+1) + 'h');
@@ -211,7 +186,6 @@ export class ChartData {
                     }   
                 });
                 if(dataToAggregate.length > 0) {
-                    // questo è uguale all'else e serve per aggregare i dati dell'ultima data
                     var val = JSON.stringify(this._aggregate(dataToAggregate));
                     var valTime = JSON.stringify(date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate());
                     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
@@ -226,55 +200,7 @@ export class ChartData {
                 }
                 break
             }
-            // case "aggregation on weeks": {
-            //     var dataToAggregate = [];
-            //     var startDayOfTheWeek = new Date(allSensorsData[0].timestamp);
-            //     var endDayOfTheWeek = new Date(startDayOfTheWeek);
-            //     endDayOfTheWeek.setDate(endDayOfTheWeek.getDate()+7);
-            //     var hoursInAWeek = 168;
-                
-            //     allSensorsData.forEach(elem => {
-            //         var time = new Date(elem.timestamp);
-
-            //         var diff = time.getTime()-endDayOfTheWeek.getTime();
-            //         var millisecondsInOneHour = 3600000;
-            //         var hoursWithNoValues = diff/millisecondsInOneHour;
-
-            //         if(diff < hoursInAWeek) {
-            //             dataToAggregate.push(elem.value);
-            //         } else {
-            //             var val = JSON.stringify(this._aggregate(dataToAggregate));
-            //             var valTime = JSON.stringify('from ' + startDayOfTheWeek.getFullYear() + '-' + (startDayOfTheWeek.getMonth()+1) + '-' 
-            //                 + startDayOfTheWeek.getDate() + ' to ' + endDayOfTheWeek.getFullYear() + '-' + (endDayOfTheWeek.getMonth()+1) + '-' 
-            //                 + endDayOfTheWeek.getDate());
-            //             var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-            //             dataList.push(JSON.parse(str));
-
-            //             startDayOfTheWeek.setDate(startDayOfTheWeek.getDate()+7);
-            //             endDayOfTheWeek.setDate(endDayOfTheWeek.getDate()+7);
-            //             dataToAggregate = [];
-
-            //             //calcolo le ore di differenza tra time e date in quanto 
-            //             // time e date potrebbero avere la stessa ora (time.getHours() == date.getHours()) ma di giorni diversi
-            //             var diff = time.getTime()-date.getTime();
-            //             var millisecondsInOneHour = 3600000;
-            //             var hoursWithNoValues = diff/millisecondsInOneHour;
-                        
-            //             //controllo che le ore di differenza tra time e date siano maggiori di 1
-            //             if(hoursWithNoValues >= hoursInAWeek) {
-            //                 this._next(dataList, date, dataToAggregate, elem, hoursWithNoValues, hoursInAWeek, false);
-            //             }
-            //         }       
-            //     });
-            //     // questo è uguale all'else e serve per aggregare i dati dell'ultima data
-            //     var val = JSON.stringify(this._aggregate(dataToAggregate));
-            //     var valTime = JSON.stringify('from ' + startDayOfTheWeek.getFullYear() + '-' + (startDayOfTheWeek.getMonth()+1) + '-' 
-            //         + startDayOfTheWeek.getDate() + ' to ' + endDayOfTheWeek.getFullYear() + '-' + (endDayOfTheWeek.getMonth()+1) + '-' 
-            //         + endDayOfTheWeek.getDate());
-            //     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-            //     dataList.push(JSON.parse(str));
-            //     break
-            // }
+            
             case "aggregation on months": {
                 var dataToAggregate = [];
                 var startDayOfTheMonth = new Date(this.startDate);
@@ -318,7 +244,6 @@ export class ChartData {
                     }
                 });
                 if(dataToAggregate.length > 0) {
-                    // questo è uguale all'else e serve per aggregare i dati dell'ultima data
                     var val = JSON.stringify(this._aggregate(dataToAggregate));
                     var valTime = JSON.stringify(startDayOfTheMonth.getFullYear() + '-' + (startDayOfTheMonth.getMonth()+1));
                     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
@@ -334,62 +259,7 @@ export class ChartData {
                 }
                 break
             }
-            // case "aggregation on quarters": {
-            //     var dataToAggregate = [];
-            //     var startDate = new Date(allSensorsData[0].timestamp);
-            //     startDate.setDate(1);
-            //     startDate.setHours(0);
-            //     startDate.setMinutes(0);
-            //     startDate.setSeconds(0);
-            //     startDate.setMilliseconds(0);
-            //     var endMonth = new Date(startDate);
-            //     endMonth.setMonth(endMonth.getMonth()+3);
-
-            //     allSensorsData.forEach(elem => {
-            //         var time = new Date(elem.timestamp);
-                    
-            //         // es possibili: 
-            //         //      se startDate.getMonth() inferiore a 10 (es 8) => basta che time.getMonth() sia <= a endMonth=startDate.getMonth()+2 (es 10 -> 8, 9, 10) 
-            //         //          e che, se time.getMonth() è == a endMonth, time.getDate() sia <= a startDate.getDate()
-            //         //      se startDate.getMonth() è 10 o 11 => endMonth deve essere 0 o 1
-            //         if(((time.getMonth() == endMonth) && (time.getDate() <= startDate.getDate())) || 
-            //                     (time.getMonth() < endMonth) || 
-            //                     ((time.getMonth() >= 10) && ((endMonth == 0) || (endMonth == 1)))) {
-            //             dataToAggregate.push(elem.value);
-            //         } else {                        
-            //             var val = JSON.stringify(this._aggregate(dataToAggregate));
-            //             var toDate: string;
-            //             if(endMonth == 0 || endMonth == 1) {
-            //                 toDate = 'to ' + (startDate.getFullYear()+1) + '-' + (endMonth+1) + '-' + startDate.getDate();
-            //             } else {
-            //                 toDate = 'to ' + startDate.getFullYear() + '-' + (endMonth+1) + '-' + startDate.getDate();
-            //             }
-            //             var valTime = JSON.stringify('from ' + startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate() + toDate);
-            //             var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-            //             dataList.push(JSON.parse(str));
-
-            //             if(endMonth == 11) {
-            //                 startDate.setMonth(0);
-            //             } else {
-            //                 startDate.setMonth(endMonth+1);
-            //             }
-            //             dataToAggregate = [];
-            //             dataToAggregate.push(elem.value);
-            //         }
-            //     });
-            //     // questo è uguale all'else e serve per aggregare i dati dell'ultima data
-            //     var val = JSON.stringify(this._aggregate(dataToAggregate));
-            //     var toDate: string;
-            //     if(endMonth == 0 || endMonth == 1) {
-            //         toDate = 'to ' + (startDate.getFullYear()+1) + '-' + (endMonth+1) + '-' + startDate.getDate();
-            //     } else {
-            //         toDate = 'to ' + startDate.getFullYear() + '-' + (endMonth+1) + '-' + startDate.getDate();
-            //     }
-            //     var valTime = JSON.stringify('from ' + startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate() + toDate);
-            //     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-            //     dataList.push(JSON.parse(str));
-            //     break
-            // }
+           
             case "aggregation every X days": {
                 var dataToAggregate = [];
                 var startDatePeriod = new Date(this.startDate);
@@ -682,20 +552,9 @@ export class ChartData {
             startDayOfTheMonth.setMonth(startDayOfTheMonth.getMonth()+1);
             dataToAggregate = [];
 
-            //controllo che le ore di differenza tra time e date siano maggiori di 1
-            // if((time.getMonth() != startDayOfTheMonth.getMonth()) || (time.getFullYear() != startDayOfTheMonth.getFullYear())) {
-            //     this._nextMonth(monthsWithNoValues, time, dataList, startDayOfTheMonth, dataToAggregate, elem);
-            // }   
+  
         }
-        // if(elem == null) {
-        //     dataToAggregate.push(0);
-        //     var val = JSON.stringify(this._aggregate(dataToAggregate));
-        //     var valTime = JSON.stringify(startDayOfTheMonth.getFullYear() + '-' + (startDayOfTheMonth.getMonth()+1));
-        //     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-        //     dataList.push(JSON.parse(str));
-        // } else {
-        //     dataToAggregate.push(elem.value);
-        // }
+        
         if(elem != null) {
             dataToAggregate.push(elem.value);
         }
@@ -732,21 +591,7 @@ export class ChartData {
             
             dataToAggregate = [];
 
-            // var diff = endDatePeriod.getTime()-time.getTime();
-            // var hoursLeft = diff/millisecondsInOneHour;
             
-            // //controllo che le ore di differenza tra time e date siano maggiori di 1
-            // if(hoursLeft < 0) {
-            //     this._nextPeriod(dataList, periodsWithNoValues, startDatePeriod, endDatePeriod, dataToAggregate, time, elem, millisecondsInOneHour);
-            // } else if(elem == null) {
-            //     dataToAggregate.push(0);
-            //     var val = JSON.stringify(this._aggregate(dataToAggregate));
-            //     var valTime = JSON.stringify('from ' + startDatePeriod.getFullYear() + '-' + (startDatePeriod.getMonth()+1) + '-' 
-            //         + startDatePeriod.getDate() + ' to ' + time.getFullYear() + '-' + (time.getMonth()+1) + '-' 
-            //         + time.getDate());
-            //     var str = '{\"value\": \"' + val + '\", \"timestamp\": ' + valTime + '}';
-            //     dataList.push(JSON.parse(str));
-            // }
         }
         if(elem != null){
             dataToAggregate.push(elem.value);

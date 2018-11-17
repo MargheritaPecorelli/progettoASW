@@ -55,7 +55,6 @@ export class LoginComponent {
 
   login() {
     this.auth.postLogin(this.credentials).subscribe(() => {
-      //this.router.navigateByUrl('/profile/' + this.credentials.email);
       this.router.navigateByUrl('/');
     }, (err) => {
       this.loginError = true;

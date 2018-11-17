@@ -35,7 +35,6 @@ module.exports.addNewSensor = function(req, res, next){
             return res.send(500);
         } else if(response == null) {
             res.status(404, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
-            // return res.send(404, "this idLocation is not present. Please, add it to the DB before continuing or pick one already present!");
         } else {
             for(var j = 0; j < measurementsArray.length; j++) {
                 var el;
@@ -63,7 +62,6 @@ function _checkMeasurementsAndCreateSensor(measArr, i, res, idSensor, name, posi
             return res.send(500);
         } else if(response == null) {
             res.status(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
-            // return res.send(404, "this type of measurement is not present. Please, add it to the DB before continuing!");
         } else {
             _checkMeasurementsAndCreateSensor(measArr, i+1, res, idSensor, name, positionJSON);
         }
@@ -149,18 +147,11 @@ module.exports.removeMeasurement = function(req, res, next){
     var idSensor = req.param('idSensor');
     var measurement = req.param('measurement');
 
-    // var wait = true
-    // if(wait) {
-        
-    //     wait = false;
-    // }   
-    // if(!wait) {
-    //     console.log('not wait ')
     var measurementJSON = JSON.parse(JSON.stringify(measurement));
     console.log('measurementJSON ' + measurementJSON)
     console.log('idSensor ' + idSensor)
     _checkMeasurement(measurementJSON, res, idSensor);
-    // }
+
 };
 
 /** Checks if this type of measurement is present in the DB */

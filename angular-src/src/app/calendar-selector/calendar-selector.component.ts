@@ -64,15 +64,6 @@ export class CalendarSelectorComponent {
     this.dateChangeEventEmitter.emit(dateRange);
   }
 
-  // resetDate() {
-  //   var data  = new Date()
-  //   var dateValue = {year: data.getFullYear(), month: data.getMonth()+1, day: data.getDate() }
-  //   this.options.date.from = dateValue;
-  //   this.options.date.to = dateValue;
-  //   this.value.from = dateValue;
-  //   this.value.to = dateValue;
-  // }
-
   ngOnInit() {
     this.options = {
       theme: 'gray',
@@ -97,12 +88,6 @@ export class CalendarSelectorComponent {
           to: new Date()
       }
     };
-    // this.updateDate.subscribe(param => {
-    //   console.log("dateChange")
-    //   console.log(this.options.date);
-    //   this.resetDate();
-    //   console.log(this.options.date);
-    // });
 
   }
 }

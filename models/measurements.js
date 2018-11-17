@@ -12,7 +12,6 @@ var measurementSchema = new Schema({
         }
     },
     {
-        //versionKey: false,
         collection: 'measurements'
     });
 

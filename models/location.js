@@ -30,7 +30,6 @@ var locationSchema = new Schema({
         }
     },
     {
-        //versionKey: false,
         collection: 'locations'
     });
 

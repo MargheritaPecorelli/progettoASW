@@ -32,7 +32,6 @@ module.exports.addNewLocation = function(req, res, next){
             locations.create(location, function(err, response){
                 if(err){
                     return res.send(500);
-                    // return res.send(400);
                 } else {
                     res.send(200);
                 }

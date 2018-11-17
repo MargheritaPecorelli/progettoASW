@@ -18,10 +18,6 @@ require('./configs/passport');
 var app = express();
 var port = 3000;
 
-// view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'jade');
-
 app.use(bodyparser.json());
 
 app.use(logger('dev'));
@@ -57,7 +53,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.send('error found : ' + err);
-  //res.render('error');
 });
 
 //Listen to port 3000

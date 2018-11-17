@@ -10,7 +10,6 @@ import { GraphListComponent } from './graph-list/graph-list.component';
 import { GraphRowComponent } from './graph-row/graph-row.component';
 import { GraphHolderComponent } from './graph-holder/graph-holder.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AboutComponent } from './about/about.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChartDetailsComponent } from './chart-details/chart-details.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
@@ -37,12 +36,10 @@ import { NgxDateRangePickerModule } from 'ngx-daterangepicker';
 const route : Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
   { path: 'home', component: HomepageComponent  },
-  { path: 'about', component: AboutComponent },
   { path: 'charts/:type/:id', 
       component: ChartDetailsComponent, 
       resolve: { data: ChartResolver, sensors: SensorsResolver, locations: LocationsResolver, measurements: MeasurementResolver}, 
       runGuardsAndResolvers: 'paramsChange' },
-      // runGuardsAndResolvers: 'always' },
       
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -59,7 +56,6 @@ const route : Routes = [
     GraphRowComponent,
     GraphHolderComponent,
     PageNotFoundComponent,
-    AboutComponent,
     HomepageComponent,
     ChartDetailsComponent,
     SideMenuComponent,

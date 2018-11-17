@@ -15,11 +15,7 @@ var valueSchema = new Schema({
             required: true  
         }
     },
-    {
-        //versionKey: false,
-        //collection: 'data'
-    });
+    {});
 
-//var value = mongoose.model('data', valueSchema);
 
 module.exports = valueSchema;

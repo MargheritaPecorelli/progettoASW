@@ -13,7 +13,6 @@ export class LocationsResolver implements Resolve<Location[]> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     var locations = this.dbRetrieverService.getAllLocations();
-    // console.log('LocationsResolver gettAllLocations' + locations)
     return locations;
   }
 

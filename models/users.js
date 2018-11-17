@@ -4,8 +4,6 @@ var jwt = require('jsonwebtoken');
 
 var Schema = mongoose.Schema;
 
-//TODO: hash e sale required;
-
 var userSchema = new Schema({
         email: {
             type: String,
@@ -27,7 +25,6 @@ var userSchema = new Schema({
         salt: String
     },
     {
-        //versionKey: false,
         collection: 'users'
     }
 );
@@ -52,7 +49,7 @@ userSchema.methods.generateJwt = function() {
       name: this.name,
       exp: parseInt(expiry.getTime() / 1000),
     }, "MY_SECRET"); // DO NOT KEEP YOUR SECRET IN THE CODE!
-    // TODO: Salva in una variabile d'ambiente
+    // TODO: Save Secret Key in a env. variable
 };
 
 var user = mongoose.model('users', userSchema);

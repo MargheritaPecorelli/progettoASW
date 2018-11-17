@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sensor } from 'src/app/models/sensor.model';
 import { DataRetrieverService } from 'src/app/services/data-retriever.service';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from 'src/app/models/location.model';
 
 @Component({
   selector: 'app-sensor-management-edit-modal',
@@ -91,11 +90,9 @@ export class SensorManagementEditModalComponent implements OnInit {
   }
 
   modifyMeasurements(event) {
-    // console.log(event);
     var newMeas = this.measurementList.filter(e => JSON.parse(JSON.stringify(e)).measurementType === event);
     this.sensor.measurements.push(newMeas[0]);
     this.getMeasurements();
-    // console.log(this.sensor.measurements);
   }
 
   deleteMeasurement(sensorId, sensorMeasurement){

@@ -29,7 +29,6 @@ function _checkMeasurementAndAddValue(res, idSensor, measurementType, value) {
             }
         }
         res.status(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
-        // return res.send(400, "This sensor hasn't this type of measurement. Please, add it to the sensor before continuing!");
     });
 };
 
@@ -110,7 +109,6 @@ function _checkMeasurementAndFindValues(res, idSensor, start, end, measurementTy
                 var emptyList = [];
                 res.json(emptyList);
                 res.status(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
-                // return res.send(404, "This sensor hasn't this type of measurement. Please, choose one of the measurements already present in this sensor!");        
             }
         }
     });
@@ -176,7 +174,6 @@ function _checkMeasurementAndFindAllSensorsValues(res, sensorsList, start, end, 
             var emptyList = [];
             res.json(emptyList);
             res.status(404, "This specific sensor has not this type of measurement!");
-            // return res.send(404, "This specific sensor has not this type of measurement!");
         }
     });
 };
@@ -189,9 +186,6 @@ function _findAllValues(res, idSensor, start, end, measurementType, sensorsList,
     }, {"measurementType": measurementType}]}, {"_id":0, "__v":0, "measurementType":0}, function(err, value){
         if(err){
             return res.send(500);
-        // } else if(value.length == 0) {
-        //     console.log("In this specific range of time, there are no values that match to this measurement and this sensor");
-        //     return res.send(404, "In this specific range of time, there are no values that match to this measurement and this sensor");
         } else {
             var val = JSON.stringify(value);
             var str = '{\"id\": \"' + idSensor + '\", \"data\": ' + val + '}';

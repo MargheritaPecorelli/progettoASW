@@ -13,7 +13,6 @@ export class SensorsResolver implements Resolve<Sensor[]> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     var sensors = this.dbRetrieverService.getAllSensors();
-    // console.log('SensorsResolver gettAllSensors' + sensors)
     return sensors;
   }
 

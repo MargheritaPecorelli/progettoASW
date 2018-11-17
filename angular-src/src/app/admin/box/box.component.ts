@@ -11,13 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 export class BoxComponent implements OnInit {
   
   @Input() image: string;
-  // image: string;
-  // "../../assets/images/user.jpeg"
 
-  constructor(private router: Router, private route: ActivatedRoute) {
-    // this.image = this.route.snapshot.data['provaAncora'];
-    // console.log(this.image);
-  }
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
   }

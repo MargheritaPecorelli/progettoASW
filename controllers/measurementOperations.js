@@ -58,18 +58,3 @@ module.exports.getSpecificMeasurement = function(req, res, next){
     });
     
 };
-
-// /** Callback to delete a specific measurement */
-// module.exports.deleteMeasurement = function(req, res, next){
-//     var uom = req.param('uom');
-    
-//     measurements.findOneAndRemove({"uom": uom}, function(err, measurement) {
-//         if(measurement == null) {
-//             res.send(404);
-//         } else if (err) {
-//             res.send(400);
-//         } else {
-//             res.send(200);
-//         }
-//     });
-// };

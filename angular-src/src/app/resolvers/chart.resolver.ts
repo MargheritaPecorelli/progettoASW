@@ -36,37 +36,6 @@ export class ChartResolver implements Resolve<ChartData> {
         return list
       }
 
-      //return this.dbRetrieverService.getValuesOfSpecificMeasurementThroughRange(defaultData.measurement, defaultData.range);
-
     }
-
-    /*
-  getChartData(type: string): any {
-    
-    var defaultData: any = {
-      measurement: 'pressure', 
-      range: 'Last Week', 
-      aggregationRange: '1 Hour',
-      aggregationType: 'Minimun', 
-      usedSensors: ['Level 1']
-    }
-
-    this.dbRetrieverService.getSensorDataWithRange(defaultData.measurement, defaultData.range)
-                           .subscribe(data => {
-                              console.log("Data received from server ");
-                              console.log(data);
-                              var chartData = new ChartData(
-                              defaultData.aggregationType + " " + defaultData.measurement,
-                              defaultData.range, 
-                              defaultData.aggregationRange,
-                              defaultData.aggregationType,
-                              defaultData.usedSensors, 
-                              data ) ;
-
-                              return chartData; 
-    });
-  }
-
-  */
 
 }

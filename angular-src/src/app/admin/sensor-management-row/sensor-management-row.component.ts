@@ -33,14 +33,12 @@ export class SensorManagementRowComponent implements OnInit {
 
   updateSensor(updatedSensor: Sensor){
     console.log("------> sensorRow : Updating Sensor : " , updatedSensor);
-    // console.log('id: ' + this.sensor.idSensor);
     console.log('measurements: ' + JSON.stringify(this.sensor.measurements));
     this.dbRetrieverService.putNewSensorPosition(this.sensor.idSensor, JSON.stringify(this.sensor.position)).subscribe(res => {});
     if(this.sensor.measurements.length > 0) {
       this.dbRetrieverService.putNewSensorMeasurement(this.sensor.idSensor, JSON.stringify(this.sensor.measurements)).subscribe(res => {});
     }    
     this.sensor = updatedSensor;
-    // console.log("updating to db()");
   }
 
   deleteSensor(sens) {

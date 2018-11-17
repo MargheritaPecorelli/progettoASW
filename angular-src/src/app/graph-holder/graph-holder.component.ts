@@ -27,10 +27,6 @@ export class GraphHolderComponent implements OnInit {
 
   constructor(private elementRef : ElementRef, private router: Router) { }
 
-  onClick() {
-    //this.router.navigate(['charts']);
-  }
-
   ngOnInit() {
 
     this.htmlRef = this.elementRef.nativeElement.querySelector('canvas');
@@ -41,13 +37,6 @@ export class GraphHolderComponent implements OnInit {
       this.chartData = chartParams;
       this.updateChart()
     });
-
-    // this.dataAndTime= this.chartData.getDataAndTheirTimestamp();
-    // for(var i = 0; i < this.dataAndTime.length; i++) {
-    //   var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
-    //   this.valuesList.push(jsonObj.value);
-    //   this.timesList.push(jsonObj.timestamp);      
-    // }
 
     this.updateChart();
 
@@ -67,92 +56,47 @@ export class GraphHolderComponent implements OnInit {
     console.log(" ------------------> GraphHolderComponent dataAndTime : " , this.dataAndTime);
 
 
-    // if(this.dataAndTime[0].length === undefined) {
-      this.timesList = [];
-      this.valuesList = [];
-      for(var i = 0; i < this.dataAndTime.length; i++) {
-        var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
-        this.valuesList.push(jsonObj.value);
-        this.timesList.push(jsonObj.timestamp);      
-      }
-      var chartData = {
-        labels: this.timesList,
-        datasets: [
-          {
-            data: this.valuesList,
-            borderColor: '#3cba9f',
-            fill: false
-          }
-        ]
-      }
-      // Remove the old chart and all its event handles
-      if(this.chart) {
-        console.log("chart : ", this.chart);
-        this.chart.destroy();
-      }
-  
-      this.chart = new Chart(this.htmlRef, {
-        type: chartType,
-        data: chartData,
-        options: {
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              display: true
-            }],
-            yAxes: [{
-              display: true
-            }],
-          }
+    this.timesList = [];
+    this.valuesList = [];
+    for(var i = 0; i < this.dataAndTime.length; i++) {
+      var jsonObj = JSON.parse(JSON.stringify(this.dataAndTime[i]));
+      this.valuesList.push(jsonObj.value);
+      this.timesList.push(jsonObj.timestamp);      
+    }
+    var chartData = {
+      labels: this.timesList,
+      datasets: [
+        {
+          data: this.valuesList,
+          borderColor: '#3cba9f',
+          fill: false
         }
-      });
-    // } else {
-    //   // var charts = [];
-    //   for(var j = 0; j < this.dataAndTime.length; j++) {
-    //     this.timesList = [];
-    //     this.valuesList = [];
-    //     for(var i = 0; i < this.dataAndTime[j].length; i++) {
-    //       var list = this.dataAndTime[j];
-    //       var jsonObj = JSON.parse(JSON.stringify(list[i]));
-    //       this.valuesList.push(jsonObj.value);
-    //       this.timesList.push(jsonObj.timestamp);      
-    //     }
-    //     var chartData = {
-    //       labels: this.timesList,
-    //       datasets: [
-    //         {
-    //           data: this.valuesList,
-    //           borderColor: '#3cba9f',
-    //           fill: false
-    //         }
-    //       ]
-    //     }
-    //     // Remove the old chart and all its event handles
-    //     if(this.chart) {
-    //       console.log("chart : ", this.chart);
-    //       this.chart.destroy();
-    //     }
-    //     this.chart = new Chart(this.htmlRef, {
-    //       type: chartType,
-    //       data: chartData,
-    //       options: {
-    //         legend: {
-    //           display: false
-    //         },
-    //         scales: {
-    //           xAxes: [{
-    //             display: true
-    //           }],
-    //           yAxes: [{
-    //             display: true
-    //           }],
-    //         }
-    //       }
-    //     });      
-    //   }
-    // }
+      ]
+    }
+    
+    // Remove the old chart and all its event handles
+    if(this.chart) {
+      console.log("chart : ", this.chart);
+      this.chart.destroy();
+    }
+
+    this.chart = new Chart(this.htmlRef, {
+      type: chartType,
+      data: chartData,
+      options: {
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true
+          }],
+          yAxes: [{
+            display: true
+          }],
+        }
+      }
+    });
 
   }
 
